@@ -1,14 +1,12 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import vue from '@vitejs/plugin-vue'
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
-})
-html: {
-  inject: {
-    inject: {
-      'X-Frame-Options': 'DENY'
-    }
+  plugins: [vue()],
+  server: {
+    headers: new Map([
+      ['Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'"],
+      ['X-Frame-Options', 'DENY']
+    ])
   }
-}
+})
