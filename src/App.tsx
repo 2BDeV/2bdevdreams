@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Code,
   Zap,
@@ -10,7 +10,6 @@ import {
   Menu,
   X,
   ArrowRight,
-  Star,
 } from "lucide-react";
 
 const Container = ({ children }: { children: React.ReactNode }) => (
@@ -83,17 +82,9 @@ export default function App() {
               </div>
               <span className="text-base font-bold tracking-tight">2BDeV</span>
             </div>
-            <nav className="hidden items-center gap-6 text-sm md:flex">
-              <a href="#about" className="hover:text-pink-400 transition">About</a>
-              <a href="#projects" className="hover:text-pink-400 transition">Projects</a>
-              <a href="#skills" className="hover:text-pink-400 transition">Skills</a>
-              <a href="#contact" className="hover:text-pink-400 transition">Contact</a>
-              <PrimaryButton onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>
-                Let’s Talk
-              </PrimaryButton>
-            </nav>
+            {/* Always show hamburger menu */}
             <button
-              className="rounded-xl p-2 hover:bg-white/10 md:hidden"
+              className="rounded-xl p-2 hover:bg-white/10"
               aria-label="Menu"
               onClick={() => setMenuOpen((v) => !v)}
             >
@@ -101,21 +92,29 @@ export default function App() {
             </button>
           </motion.div>
         </Container>
-        {menuOpen && (
-          <div className="md:hidden">
-            <Container>
-              <div className="mt-2 space-y-2 rounded-xl border border-white/20 bg-black/80 p-4 text-white backdrop-blur-xl">
-                <a href="#about" className="block rounded-xl px-3 py-2 hover:bg-white/10">About</a>
-                <a href="#projects" className="block rounded-xl px-3 py-2 hover:bg-white/10">Projects</a>
-                <a href="#skills" className="block rounded-xl px-3 py-2 hover:bg-white/10">Skills</a>
-                <a href="#contact" className="block rounded-xl px-3 py-2 hover:bg-white/10">Contact</a>
-                <PrimaryButton onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>
-                  Let’s Talk
-                </PrimaryButton>
-              </div>
-            </Container>
-          </div>
-        )}
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="md:hidden"
+            >
+              <Container>
+                <div className="mt-2 space-y-2 rounded-xl border border-white/20 bg-black/80 p-4 text-white backdrop-blur-xl">
+                  <a href="#about" className="block rounded-xl px-3 py-2 hover:bg-white/10">About</a>
+                  <a href="#projects" className="block rounded-xl px-3 py-2 hover:bg-white/10">Projects</a>
+                  <a href="#skills" className="block rounded-xl px-3 py-2 hover:bg-white/10">Skills</a>
+                  <a href="#contact" className="block rounded-xl px-3 py-2 hover:bg-white/10">Contact</a>
+                  <PrimaryButton onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>
+                    Let’s Talk
+                  </PrimaryButton>
+                </div>
+              </Container>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* Hero */}
@@ -137,7 +136,7 @@ export default function App() {
                 <PrimaryButton onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>
                   Contact Me
                 </PrimaryButton>
-                <GhostButton onClick={() => window.open("https://github.com/2BDeV", "_blank")}> 
+                <GhostButton onClick={() => window.open("https://github.com/2BDeV", "_blank")}>
                   <Code className="h-4 w-4" /> View My Work
                 </GhostButton>
               </div>
@@ -152,84 +151,6 @@ export default function App() {
                 <img src="/2bdev logo.png" alt="2BDeV logo" className="absolute inset-0 m-auto w-44 drop-shadow-xl animate-float" />
               </div>
             </motion.div>
-          </div>
-        </Container>
-      </section>
-
-      {/* About Section */}
-      <section id="about" className="relative py-24 text-white bg-gradient-to-b from-transparent to-black/30">
-        <Container>
-          <h2 className="text-4xl font-bold mb-6">About</h2>
-          <p className="text-white/80 max-w-3xl">
-            Hi! I’m 2BDeV, a passionate web developer. I love building modern and visually appealing websites.
-            I mostly work with React, Tailwind, and Node.js, but I’m always curious to learn new technologies.
-          </p>
-        </Container>
-      </section>
-
-      {/* Projects Section */}
-      <section id="projects" className="relative py-24 text-white bg-gradient-to-b from-black/30 to-transparent">
-        <Container>
-          <h2 className="text-4xl font-bold mb-6">Projects</h2>
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {[{
-              title: "Portfolio Website",
-              desc: "A modern portfolio built with React and Tailwind.",
-              link: "https://example.com/portfolio"
-            }, {
-              title: "E-commerce Project",
-              desc: "A fully functional online shop with payment system.",
-              link: "https://example.com/ecommerce"
-            }, {
-              title: "Mobile App",
-              desc: "A responsive PWA with modern UI design.",
-              link: "https://example.com/mobile-app"
-            }].map((project, i) => (
-              <a
-                key={i}
-                href={project.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group rounded-xl bg-gradient-to-tr from-pink-500/20 to-purple-600/20 p-6 shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-pink-500/50 relative overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-pink-400 via-purple-500 to-indigo-500 opacity-0 group-hover:opacity-30 blur-2xl transition-opacity"></div>
-                <h3 className="text-xl font-semibold relative z-10">{project.title}</h3>
-                <p className="mt-2 text-sm text-white/70 relative z-10">{project.desc}</p>
-              </a>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* Skills Section */}
-      <section id="skills" className="relative py-24 text-white bg-gradient-to-b from-transparent to-black/30">
-        <Container>
-          <h2 className="text-4xl font-bold mb-6">Skills</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
-            <div className="flex flex-col items-center">
-              <Monitor className="h-10 w-10 text-pink-400" />
-              <span className="mt-2 text-sm">Frontend</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <Code className="h-10 w-10 text-indigo-400" />
-              <span className="mt-2 text-sm">Backend</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <Zap className="h-10 w-10 text-fuchsia-400" />
-              <span className="mt-2 text-sm">UI/UX</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <Github className="h-10 w-10 text-white" />
-              <span className="mt-2 text-sm">GitHub</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <Linkedin className="h-10 w-10 text-blue-400" />
-              <span className="mt-2 text-sm">LinkedIn</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <Mail className="h-10 w-10 text-green-400" />
-              <span className="mt-2 text-sm">Contact</span>
-            </div>
           </div>
         </Container>
       </section>
