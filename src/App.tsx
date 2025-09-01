@@ -146,7 +146,7 @@ export default function App() {
               transition={{ duration: 0.8 }}
             >
               <h1 className="mt-6 text-5xl font-extrabold leading-tight tracking-tight sm:text-6xl">
-                Hi, I’m <span className="bg-gradient-to-r from-pink-400 via-fuchsia-500 to-indigo-500 bg-clip-text text-transparent">2BDeV </span>.<br />Web Developer ,Creative Problem Solver & Photographer :)
+                Hi, I’m <span className="bg-gradient-to-r from-pink-400 via-fuchsia-500 to-indigo-500 bg-clip-text text-transparent">2BDeV </span>.<br />Web Developer, Creative Problem Solver & Photographer :)
               </h1>
               <p className="mt-4 text-white/80 max-w-xl">
                 I create modern, responsive websites and shott some good pictures.
