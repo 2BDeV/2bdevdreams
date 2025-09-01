@@ -188,13 +188,11 @@ export default function App() {
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {[{
               title: "KET Webpage",
-              desc: "My own family business website. 
-(Under developement)",
+              desc: "My own family business website.(Under developement)",
               link: "https://backup.2bdev.bot.nu/home/trans/home.html"
             }, {
               title: "My fully functional mobile OS '2BOS'",
-              desc: "I don't think I need to say more about it. 
-Under development",
+              desc: "I don't think I need to say more about it.(Under development)",
               link: "https://2bdevon.top/#projects"
             }, {
               title: "Own Discord app: 2BUptime",
