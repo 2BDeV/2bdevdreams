@@ -10,7 +10,6 @@ import {
   Menu,
   X,
   ArrowRight,
-  Star,
 } from "lucide-react";
 
 const Container = ({ children }: { children: React.ReactNode }) => (
@@ -62,15 +61,10 @@ export default function App() {
               </div>
               <span className="text-base font-bold tracking-tight">2BDeV</span>
             </div>
-            <nav className="hidden items-center gap-6 text-sm md:flex">
-              <a href="#about" className="hover:text-pink-400 transition">About</a>
-              <a href="#projects" className="hover:text-pink-400 transition">Projects</a>
-              <a href="#skills" className="hover:text-pink-400 transition">Skills</a>
-              <a href="#contact" className="hover:text-pink-400 transition">Contact</a>
-              <PrimaryButton>Let’s Talk</PrimaryButton>
-            </nav>
+
+            {/* Hamburger gomb minden eszközön */}
             <button
-              className="rounded-xl p-2 hover:bg-white/10 md:hidden"
+              className="rounded-xl p-2 hover:bg-white/10"
               aria-label="Menu"
               onClick={() => setMenuOpen((v) => !v)}
             >
@@ -78,19 +72,52 @@ export default function App() {
             </button>
           </motion.div>
         </Container>
-        {menuOpen && (
-          <div className="md:hidden">
-            <Container>
-              <div className="mt-2 space-y-2 rounded-xl border border-white/20 bg-black/80 p-4 text-white backdrop-blur-xl">
-                <a href="#about" className="block rounded-xl px-3 py-2 hover:bg-white/10">About</a>
-                <a href="#projects" className="block rounded-xl px-3 py-2 hover:bg-white/10">Projects</a>
-                <a href="#skills" className="block rounded-xl px-3 py-2 hover:bg-white/10">Skills</a>
-                <a href="#contact" className="block rounded-xl px-3 py-2 hover:bg-white/10">Contact</a>
+
+        {/* Animált menü minden eszközön */}
+        <motion.div
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: menuOpen ? "auto" : 0, opacity: menuOpen ? 1 : 0 }}
+          transition={{ duration: 0.4, ease: "easeInOut" }}
+          className="overflow-hidden"
+        >
+          <Container>
+            <motion.ul
+              className="mt-2 space-y-2 rounded-xl border border-white/20 bg-black/80 p-4 text-white backdrop-blur-xl"
+              initial="hidden"
+              animate={menuOpen ? "visible" : "hidden"}
+              variants={{
+                visible: {
+                  transition: {
+                    staggerChildren: 0.05,
+                  },
+                },
+              }}
+            >
+              {["About", "Projects", "Skills", "Contact"].map((item, idx) => (
+                <motion.li
+                  key={idx}
+                  className="block rounded-xl px-3 py-2 hover:bg-white/10 cursor-pointer"
+                  variants={{
+                    hidden: { y: -20, opacity: 0 },
+                    visible: { y: 0, opacity: 1 },
+                  }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <a href={`#${item.toLowerCase()}`}>{item}</a>
+                </motion.li>
+              ))}
+              <motion.li
+                variants={{
+                  hidden: { y: -20, opacity: 0 },
+                  visible: { y: 0, opacity: 1 },
+                }}
+                transition={{ duration: 0.3 }}
+              >
                 <PrimaryButton>Let’s Talk</PrimaryButton>
-              </div>
-            </Container>
-          </div>
-        )}
+              </motion.li>
+            </motion.ul>
+          </Container>
+        </motion.div>
       </header>
 
       {/* Hero */}
@@ -226,32 +253,32 @@ export default function App() {
           © {new Date().getFullYear()} 2BDeV. All rights reserved.
         </Container>
       </footer>
+
+      {/* Extra animations */}
+      <style jsx global>{`
+        .animate-gradient-slow {
+          background-size: 400% 400%;
+          animation: gradientBG 15s ease infinite;
+        }
+        @keyframes gradientBG {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        .animate-spin-slow {
+          animation: spin 20s linear infinite;
+        }
+        .animate-pulse-slow {
+          animation: pulse 8s ease-in-out infinite;
+        }
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-12px); }
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 }
-
-/* Extra animations */
-<style jsx global>{`
-  .animate-gradient-slow {
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
-  }
-  @keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-  .animate-spin-slow {
-    animation: spin 20s linear infinite;
-  }
-  .animate-pulse-slow {
-    animation: pulse 8s ease-in-out infinite;
-  }
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
-  }
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
-`} </style>
