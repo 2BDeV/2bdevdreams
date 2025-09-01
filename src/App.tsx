@@ -36,6 +36,8 @@ const GhostButton = ({ children }: { children: React.ReactNode }) => (
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const menuItems = ["About", "Projects", "Skills", "Contact"];
+
   // Scroll esemény menü automatikus bezárásához
   useEffect(() => {
     const handleScroll = () => {
@@ -71,17 +73,20 @@ export default function App() {
               <span className="text-base font-bold tracking-tight">2BDeV</span>
             </div>
 
-            <button
+            {/* Hamburger/X gomb */}
+            <motion.button
               className="rounded-xl p-2 hover:bg-white/10"
               aria-label="Menu"
               onClick={() => setMenuOpen((v) => !v)}
+              animate={{ rotate: menuOpen ? 90 : 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
               {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
+            </motion.button>
           </motion.div>
         </Container>
 
-        {/* Menü AnimatePresence-szel */}
+        {/* AnimatePresence menü */}
         <AnimatePresence>
           {menuOpen && (
             <motion.div
@@ -98,29 +103,29 @@ export default function App() {
                   animate="visible"
                   exit="hidden"
                   variants={{
-                    visible: { transition: { staggerChildren: 0.05 } },
-                    hidden: { transition: { staggerChildren: 0.02, staggerDirection: -1 } },
+                    visible: { transition: { staggerChildren: 0.1 } },
+                    hidden: { transition: { staggerChildren: 0.05, staggerDirection: -1 } },
                   }}
                 >
-                  {["About", "Projects", "Skills", "Contact"].map((item, idx) => (
+                  {menuItems.map((item, idx) => (
                     <motion.li
                       key={idx}
                       className="block rounded-xl px-3 py-2 hover:bg-white/10 cursor-pointer"
                       variants={{
-                        hidden: { y: -20, opacity: 0 },
+                        hidden: { y: -30, opacity: 0 },
                         visible: { y: 0, opacity: 1 },
                       }}
-                      transition={{ duration: 0.3 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     >
                       <a href={`#${item.toLowerCase()}`}>{item}</a>
                     </motion.li>
                   ))}
                   <motion.li
                     variants={{
-                      hidden: { y: -20, opacity: 0 },
+                      hidden: { y: -30, opacity: 0 },
                       visible: { y: 0, opacity: 1 },
                     }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   >
                     <PrimaryButton>Let’s Talk</PrimaryButton>
                   </motion.li>
@@ -143,7 +148,7 @@ export default function App() {
               <h1 className="mt-6 text-5xl font-extrabold leading-tight tracking-tight sm:text-6xl">
                 Hi, I’m{" "}
                 <span className="bg-gradient-to-r from-pink-400 via-fuchsia-500 to-indigo-500 bg-clip-text text-transparent">
-                  2BDeV{" "}
+                  2BDeV
                 </span>
                 .<br />
                 Web Developer, Creative Problem Solver & Photographer :)
