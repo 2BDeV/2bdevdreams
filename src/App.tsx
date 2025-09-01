@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Code,
@@ -35,6 +35,24 @@ const GhostButton = ({ children }: { children: React.ReactNode }) => (
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Menüpontok láthatóságának vezérlése
+  useEffect(() => {
+    setIsVisible(menuOpen);
+  }, [menuOpen]);
+
+  // Scroll esemény figyelése menü automatikus bezárásához
+  useEffect(() => {
+    const handleScroll = () => {
+      if (menuOpen) {
+        setIsVisible(false);
+        setTimeout(() => setMenuOpen(false), 300);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [menuOpen]);
 
   return (
     <div className="font-sans antialiased relative overflow-hidden">
@@ -74,53 +92,51 @@ export default function App() {
         </Container>
 
         {/* Animált menü minden eszközön */}
-        <motion.div
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: menuOpen ? "auto" : 0, opacity: menuOpen ? 1 : 0 }}
-          transition={{ duration: 0.4, ease: "easeInOut" }}
-          className="overflow-hidden"
-        >
-          <Container>
-            <motion.ul
-              className="mt-2 space-y-2 rounded-xl border border-white/20 bg-black/80 p-4 text-white backdrop-blur-xl"
-              initial="hidden"
-              animate={menuOpen ? "visible" : "hidden"}
-              variants={{
-                visible: {
-                  transition: {
-                    staggerChildren: 0.05,
-                  },
-                },
-              }}
-            >
-              {["About", "Projects", "Skills", "Contact"].map((item, idx) => (
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : -20 }}
+            transition={{ duration: 0.3 }}
+            className="overflow-hidden"
+          >
+            <Container>
+              <motion.ul
+                className="mt-2 space-y-2 rounded-xl border border-white/20 bg-black/80 p-4 text-white backdrop-blur-xl"
+                initial="hidden"
+                animate={isVisible ? "visible" : "hidden"}
+                variants={{
+                  visible: { transition: { staggerChildren: 0.05 } },
+                }}
+              >
+                {["About", "Projects", "Skills", "Contact"].map((item, idx) => (
+                  <motion.li
+                    key={idx}
+                    className="block rounded-xl px-3 py-2 hover:bg-white/10 cursor-pointer"
+                    variants={{
+                      hidden: { y: -20, opacity: 0 },
+                      visible: { y: 0, opacity: 1 },
+                    }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <a href={`#${item.toLowerCase()}`}>{item}</a>
+                  </motion.li>
+                ))}
                 <motion.li
-                  key={idx}
-                  className="block rounded-xl px-3 py-2 hover:bg-white/10 cursor-pointer"
                   variants={{
                     hidden: { y: -20, opacity: 0 },
                     visible: { y: 0, opacity: 1 },
                   }}
                   transition={{ duration: 0.3 }}
                 >
-                  <a href={`#${item.toLowerCase()}`}>{item}</a>
+                  <PrimaryButton>Let’s Talk</PrimaryButton>
                 </motion.li>
-              ))}
-              <motion.li
-                variants={{
-                  hidden: { y: -20, opacity: 0 },
-                  visible: { y: 0, opacity: 1 },
-                }}
-                transition={{ duration: 0.3 }}
-              >
-                <PrimaryButton>Let’s Talk</PrimaryButton>
-              </motion.li>
-            </motion.ul>
-          </Container>
-        </motion.div>
+              </motion.ul>
+            </Container>
+          </motion.div>
+        )}
       </header>
 
-      {/* Hero */}
+      {/* Hero Section */}
       <section className="relative isolate overflow-hidden pt-40 text-white">
         <Container>
           <div className="grid items-center gap-10 md:grid-cols-2">
