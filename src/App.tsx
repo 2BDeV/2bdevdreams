@@ -146,14 +146,14 @@ export default function App() {
               transition={{ duration: 0.8 }}
             >
               <h1 className="mt-6 text-5xl font-extrabold leading-tight tracking-tight sm:text-6xl">
-                Hi, I’m <span className="bg-gradient-to-r from-pink-400 via-fuchsia-500 to-indigo-500 bg-clip-text text-transparent">2BDeV</span>.<br />Web Developer & Creative Problem Solver.
+                Hi, I’m <span className="bg-gradient-to-r from-pink-400 via-fuchsia-500 to-indigo-500 bg-clip-text text-transparent">2BDeV </span>.<br />Web Developer ,Creative Problem Solver & Photographer :)
               </h1>
               <p className="mt-4 text-white/80 max-w-xl">
-                I create modern, responsive websites and applications. I love simple yet effective solutions.
+                I create modern, responsive websites and shott some good pictures.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <PrimaryButton>Contact Me</PrimaryButton>
-                <GhostButton><Code className="h-4 w-4" /> View My Work</GhostButton>
+                <GhostButton><Code className="h-4 w-4" /> View my works</GhostButton>
               </div>
             </motion.div>
             <motion.div
@@ -175,8 +175,8 @@ export default function App() {
         <Container>
           <h2 className="text-4xl font-bold mb-6">About</h2>
           <p className="text-white/80 max-w-3xl">
-            Hi! I’m 2BDeV, a passionate web developer. I love building modern and visually appealing websites.
-            I mostly work with React, Tailwind, and Node.js, but I’m always curious to learn new technologies.
+            Hi! I’m 2BDeV, a passionate web developer and a starter photographer. I love building modern and visually appealing websites and saving my moments.
+            I mostly work with HTML CSS and JavaScript, but i want to use React, Tailwind, and Node.js . I’m always curious to learn new technologies.
           </p>
         </Container>
       </section>
@@ -187,17 +187,19 @@ export default function App() {
           <h2 className="text-4xl font-bold mb-6">Projects</h2>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {[{
-              title: "Portfolio Website",
-              desc: "A modern portfolio built with React and Tailwind.",
-              link: "https://example.com/portfolio"
+              title: "KET Webpage",
+              desc: "My own family business website. 
+(Under developement)",
+              link: "https://backup.2bdev.bot.nu/home/trans/home.html"
             }, {
-              title: "E-commerce Project",
-              desc: "A fully functional online shop with payment system.",
-              link: "https://example.com/ecommerce"
+              title: "My fully functional mobile OS '2BOS'",
+              desc: "I don't think I need to say more about it. 
+Under development",
+              link: "https://2bdevon.top/#projects"
             }, {
-              title: "Mobile App",
-              desc: "A responsive PWA with modern UI design.",
-              link: "https://example.com/mobile-app"
+              title: "Own Discord app: 2BUptime",
+              desc: "This bot monitors my Main and Backup pages",
+              link: "https://2bdevon.top/bot"
             }].map((project, i) => (
               <a
                 key={i}
