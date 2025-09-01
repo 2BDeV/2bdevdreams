@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Code,
   Zap,
@@ -35,20 +35,11 @@ const GhostButton = ({ children }: { children: React.ReactNode }) => (
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
 
-  // Menüpontok láthatóságának vezérlése
-  useEffect(() => {
-    setIsVisible(menuOpen);
-  }, [menuOpen]);
-
-  // Scroll esemény figyelése menü automatikus bezárásához
+  // Scroll esemény menü automatikus bezárásához
   useEffect(() => {
     const handleScroll = () => {
-      if (menuOpen) {
-        setIsVisible(false);
-        setTimeout(() => setMenuOpen(false), 300);
-      }
+      if (menuOpen) setMenuOpen(false);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -80,7 +71,6 @@ export default function App() {
               <span className="text-base font-bold tracking-tight">2BDeV</span>
             </div>
 
-            {/* Hamburger gomb minden eszközön */}
             <button
               className="rounded-xl p-2 hover:bg-white/10"
               aria-label="Menu"
@@ -91,49 +81,54 @@ export default function App() {
           </motion.div>
         </Container>
 
-        {/* Animált menü minden eszközön */}
-        {menuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : -20 }}
-            transition={{ duration: 0.3 }}
-            className="overflow-hidden"
-          >
-            <Container>
-              <motion.ul
-                className="mt-2 space-y-2 rounded-xl border border-white/20 bg-black/80 p-4 text-white backdrop-blur-xl"
-                initial="hidden"
-                animate={isVisible ? "visible" : "hidden"}
-                variants={{
-                  visible: { transition: { staggerChildren: 0.05 } },
-                }}
-              >
-                {["About", "Projects", "Skills", "Contact"].map((item, idx) => (
+        {/* Menü AnimatePresence-szel */}
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="overflow-hidden"
+            >
+              <Container>
+                <motion.ul
+                  className="mt-2 space-y-2 rounded-xl border border-white/20 bg-black/80 p-4 text-white backdrop-blur-xl"
+                  initial="hidden"
+                  animate="visible"
+                  exit="hidden"
+                  variants={{
+                    visible: { transition: { staggerChildren: 0.05 } },
+                    hidden: { transition: { staggerChildren: 0.02, staggerDirection: -1 } },
+                  }}
+                >
+                  {["About", "Projects", "Skills", "Contact"].map((item, idx) => (
+                    <motion.li
+                      key={idx}
+                      className="block rounded-xl px-3 py-2 hover:bg-white/10 cursor-pointer"
+                      variants={{
+                        hidden: { y: -20, opacity: 0 },
+                        visible: { y: 0, opacity: 1 },
+                      }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <a href={`#${item.toLowerCase()}`}>{item}</a>
+                    </motion.li>
+                  ))}
                   <motion.li
-                    key={idx}
-                    className="block rounded-xl px-3 py-2 hover:bg-white/10 cursor-pointer"
                     variants={{
                       hidden: { y: -20, opacity: 0 },
                       visible: { y: 0, opacity: 1 },
                     }}
                     transition={{ duration: 0.3 }}
                   >
-                    <a href={`#${item.toLowerCase()}`}>{item}</a>
+                    <PrimaryButton>Let’s Talk</PrimaryButton>
                   </motion.li>
-                ))}
-                <motion.li
-                  variants={{
-                    hidden: { y: -20, opacity: 0 },
-                    visible: { y: 0, opacity: 1 },
-                  }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <PrimaryButton>Let’s Talk</PrimaryButton>
-                </motion.li>
-              </motion.ul>
-            </Container>
-          </motion.div>
-        )}
+                </motion.ul>
+              </Container>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* Hero Section */}
@@ -146,14 +141,21 @@ export default function App() {
               transition={{ duration: 0.8 }}
             >
               <h1 className="mt-6 text-5xl font-extrabold leading-tight tracking-tight sm:text-6xl">
-                Hi, I’m <span className="bg-gradient-to-r from-pink-400 via-fuchsia-500 to-indigo-500 bg-clip-text text-transparent">2BDeV </span>.<br />Web Developer, Creative Problem Solver & Photographer :)
+                Hi, I’m{" "}
+                <span className="bg-gradient-to-r from-pink-400 via-fuchsia-500 to-indigo-500 bg-clip-text text-transparent">
+                  2BDeV{" "}
+                </span>
+                .<br />
+                Web Developer, Creative Problem Solver & Photographer :)
               </h1>
               <p className="mt-4 text-white/80 max-w-xl">
-                I create modern, responsive websites and shott some good pictures.
+                I create modern, responsive websites and shot some good pictures.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <PrimaryButton>Contact Me</PrimaryButton>
-                <GhostButton><Code className="h-4 w-4" /> View my works</GhostButton>
+                <GhostButton>
+                  <Code className="h-4 w-4" /> View my works
+                </GhostButton>
               </div>
             </motion.div>
             <motion.div
@@ -163,7 +165,11 @@ export default function App() {
               className="relative flex justify-center"
             >
               <div className="relative w-80 h-80 rounded-full bg-gradient-to-tr from-pink-500 via-fuchsia-600 to-indigo-700 shadow-2xl animate-spin-slow">
-                <img src="/2bdev logo.png" alt="2BDeV logo" className="absolute inset-0 m-auto w-44 drop-shadow-xl animate-float" />
+                <img
+                  src="/2bdev logo.png"
+                  alt="2BDeV logo"
+                  className="absolute inset-0 m-auto w-44 drop-shadow-xl animate-float"
+                />
               </div>
             </motion.div>
           </div>
@@ -171,34 +177,46 @@ export default function App() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="relative py-24 text-white bg-gradient-to-b from-transparent to-black/30">
+      <section
+        id="about"
+        className="relative py-24 text-white bg-gradient-to-b from-transparent to-black/30"
+      >
         <Container>
           <h2 className="text-4xl font-bold mb-6">About</h2>
           <p className="text-white/80 max-w-3xl">
-            Hi! I’m 2BDeV, a passionate web developer and a starter photographer. I love building modern and visually appealing websites and saving my moments.
-            I mostly work with HTML CSS and JavaScript, but i want to use React, Tailwind, and Node.js . I’m always curious to learn new technologies.
+            Hi! I’m 2BDeV, a passionate web developer and a starter photographer. I
+            love building modern and visually appealing websites and saving my
+            moments. I mostly work with HTML, CSS, and JavaScript, but I want to use
+            React, Tailwind, and Node.js. I’m always curious to learn new technologies.
           </p>
         </Container>
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="relative py-24 text-white bg-gradient-to-b from-black/30 to-transparent">
+      <section
+        id="projects"
+        className="relative py-24 text-white bg-gradient-to-b from-black/30 to-transparent"
+      >
         <Container>
           <h2 className="text-4xl font-bold mb-6">Projects</h2>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {[{
-              title: "KET Webpage",
-              desc: "My own family business website.(Under developement)",
-              link: "https://backup.2bdev.bot.nu/home/trans/home.html"
-            }, {
-              title: "My fully functional mobile OS '2BOS'",
-              desc: "I don't think I need to say more about it.(Under development)",
-              link: "https://2bdevon.top/#projects"
-            }, {
-              title: "Own Discord app: 2BUptime",
-              desc: "This bot monitors my Main and Backup pages",
-              link: "https://2bdevon.top/bot"
-            }].map((project, i) => (
+            {[
+              {
+                title: "KET Webpage",
+                desc: "My own family business website.(Under development)",
+                link: "https://backup.2bdev.bot.nu/home/trans/home.html",
+              },
+              {
+                title: "My fully functional mobile OS '2BOS'",
+                desc: "I don't think I need to say more about it.(Under development)",
+                link: "https://2bdevon.top/#projects",
+              },
+              {
+                title: "Own Discord app: 2BUptime",
+                desc: "This bot monitors my Main and Backup pages",
+                link: "https://2bdevon.top/bot",
+              },
+            ].map((project, i) => (
               <a
                 key={i}
                 href={project.link}
@@ -216,7 +234,10 @@ export default function App() {
       </section>
 
       {/* Skills Section */}
-      <section id="skills" className="relative py-24 text-white bg-gradient-to-b from-transparent to-black/30">
+      <section
+        id="skills"
+        className="relative py-24 text-white bg-gradient-to-b from-transparent to-black/30"
+      >
         <Container>
           <h2 className="text-4xl font-bold mb-6">Skills</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
@@ -249,14 +270,29 @@ export default function App() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="relative py-24 text-white bg-gradient-to-b from-black/30 to-transparent">
+      <section
+        id="contact"
+        className="relative py-24 text-white bg-gradient-to-b from-black/30 to-transparent"
+      >
         <Container>
           <div className="flex flex-col items-center text-center">
             <h2 className="text-4xl font-bold mb-6">Contact</h2>
             <form className="w-full max-w-xl space-y-4">
-              <input type="text" placeholder="Name" className="w-full rounded-lg bg-white/10 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400" />
-              <input type="email" placeholder="Email" className="w-full rounded-lg bg-white/10 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400" />
-              <textarea placeholder="Message" rows={4} className="w-full rounded-lg bg-white/10 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"></textarea>
+              <input
+                type="text"
+                placeholder="Name"
+                className="w-full rounded-lg bg-white/10 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
+              />
+              <input
+                type="email"
+                placeholder="Email"
+                className="w-full rounded-lg bg-white/10 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
+              />
+              <textarea
+                placeholder="Message"
+                rows={4}
+                className="w-full rounded-lg bg-white/10 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
+              ></textarea>
               <PrimaryButton>Send</PrimaryButton>
             </form>
           </div>
@@ -265,9 +301,7 @@ export default function App() {
 
       {/* Footer */}
       <footer className="relative py-6 text-center text-white/70 text-sm">
-        <Container>
-          © {new Date().getFullYear()} 2BDeV. All rights reserved.
-        </Container>
+        <Container>© {new Date().getFullYear()} 2BDeV. All rights reserved.</Container>
       </footer>
 
       {/* Extra animations */}
