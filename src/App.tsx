@@ -17,8 +17,20 @@ const Container = ({ children }: { children: React.ReactNode }) => (
   <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>
 );
 
-const PrimaryButton = ({ children }: { children: React.ReactNode }) => (
-  <button className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-400">
+const PrimaryButton = ({
+  children,
+  onClick,
+  type = "button",
+}: {
+  children: React.ReactNode;
+  onClick?: () => void;
+  type?: "button" | "submit" | "reset";
+}) => (
+  <button
+    type={type}
+    onClick={onClick}
+    className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-400"
+  >
     <span className="relative z-10 flex items-center gap-2">
       {children}
       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -27,8 +39,17 @@ const PrimaryButton = ({ children }: { children: React.ReactNode }) => (
   </button>
 );
 
-const GhostButton = ({ children }: { children: React.ReactNode }) => (
-  <button className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl border border-white/30 bg-transparent px-6 py-3 text-sm font-semibold text-white/90 backdrop-blur transition-all duration-300 hover:border-white/50 hover:bg-white/5 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-400">
+const GhostButton = ({
+  children,
+  onClick,
+}: {
+  children: React.ReactNode;
+  onClick?: () => void;
+}) => (
+  <button
+    onClick={onClick}
+    className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl border border-white/30 bg-transparent px-6 py-3 text-sm font-semibold text-white/90 backdrop-blur transition-all duration-300 hover:border-white/50 hover:bg-white/5 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-400"
+  >
     <span className="relative z-10 flex items-center gap-2">{children}</span>
     <span className="absolute inset-0 z-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></span>
   </button>
@@ -67,7 +88,9 @@ export default function App() {
               <a href="#projects" className="hover:text-pink-400 transition">Projects</a>
               <a href="#skills" className="hover:text-pink-400 transition">Skills</a>
               <a href="#contact" className="hover:text-pink-400 transition">Contact</a>
-              <PrimaryButton>Let’s Talk</PrimaryButton>
+              <PrimaryButton onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>
+                Let’s Talk
+              </PrimaryButton>
             </nav>
             <button
               className="rounded-xl p-2 hover:bg-white/10 md:hidden"
@@ -86,7 +109,9 @@ export default function App() {
                 <a href="#projects" className="block rounded-xl px-3 py-2 hover:bg-white/10">Projects</a>
                 <a href="#skills" className="block rounded-xl px-3 py-2 hover:bg-white/10">Skills</a>
                 <a href="#contact" className="block rounded-xl px-3 py-2 hover:bg-white/10">Contact</a>
-                <PrimaryButton>Let’s Talk</PrimaryButton>
+                <PrimaryButton onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>
+                  Let’s Talk
+                </PrimaryButton>
               </div>
             </Container>
           </div>
@@ -109,8 +134,12 @@ export default function App() {
                 I create modern, responsive websites and applications. I love simple yet effective solutions.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
-                <PrimaryButton>Contact Me</PrimaryButton>
-                <GhostButton><Code className="h-4 w-4" /> View My Work</GhostButton>
+                <PrimaryButton onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}>
+                  Contact Me
+                </PrimaryButton>
+                <GhostButton onClick={() => window.open("https://github.com/2BDeV", "_blank")}> 
+                  <Code className="h-4 w-4" /> View My Work
+                </GhostButton>
               </div>
             </motion.div>
             <motion.div
@@ -210,11 +239,17 @@ export default function App() {
         <Container>
           <div className="flex flex-col items-center text-center">
             <h2 className="text-4xl font-bold mb-6">Contact</h2>
-            <form className="w-full max-w-xl space-y-4">
+            <form
+              className="w-full max-w-xl space-y-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                alert("Message sent! (itt majd jöhet az email backend / API hívás)");
+              }}
+            >
               <input type="text" placeholder="Name" className="w-full rounded-lg bg-white/10 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400" />
               <input type="email" placeholder="Email" className="w-full rounded-lg bg-white/10 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400" />
               <textarea placeholder="Message" rows={4} className="w-full rounded-lg bg-white/10 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"></textarea>
-              <PrimaryButton>Send</PrimaryButton>
+              <PrimaryButton type="submit">Send</PrimaryButton>
             </form>
           </div>
         </Container>
@@ -229,29 +264,3 @@ export default function App() {
     </div>
   );
 }
-
-/* Extra animations */
-<style jsx global>{`
-  .animate-gradient-slow {
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
-  }
-  @keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-  .animate-spin-slow {
-    animation: spin 20s linear infinite;
-  }
-  .animate-pulse-slow {
-    animation: pulse 8s ease-in-out infinite;
-  }
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
-  }
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
-`} </style>
