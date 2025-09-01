@@ -5,6 +5,9 @@ import {
   ArrowRight,
   Menu,
   X,
+  Github,
+  Linkedin,
+  Mail,
 } from "lucide-react";
 
 const Container = ({ children }: { children: React.ReactNode }) => (
@@ -79,9 +82,20 @@ export default function App() {
               <span className="text-base font-bold tracking-tight">2BDeV</span>
             </div>
 
-            {/* Hamburger gomb */}
+            {/* Desktop Menü */}
+            <nav className="hidden md:flex gap-6 items-center">
+              <a href="#about" className="hover:text-pink-400">About</a>
+              <a href="#projects" className="hover:text-pink-400">Projects</a>
+              <a href="#skills" className="hover:text-pink-400">Skills</a>
+              <a href="#contact" className="hover:text-pink-400">Contact</a>
+              <GhostButton onClick={() => window.open("https://github.com/2BDeV", "_blank")}>
+                <Code className="h-4 w-4" /> GitHub
+              </GhostButton>
+            </nav>
+
+            {/* Hamburger gomb mobil */}
             <button
-              className="rounded-xl p-2 hover:bg-white/10"
+              className="md:hidden rounded-xl p-2 hover:bg-white/10"
               aria-label="Menu"
               onClick={() => setMenuOpen((v) => !v)}
             >
@@ -89,7 +103,7 @@ export default function App() {
             </button>
           </motion.div>
 
-          {/* Menü */}
+          {/* Hamburger Menü mobil */}
           <AnimatePresence>
             {menuOpen && (
               <motion.div
@@ -97,12 +111,17 @@ export default function App() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
-                className="mt-2 rounded-xl border border-white/20 bg-black/80 p-4 text-white backdrop-blur-xl"
+                className="mt-2 rounded-xl border border-white/20 bg-black/80 p-4 text-white backdrop-blur-xl md:hidden"
               >
                 <a href="#about" className="block rounded-xl px-3 py-2 hover:bg-white/10">About</a>
                 <a href="#projects" className="block rounded-xl px-3 py-2 hover:bg-white/10">Projects</a>
                 <a href="#skills" className="block rounded-xl px-3 py-2 hover:bg-white/10">Skills</a>
                 <a href="#contact" className="block rounded-xl px-3 py-2 hover:bg-white/10">Contact</a>
+                <div className="mt-4 flex gap-4">
+                  <a href="https://github.com/2BDeV" target="_blank"><Github className="h-5 w-5" /></a>
+                  <a href="https://linkedin.com" target="_blank"><Linkedin className="h-5 w-5" /></a>
+                  <a href="mailto:youremail@example.com"><Mail className="h-5 w-5" /></a>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -131,6 +150,12 @@ export default function App() {
                 <GhostButton onClick={() => window.open("https://github.com/2BDeV", "_blank")}>
                   <Code className="h-4 w-4" /> View My Work
                 </GhostButton>
+              </div>
+              {/* Ikonok Hero részben */}
+              <div className="mt-4 flex gap-4">
+                <a href="https://github.com/2BDeV" target="_blank"><Github className="h-6 w-6" /></a>
+                <a href="https://linkedin.com" target="_blank"><Linkedin className="h-6 w-6" /></a>
+                <a href="mailto:youremail@example.com"><Mail className="h-6 w-6" /></a>
               </div>
             </motion.div>
             <motion.div
