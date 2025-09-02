@@ -1,4 +1,4 @@
-import { Analytics } from "@vercel/analytics/react"; 
+import { Analytics } from "@vercel/analytics/react";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -11,6 +11,7 @@ import {
   Menu,
   X,
   ArrowRight,
+  ArrowUp,
 } from "lucide-react";
 
 const Container = ({ children }: { children: React.ReactNode }) => (
@@ -36,6 +37,7 @@ const GhostButton = ({ children }: { children: React.ReactNode }) => (
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showScroll, setShowScroll] = useState(false);
 
   const menuItems = ["About", "Projects", "Skills", "Contact"];
 
@@ -44,16 +46,29 @@ export default function App() {
     if (el) {
       el.scrollIntoView({ behavior: "smooth" });
     }
-    setMenuOpen(false); // bezárja a menüt
+    setMenuOpen(false);
+  };
+
+  const checkScrollTop = () => {
+    if (!showScroll && window.scrollY > 400) {
+      setShowScroll(true);
+    } else if (showScroll && window.scrollY <= 400) {
+      setShowScroll(false);
+    }
+  };
+
+  const scrollTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   useEffect(() => {
     const handleScroll = () => {
       if (menuOpen) setMenuOpen(false);
+      checkScrollTop();
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [menuOpen]);
+  }, [menuOpen, showScroll]);
 
   return (
     <div className="font-sans antialiased relative overflow-hidden">
@@ -92,7 +107,6 @@ export default function App() {
           </motion.div>
         </Container>
 
-        {/* AnimatePresence menü */}
         <AnimatePresence>
           {menuOpen && (
             <motion.div
@@ -312,6 +326,22 @@ export default function App() {
         <Container>© {new Date().getFullYear()} 2BDeV. All rights reserved.</Container>
       </footer>
       
+      <AnimatePresence>
+        {showScroll && (
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.3 }}
+            onClick={scrollTop}
+            aria-label="Scroll to top"
+            className="fixed bottom-6 right-6 z-40 rounded-full p-4 bg-white/10 text-white backdrop-blur-xl border border-white/20 shadow-lg transition-transform duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-pink-400"
+          >
+            <ArrowUp className="h-6 w-6" />
+          </motion.button>
+        )}
+      </AnimatePresence>
+
       <Analytics />
 
       <style jsx global>{`
