@@ -38,6 +38,15 @@ export default function App() {
 
   const menuItems = ["About", "Projects", "Skills", "Contact"];
 
+  // Smooth scroll + menü bezárás
+  const handleMenuClick = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+    setMenuOpen(false); // bezárja a menüt
+  };
+
   // Scroll esemény menü automatikus bezárásához
   useEffect(() => {
     const handleScroll = () => {
@@ -116,8 +125,9 @@ export default function App() {
                         visible: { y: 0, opacity: 1 },
                       }}
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      onClick={() => handleMenuClick(item.toLowerCase())}
                     >
-                      <a href={`#${item.toLowerCase()}`}>{item}</a>
+                      {item}
                     </motion.li>
                   ))}
                   <motion.li
@@ -311,6 +321,9 @@ export default function App() {
 
       {/* Extra animations */}
       <style jsx global>{`
+        html {
+          scroll-behavior: smooth;
+        }
         .animate-gradient-slow {
           background-size: 400% 400%;
           animation: gradientBG 15s ease infinite;
