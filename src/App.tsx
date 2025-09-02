@@ -344,6 +344,7 @@ export default function App() {
       </AnimatePresence>
       
       <Analytics />
+
       <SpeedInsights />
 
       <style jsx global>{`
