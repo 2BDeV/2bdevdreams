@@ -329,9 +329,9 @@ export default function App() {
       <AnimatePresence>
         {showScroll && (
           <motion.button
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0 }} // Eltávolítva a y: 20
+            animate={{ opacity: 1 }} // Eltávolítva a y: 0
+            exit={{ opacity: 0 }}   // Eltávolítva a y: 20
             transition={{ duration: 0.3 }}
             onClick={scrollTop}
             aria-label="Scroll to top"
@@ -341,7 +341,6 @@ export default function App() {
           </motion.button>
         )}
       </AnimatePresence>
-
       <Analytics />
 
       <style jsx global>{`
