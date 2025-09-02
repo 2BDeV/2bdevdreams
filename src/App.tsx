@@ -1,4 +1,5 @@
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -341,7 +342,9 @@ export default function App() {
           </motion.button>
         )}
       </AnimatePresence>
+      
       <Analytics />
+      <SpeedInsights />
 
       <style jsx global>{`
         html {
