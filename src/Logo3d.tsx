@@ -4,12 +4,12 @@ import { OrbitControls, useGLTF } from "@react-three/drei";
 
 function Logo3DModel() {
   const { scene } = useGLTF("/2bdev-logo3d.gbl"); 
-  return <primitive object={scene} scale={1} />;
+  return <primitive object={scene} scale={2} />; 
 }
 
 export default function Logo3d() {
   return (
-    <div className="w-full h-[500px] bg-gray-900 rounded-xl flex items-center justify-center">
+    <div className="w-full h-[500px] flex items-center justify-center">
       <Canvas>
         {/* Tiltjuk a zoom-ot */}
         <OrbitControls enableZoom={false} />
