@@ -1,9 +1,22 @@
-import React from "react";
+import React, { Suspense } from "react";
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls, useGLTF } from "@react-three/drei";
+
+function Model() {
+  // A modell a public mappában van
+  const gltf = useGLTF("/2bdev-logo3d.gbl");
+  return <primitive object={gltf.scene} scale={1} />;
+}
 
 export default function Logo3d() {
   return (
-    <div className="w-40 h-40 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
-      Logo
-    </div>
+    <Canvas style={{ width: 300, height: 300 }}>
+      <ambientLight intensity={0.5} />
+      <pointLight position={[10, 10, 10]} />
+      <Suspense fallback={null}>
+        <Model />
+      </Suspense>
+      <OrbitControls enableZoom={true} />
+    </Canvas>
   );
 }
