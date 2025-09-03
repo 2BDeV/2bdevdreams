@@ -189,14 +189,8 @@ export default function App() {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 1 }}
               className="relative flex justify-center"
-            >
-              <div className="relative w-80 h-80 rounded-full bg-gradient-to-tr from-pink-500 via-fuchsia-600 to-indigo-700 shadow-2xl animate-spin-slow">
-                <img
-                  src="/2bdev logo.png"
-                  alt="2BDeV logo"
-                  className="absolute inset-0 m-auto w-44 drop-shadow-xl animate-float"
-                />
-              </div>
+             >
+             <Logo3D />
             </motion.div>
           </div>
         </Container>
@@ -330,9 +324,9 @@ export default function App() {
       <AnimatePresence>
         {showScroll && (
           <motion.button
-            initial={{ opacity: 0 }} // Eltávolítva a y: 20
-            animate={{ opacity: 1 }} // Eltávolítva a y: 0
-            exit={{ opacity: 0 }}   // Eltávolítva a y: 20
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }} 
             transition={{ duration: 0.3 }}
             onClick={scrollTop}
             aria-label="Scroll to top"
