@@ -3,20 +3,21 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 
 function Model() {
-  // A modell a public mappában van
   const gltf = useGLTF("/2bdev-logo3d.gbl");
-  return <primitive object={gltf.scene} scale={1} />;
+  return <primitive object={gltf.scene} />;
 }
 
 export default function Logo3d() {
   return (
-    <Canvas style={{ width: 300, height: 300 }}>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} />
-      <Suspense fallback={null}>
-        <Model />
-      </Suspense>
-      <OrbitControls enableZoom={true} />
-    </Canvas>
+    <div className="w-80 h-80">
+      <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[5, 5, 5]} intensity={1} />
+        <Suspense fallback={null}>
+          <Model />
+        </Suspense>
+        <OrbitControls enableZoom={true} />
+      </Canvas>
+    </div>
   );
 }
