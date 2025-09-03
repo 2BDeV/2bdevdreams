@@ -1,4 +1,5 @@
 import { Analytics } from "@vercel/analytics/react";
+import Logo3D from "./components/Logo3D";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
