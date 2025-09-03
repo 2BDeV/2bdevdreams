@@ -191,7 +191,7 @@ export default function App() {
               transition={{ duration: 1 }}
               className="relative flex justify-center"
              >
-             <Logo3D />
+             <Logo3d />
             </motion.div>
           </div>
         </Container>
