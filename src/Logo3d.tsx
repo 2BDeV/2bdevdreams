@@ -5,11 +5,14 @@ import { OrbitControls, useGLTF } from "@react-three/drei";
 function Logo3DModel() {
   const { scene } = useGLTF("/2bdev-logo3d.gbl");
   const ref = useRef<any>();
-  
+
+  const initialRotationX = 0.2; 
+
   // Automatikus forgatás
   useFrame(() => {
     if (ref.current) {
-      ref.current.rotation.y += 0.01;
+      ref.current.rotation.y += 0.01;  
+      ref.current.rotation.x = initialRotationX; 
     }
   });
 
