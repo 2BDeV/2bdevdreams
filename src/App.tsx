@@ -1,6 +1,7 @@
 import { Analytics } from "@vercel/analytics/react";
 import Logo3d from "./Logo3d";
 import { SpeedInsights } from "@vercel/speed-insights/react";
+// Az useState-t már importáltad, ami szuper
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -15,13 +16,26 @@ import {
   ArrowRight,
   ArrowUp,
 } from "lucide-react";
+// --- ÚJ IMPORT ---
+// Importáljuk a Turnstile komponenst
+import Turnstile from "react-turnstile";
 
 const Container = ({ children }: { children: React.ReactNode }) => (
   <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>
 );
 
-const PrimaryButton = ({ children }: { children: React.ReactNode }) => (
-  <button className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-400">
+const PrimaryButton = ({
+  children,
+  // Hozzáadunk egy 'type' prop-ot, hogy megadhassuk a gomb típusát (pl. submit)
+  type = "button",
+}: {
+  children: React.ReactNode;
+  type?: "button" | "submit" | "reset";
+}) => (
+  <button
+    type={type}
+    className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-400"
+  >
     <span className="relative z-10 flex items-center gap-2">
       {children}
       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -40,6 +54,13 @@ const GhostButton = ({ children }: { children: React.ReactNode }) => (
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showScroll, setShowScroll] = useState(false);
+  
+  // --- ÚJ STATE-EK A FORMHOZ ---
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  // Ebben tároljuk a Cloudflare által adott tokent
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   const menuItems = ["About", "Projects", "Skills", "Contact"];
 
@@ -72,17 +93,51 @@ export default function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [menuOpen, showScroll]);
 
+  // --- ÚJ FÜGGVÉNY A FORM KÜLDÉSÉHEZ ---
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    // Megakadályozzuk az oldal újratöltődését
+    e.preventDefault();
+
+    if (!turnstileToken) {
+      alert("Please complete the CAPTCHA before submitting.");
+      return;
+    }
+
+    // Itt gyűjtöd össze az adatokat, amiket a backendnek küldesz
+    const formData = {
+      name,
+      email,
+      message,
+      token: turnstileToken, // A Turnstile token is megy a többivel
+    };
+
+    console.log("Sending data to backend:", formData);
+    alert("Form submitted! Check the console for the data that would be sent.");
+
+    // TODO: Itt kellene a tényleges backend hívás (pl. fetch vagy axios)
+    // fetch('/api/contact', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(formData),
+    // })
+    // .then(response => response.json())
+    // .then(data => console.log('Success:', data))
+    // .catch(error => console.error('Error:', error));
+  };
+
+
   return (
     <div className="font-sans antialiased relative overflow-hidden">
-      {/* Animated Background */}
+      {/* ... a kód többi része változatlan ... */}
       <div className="fixed inset-0 -z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-black to-indigo-900 animate-gradient-slow"></div>
         <div className="absolute -top-40 -left-40 h-96 w-96 rounded-full bg-pink-500 opacity-30 blur-3xl animate-pulse"></div>
         <div className="absolute top-60 -right-40 h-96 w-96 rounded-full bg-indigo-500 opacity-30 blur-3xl animate-pulse"></div>
         <div className="absolute bottom-0 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-gradient-to-r from-pink-500 via-fuchsia-500 to-purple-600 opacity-20 blur-3xl animate-spin-slow"></div>
       </div>
-
-      <header className="fixed inset-x-0 top-0 z-50">
+      
+      {/* ... header, hero section, stb. változatlan ... */}
+       <header className="fixed inset-x-0 top-0 z-50">
         <Container>
           <motion.div
             initial={{ y: -60, opacity: 0 }}
@@ -251,8 +306,7 @@ export default function App() {
           </div>
         </Container>
       </section>
-
-      {/* Skills Section */}
+      
       <section
         id="skills"
         className="relative py-24 text-white bg-gradient-to-b from-transparent to-black/30"
@@ -288,7 +342,7 @@ export default function App() {
         </Container>
       </section>
 
-      {/* Contact Section */}
+      {/* --- MÓDOSÍTOTT CONTACT SZEKCIÓ --- */}
       <section
         id="contact"
         className="relative py-24 text-white bg-gradient-to-b from-black/30 to-transparent"
@@ -296,28 +350,51 @@ export default function App() {
         <Container>
           <div className="flex flex-col items-center text-center">
             <h2 className="text-4xl font-bold mb-6">Contact</h2>
-            <form className="w-full max-w-xl space-y-4">
+            {/* Hozzáadtuk az onSubmit eseménykezelőt a formhoz */}
+            <form onSubmit={handleFormSubmit} className="w-full max-w-xl space-y-4">
               <input
                 type="text"
                 placeholder="Name"
+                value={name} // Összekötés a 'name' state-tel
+                onChange={(e) => setName(e.target.value)} // State frissítése gépeléskor
+                required // mező kitöltése kötelező
                 className="w-full rounded-lg bg-white/10 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
               />
               <input
                 type="email"
                 placeholder="Email"
+                value={email} // Összekötés az 'email' state-tel
+                onChange={(e) => setEmail(e.target.value)} // State frissítése gépeléskor
+                required
                 className="w-full rounded-lg bg-white/10 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
               />
               <textarea
                 placeholder="Message"
                 rows={4}
+                value={message} // Összekötés a 'message' state-tel
+                onChange={(e) => setMessage(e.target.value)} // State frissítése gépeléskor
+                required
                 className="w-full rounded-lg bg-white/10 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
               ></textarea>
-              <PrimaryButton>Send</PrimaryButton>
+              
+              {/* A TURNSTILE KOMPONENS BEILLESZTÉSE */}
+              <div className="flex justify-center">
+                <Turnstile
+                  // FONTOS: Ezt cseréld le a saját Cloudflare Site Key-edre!
+                  sitekey="0x4AAAAAAB4KBkZxjFBtjdKo" // Ez egy teszt kulcs
+                  onVerify={(token) => setTurnstileToken(token)}
+                  theme="auto"
+                />
+              </div>
+
+              {/* A gomb 'type' attribútumát 'submit'-ra állítjuk */}
+              <PrimaryButton type="submit">Send</PrimaryButton>
             </form>
           </div>
         </Container>
       </section>
-
+      
+      {/* ... footer és a többi rész változatlan ... */}
       <footer className="relative py-6 text-center text-white/70 text-sm">
         <Container>© {new Date().getFullYear()} 2BDeV. All rights reserved.</Container>
       </footer>
