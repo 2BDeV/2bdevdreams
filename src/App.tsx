@@ -1,7 +1,6 @@
 import { Analytics } from "@vercel/analytics/react";
 import Logo3d from "./Logo3d";
 import { SpeedInsights } from "@vercel/speed-insights/react";
-// Az useState-t már importáltad, ami szuper
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -16,8 +15,6 @@ import {
   ArrowRight,
   ArrowUp,
 } from "lucide-react";
-// --- ÚJ IMPORT ---
-// Importáljuk a Turnstile komponenst
 import Turnstile from "react-turnstile";
 
 const Container = ({ children }: { children: React.ReactNode }) => (
@@ -26,7 +23,6 @@ const Container = ({ children }: { children: React.ReactNode }) => (
 
 const PrimaryButton = ({
   children,
-  // Hozzáadunk egy 'type' prop-ot, hogy megadhassuk a gomb típusát (pl. submit)
   type = "button",
 }: {
   children: React.ReactNode;
@@ -55,7 +51,6 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showScroll, setShowScroll] = useState(false);
   
-  // --- ÚJ STATE-EK A FORMHOZ ---
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -93,9 +88,7 @@ export default function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [menuOpen, showScroll]);
 
-  // --- ÚJ FÜGGVÉNY A FORM KÜLDÉSÉHEZ ---
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    // Megakadályozzuk az oldal újratöltődését
     e.preventDefault();
 
     if (!turnstileToken) {
@@ -103,32 +96,21 @@ export default function App() {
       return;
     }
 
-    // Itt gyűjtöd össze az adatokat, amiket a backendnek küldesz
     const formData = {
       name,
       email,
       message,
-      token: turnstileToken, // A Turnstile token is megy a többivel
+      token: turnstileToken,
     };
 
     console.log("Sending data to backend:", formData);
     alert("Form submitted! Check the console for the data that would be sent.");
 
-    // TODO: Itt kellene a tényleges backend hívás (pl. fetch vagy axios)
-    // fetch('/api/contact', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(formData),
-    // })
-    // .then(response => response.json())
-    // .then(data => console.log('Success:', data))
-    // .catch(error => console.error('Error:', error));
   };
 
 
   return (
     <div className="font-sans antialiased relative overflow-hidden">
-      {/* ... a kód többi része változatlan ... */}
       <div className="fixed inset-0 -z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-black to-indigo-900 animate-gradient-slow"></div>
         <div className="absolute -top-40 -left-40 h-96 w-96 rounded-full bg-pink-500 opacity-30 blur-3xl animate-pulse"></div>
@@ -136,7 +118,6 @@ export default function App() {
         <div className="absolute bottom-0 left-1/2 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-gradient-to-r from-pink-500 via-fuchsia-500 to-purple-600 opacity-20 blur-3xl animate-spin-slow"></div>
       </div>
       
-      {/* ... header, hero section, stb. változatlan ... */}
        <header className="fixed inset-x-0 top-0 z-50">
         <Container>
           <motion.div
@@ -342,7 +323,6 @@ export default function App() {
         </Container>
       </section>
 
-      {/* --- MÓDOSÍTOTT CONTACT SZEKCIÓ --- */}
       <section
         id="contact"
         className="relative py-24 text-white bg-gradient-to-b from-black/30 to-transparent"
@@ -356,7 +336,7 @@ export default function App() {
                 type="text"
                 placeholder="Name"
                 value={name} // Összekötés a 'name' state-tel
-                onChange={(e) => setName(e.target.value)} // State frissítése gépeléskor
+                onChange={(e) => setName(e.target.value)} 
                 required // mező kitöltése kötelező
                 className="w-full rounded-lg bg-white/10 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
               />
@@ -364,7 +344,7 @@ export default function App() {
                 type="email"
                 placeholder="Email"
                 value={email} // Összekötés az 'email' state-tel
-                onChange={(e) => setEmail(e.target.value)} // State frissítése gépeléskor
+                onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full rounded-lg bg-white/10 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
               />
@@ -372,29 +352,25 @@ export default function App() {
                 placeholder="Message"
                 rows={4}
                 value={message} // Összekötés a 'message' state-tel
-                onChange={(e) => setMessage(e.target.value)} // State frissítése gépeléskor
+                onChange={(e) => setMessage(e.target.value)}
                 required
                 className="w-full rounded-lg bg-white/10 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
               ></textarea>
               
-              {/* A TURNSTILE KOMPONENS BEILLESZTÉSE */}
               <div className="flex justify-center">
                 <Turnstile
-                  // FONTOS: Ezt cseréld le a saját Cloudflare Site Key-edre!
-                  sitekey="0x4AAAAAAB4KBkZxjFBtjdKo" // Ez egy teszt kulcs
+                  sitekey="0x4AAAAAAB4KBkZxjFBtjdKo"
                   onVerify={(token) => setTurnstileToken(token)}
                   theme="auto"
                 />
               </div>
 
-              {/* A gomb 'type' attribútumát 'submit'-ra állítjuk */}
               <PrimaryButton type="submit">Send</PrimaryButton>
             </form>
           </div>
         </Container>
       </section>
       
-      {/* ... footer és a többi rész változatlan ... */}
       <footer className="relative py-6 text-center text-white/70 text-sm">
         <Container>© {new Date().getFullYear()} 2BDeV. All rights reserved.</Container>
       </footer>
