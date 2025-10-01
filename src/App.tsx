@@ -49,7 +49,7 @@ const GhostButton = ({ children }: { children: React.ReactNode }) => (
   </button>
 );
 
-export default function App() {
+function MainAppContent() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showScroll, setShowScroll] = useState(false);
   
@@ -428,7 +428,7 @@ export default function App() {
   );
 }
 
-export default default App() {
+export default function App() {
   return (
     <Router>
       <Routes>
