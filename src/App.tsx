@@ -428,7 +428,7 @@ export default function App() {
   );
 }
 
-export default function App() {
+export default default App() {
   return (
     <Router>
       <Routes>
