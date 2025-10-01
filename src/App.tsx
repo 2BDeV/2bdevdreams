@@ -16,6 +16,8 @@ import {
   ArrowUp,
 } from "lucide-react";
 import Turnstile from "react-turnstile";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import NotFound from "./NotFound";
 
 const Container = ({ children }: { children: React.ReactNode }) => (
   <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>
@@ -423,5 +425,16 @@ export default function App() {
         }
       `}</style>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainAppContent />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Router>
   );
 }
