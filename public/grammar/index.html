@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2BeGrammar - Szöveganalízis egyszerűen</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Animáció a főcímhez */
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in-up {
+      animation: fadeInUp 1s ease forwards;
+    }
+    .pulse-btn:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-100 font-sans">
+
+  <!-- Header -->
+  <header class="text-center py-16">
+    <h1 class="text-6xl font-extrabold text-blue-400 fade-in-up">2BeGrammar</h1>
+    <p class="mt-4 text-gray-300 text-lg max-w-xl mx-auto fade-in-up delay-200">
+      Gyors és egyszerű szöveganalízis: jelöld az alanyt, állítmányt, tárgyat, jelzőt és határozót egy kattintással!
+    </p>
+    <a href="https://backup.2bdev.bot.nu/home/2bsecret%20apps/2begrammar%201.0.0.exe" target="_blank"
+       class="mt-8 inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold transition transform pulse-btn fade-in-up delay-400">
+      Letöltés
+    </a>
+  </header>
+
+  <!-- Features Section -->
+  <section class="py-16 bg-gray-800">
+    <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-3 gap-10 text-center">
+      <div class="bg-gradient-to-tl from-blue-600 to-blue-400 rounded-xl p-8 shadow-lg hover:scale-105 transform transition duration-500">
+        <h3 class="text-2xl font-bold mb-3">Könnyen használható</h3>
+        <p>Jelöld ki a szöveget, és kattints a megfelelő gombra. Gyors és intuitív felület mindenki számára.</p>
+      </div>
+      <div class="bg-gradient-to-tl from-green-500 to-green-300 rounded-xl p-8 shadow-lg hover:scale-105 transform transition duration-500">
+        <h3 class="text-2xl font-bold mb-3">Word fájl támogatás</h3>
+        <p>Importálj .docx fájlokat, majd exportáld a munkádat Word-be pár kattintással.</p>
+      </div>
+      <div class="bg-gradient-to-tl from-purple-500 to-pink-400 rounded-xl p-8 shadow-lg hover:scale-105 transform transition duration-500">
+        <h3 class="text-2xl font-bold mb-3">Egyszerű megosztás</h3>
+        <p>Windows exe formátumban is elérhető, így könnyedén megosztható tanárokkal és diákokkal.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-12 text-center text-gray-400">
+    <p>© 2025 2BDeV Studio. Minden jog fenntartva.</p>
+    <p>Készítette: 2BDeV Studio ❤️</p>
+  </footer>
+
+</body>
+</html>
