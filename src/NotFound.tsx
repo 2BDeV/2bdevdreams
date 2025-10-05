@@ -4,38 +4,87 @@ import { Link } from "react-router-dom";
 
 export default function NotFound() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-black via-purple-900 to-indigo-900 text-white relative overflow-hidden">
-      {/* Háttér animáció */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-pink-500/20 via-purple-600/20 to-indigo-500/20 blur-3xl"
-        animate={{ opacity: [0.4, 0.7, 0.4] }}
-        transition={{ duration: 6, repeat: Infinity }}
-      />
+    <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#fdfdfd] text-black">
+      {/* Folyadékos háttér – canvas effekt */}
+      <div className="absolute inset-0 overflow-hidden">
+        <motion.div
+          className="absolute inset-0 mix-blend-difference"
+          animate={{
+            backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          style={{
+            backgroundImage: `
+              radial-gradient(circle at 20% 30%, black 10%, transparent 30%),
+              radial-gradient(circle at 80% 70%, black 10%, transparent 30%),
+              radial-gradient(circle at 50% 50%, black 8%, transparent 30%)
+            `,
+            backgroundSize: "200% 200%",
+          }}
+        />
+      </div>
 
+      {/* Tartalom */}
       <motion.h1
-        className="text-8xl font-extrabold mb-6 z-10"
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.8 }}
+        className="relative z-10 text-[8rem] font-extrabold tracking-tight leading-none select-none"
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1 }}
+        style={{
+          WebkitTextStroke: "2px white",
+          color: "black",
+          mixBlendMode: "difference",
+        }}
       >
         404
       </motion.h1>
 
       <motion.p
-        className="text-xl mb-8 text-white/80 z-10"
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.3 }}
+        className="relative z-10 text-lg text-center mt-4 font-medium select-none"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.8 }}
+        style={{ mixBlendMode: "difference" }}
       >
-        The page is not founded :(
+        The page is not founded.
       </motion.p>
 
-      <Link
-        to="/"
-        className="z-10 inline-block rounded-xl bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 px-6 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105"
+      <motion.div
+        className="relative z-10 mt-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
       >
-        Go back to main page
-      </Link>
+        <Link
+          to="/"
+          className="px-6 py-3 border border-black rounded-full text-black font-semibold transition-all duration-300 hover:bg-black hover:text-white"
+        >
+          Back to home page
+        </Link>
+      </motion.div>
+
+      {/* Folyadék animációs overlay */}
+      <style>{`
+        .liquid-bg {
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(circle at 30% 40%, #000 8%, transparent 20%),
+                      radial-gradient(circle at 70% 60%, #000 8%, transparent 20%);
+          mix-blend-mode: difference;
+          filter: blur(50px);
+          animation: liquid 15s ease-in-out infinite alternate;
+        }
+
+        @keyframes liquid {
+          0% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(-20px, 30px) scale(1.1); }
+          100% { transform: translate(20px, -30px) scale(1); }
+        }
+      `}</style>
     </div>
   );
 }
