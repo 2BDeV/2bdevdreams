@@ -59,7 +59,7 @@ export default function NotFound() {
             mixBlendMode: "difference",
           }}
         >
-          Ez az oldal eltűnt a fekete-fehér mélységben.
+          The page is not founded.
         </motion.p>
 
         <motion.div
@@ -72,7 +72,7 @@ export default function NotFound() {
             to="/"
             className="px-6 py-3 border border-black rounded-full text-black font-semibold transition-all duration-300 hover:bg-black hover:text-white"
           >
-            Vissza a főoldalra
+            Home
           </Link>
         </motion.div>
       </div>
