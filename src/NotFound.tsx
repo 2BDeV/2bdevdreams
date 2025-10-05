@@ -27,14 +27,14 @@ export default function NotFound() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.3 }}
       >
-        Az oldal, amit keresel, nem található.
+        The page is not founded :(
       </motion.p>
 
       <Link
         to="/"
         className="z-10 inline-block rounded-xl bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 px-6 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105"
       >
-        Vissza a főoldalra
+        Go back to main page
       </Link>
     </div>
   );
