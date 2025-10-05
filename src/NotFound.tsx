@@ -42,7 +42,7 @@ export default function NotFound() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
           style={{
-            WebkitTextStroke: "2px white",
+            WebkitTextStroke: "2px black",
             color: "black",
             mixBlendMode: "difference",
           }}
