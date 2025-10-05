@@ -5,8 +5,11 @@
       "destination": "https://discord.com/oauth2/authorize?client_id=1408538874279497949",
       "permanent": true
     }
-  ]
+  ],
   "rewrites": [
-    { "source": "/(.*)", "destination": "/" }
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
   ]
 }
