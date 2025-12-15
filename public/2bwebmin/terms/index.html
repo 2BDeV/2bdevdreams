@@ -23,49 +23,68 @@
             box-sizing: border-box;
         }
 
-        body {
+        html, body {
             margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        /* Fullscreen app layout – no body scroll */
+        body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
             background: radial-gradient(circle at top, #1f2937 0, #050816 55%);
             color: var(--text);
             -webkit-font-smoothing: antialiased;
+            overflow: hidden;
         }
 
         .page-shell {
-            min-height: 100vh;
+            height: 100vh;
+            max-height: 100vh;
+            width: 100vw;
             display: flex;
-            flex-direction: column;
-            padding: 32px 16px;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
         }
 
         @media (min-width: 768px) {
             .page-shell {
-                padding: 40px 32px;
+                padding: 24px;
             }
         }
 
         .tos-layout {
+            height: 100%;
+            max-height: 100%;
             max-width: 1120px;
             width: 100%;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+            grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
             gap: 24px;
         }
 
         @media (max-width: 900px) {
             .tos-layout {
                 grid-template-columns: minmax(0, 1fr);
+                grid-auto-rows: minmax(0, 1fr);
             }
         }
 
-        .glass-panel {
-            background: radial-gradient(circle at top left, rgba(59, 180, 193, 0.22), rgba(17, 24, 39, 0.96));
+        .glass-panel,
+        .content-panel {
+            height: 100%;
+            max-height: 100%;
             border-radius: var(--radius-xl);
             border: 1px solid var(--border);
             box-shadow: var(--shadow-soft);
             position: relative;
             overflow: hidden;
+        }
+
+        .glass-panel {
+            background: radial-gradient(circle at top left, rgba(59, 180, 193, 0.22), rgba(17, 24, 39, 0.96));
         }
 
         .glass-panel::before {
@@ -82,7 +101,10 @@
 
         .glass-panel-inner {
             position: relative;
+            height: 100%;
             padding: 24px 20px 22px;
+            display: flex;
+            flex-direction: column;
         }
 
         @media (min-width: 768px) {
@@ -169,7 +191,8 @@
             background: rgba(15, 23, 42, 0.94);
             border: 1px solid rgba(148, 163, 184, 0.5);
             padding: 10px 10px 11px;
-            max-height: 380px;
+            flex: 1 1 auto;
+            min-height: 0;
             overflow: auto;
             scrollbar-width: thin;
             scrollbar-color: rgba(148, 163, 184, 0.8) transparent;
@@ -237,11 +260,6 @@
 
         .content-panel {
             background: linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.98));
-            border-radius: var(--radius-xl);
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-soft);
-            position: relative;
-            overflow: hidden;
         }
 
         .content-panel::before {
@@ -257,8 +275,9 @@
 
         .content-inner {
             position: relative;
+            height: 100%;
+            max-height: 100%;
             padding: 22px 18px 22px;
-            max-height: calc(100vh - 80px);
             overflow: auto;
             scrollbar-width: thin;
             scrollbar-color: rgba(148, 163, 184, 0.9) transparent;
@@ -438,13 +457,13 @@
                 <div class="section-block" id="acceptance-section">
                     <h2>1. Acceptance of Terms</h2>
                     <p>
-                        These Terms of Service (<span class="emphasis">“Terms”</span>) are a legal agreement between you (<span class="emphasis">“you”</span> or <span class="emphasis">“User”</span>)
-                        and 2BDeV Studio, established in Hungary, Budapest (<span class="emphasis">“2BDeV Studio”</span>, <span class="emphasis">“we”</span>, or <span class="emphasis">“us”</span>), and govern your use of the 2BWebMin desktop application for Linux and Windows and any related web-based interface or documentation (collectively, the <span class="emphasis">“Service”</span>). [web:22]
+                        These Terms of Service (“Terms”) are a legal agreement between you (“you” or “User”)
+                        and 2BDeV Studio, established in Hungary, Budapest (“2BDeV Studio”, “we”, or “us”), and govern your use of the 2BWebMin desktop application for Linux and Windows and any related web-based interface or documentation (collectively, the “Service”).
                     </p>
                     <p>
                         By downloading, installing, configuring, or using the Service, you confirm that you have read, understood,
                         and agreed to be bound by these Terms. If you use the Service on behalf of an organization, you represent
-                        that you are authorized to bind that organization to these Terms, and “you” will refer to that organization as well. [web:22][web:23]
+                        that you are authorized to bind that organization to these Terms, and “you” will refer to that organization as well.
                     </p>
                 </div>
 
@@ -452,20 +471,20 @@
                     <h2>2. Service Description</h2>
                     <p>
                         2BWebMin is a self‑hosted administration tool that you install on your own Linux or Windows machines and access
-                        via a web interface, typically running on your local network or through tunneling solutions that you configure. It is designed to help you manage your systems, monitor resources, and perform administrative tasks. [web:71][web:86]
+                        via a web interface, typically running on your local network or through tunneling solutions that you configure. It is designed to help you manage your systems, monitor resources, and perform administrative tasks.
                     </p>
                     <p>
-                        The Service may include features such as user authentication, optional two‑factor authentication, terminal or command execution, file management, system metrics, and integrations with external services (for example, SMTP servers configured by you). The exact feature set may change over time through updates or new releases. [web:71][web:88]
+                        The Service may include features such as user authentication, optional two‑factor authentication, terminal or command execution, file management, system metrics, and integrations with external services (for example, SMTP servers configured by you). The exact feature set may change over time through updates or new releases.
                     </p>
                 </div>
 
                 <div class="section-block" id="eligibility-section">
                     <h2>3. Eligibility & Accounts</h2>
                     <p>
-                        You may use the Service only if you are legally capable of entering into binding contracts under the laws applicable to you. Responsibility for ensuring that you meet this requirement lies with you. [web:22][web:23]
+                        You may use the Service only if you are legally capable of entering into binding contracts under the laws applicable to you. Responsibility for ensuring that you meet this requirement lies with you.
                     </p>
                     <p>
-                        If you create or manage user accounts within your own 2BWebMin instance, you are solely responsible for the configuration, security, and management of those accounts, including any passwords and two‑factor authentication settings. We do not operate or manage your user accounts, and we have no access to them. [web:71][web:88]
+                        If you create or manage user accounts within your own 2BWebMin instance, you are solely responsible for the configuration, security, and management of those accounts, including any passwords and two‑factor authentication settings. We do not operate or manage your user accounts, and we have no access to them.
                     </p>
                 </div>
 
@@ -473,7 +492,7 @@
                     <h2>4. License & Free Use</h2>
                     <p>
                         Subject to your compliance with these Terms, 2BDeV Studio grants you a limited, non‑exclusive, non‑transferable,
-                        revocable license to install and use 2BWebMin on your own Linux and/or Windows systems solely for your internal purposes. The Service is provided free of charge; you do not owe any license fees, subscription fees, or other monetary consideration to 2BDeV Studio for using 2BWebMin. [web:66][web:78]
+                        revocable license to install and use 2BWebMin on your own Linux and/or Windows systems solely for your internal purposes. The Service is provided free of charge; you do not owe any license fees, subscription fees, or other monetary consideration to 2BDeV Studio for using 2BWebMin.
                     </p>
                     <p>
                         Except where permitted by applicable law, you may not:
@@ -489,13 +508,13 @@
                 <div class="section-block" id="acceptable-use-section">
                     <h2>5. Acceptable Use</h2>
                     <p>
-                        You agree to use the Service in compliance with all applicable laws and regulations and in a manner that does not infringe the rights of others. Because 2BWebMin can execute administrative actions, you are fully responsible for any commands, scripts, or operations performed through your instance. [web:22][web:71]
+                        You agree to use the Service in compliance with all applicable laws and regulations and in a manner that does not infringe the rights of others. Because 2BWebMin can execute administrative actions, you are fully responsible for any commands, scripts, or operations performed through your instance.
                     </p>
                     <p>
                         Without limitation, you must not use the Service to:
                     </p>
                     <ul>
-                        <li>Engage in any activity that is illegal under applicable law (including but not limited to unauthorized access, hacking, or distribution of malware).</li>
+                        <li>Engage in any activity that is illegal under applicable law, including but not limited to unauthorized access, hacking, or distribution of malware.</li>
                         <li>Violate the security of any system, network, or data that you do not own or operate lawfully.</li>
                         <li>Infringe any intellectual property, privacy, or other rights of third parties.</li>
                         <li>Conduct denial‑of‑service attacks, spam campaigns, or similar abusive activities.</li>
@@ -505,7 +524,7 @@
                 <div class="section-block" id="self-hosting-section">
                     <h2>6. Self‑Hosting & Security Responsibilities</h2>
                     <p>
-                        2BWebMin is designed to be self‑hosted. You are solely responsible for installing, running, updating, and securing the Service in your own environment, including but not limited to operating system hardening, firewall configuration, TLS, reverse proxies, and any tunnel or public exposure you set up. [web:71][web:86]
+                        2BWebMin is designed to be self‑hosted. You are solely responsible for installing, running, updating, and securing the Service in your own environment, including but not limited to operating system hardening, firewall configuration, TLS, reverse proxies, and any tunnel or public exposure you set up.
                     </p>
                     <p>
                         In particular, you are responsible for:
@@ -521,7 +540,7 @@
                 <div class="section-block" id="data-section">
                     <h2>7. Data, Privacy & No Collection</h2>
                     <p>
-                        2BWebMin operates entirely in your environment. All data, logs, configuration files, and any information processed or displayed by the Service are stored and remain on infrastructure that you control. 2BDeV Studio does not operate a central 2BWebMin server, does not host your instance, and does not have access to your data. [web:65][web:74][web:77]
+                        2BWebMin operates entirely in your environment. All data, logs, configuration files, and any information processed or displayed by the Service are stored and remain on infrastructure that you control. 2BDeV Studio does not operate a central 2BWebMin server, does not host your instance, and does not have access to your data.
                     </p>
                     <p>
                         If you choose to configure features such as:
@@ -531,87 +550,87 @@
                         <li>Two‑factor authentication (for example, via Google Authenticator or compatible TOTP apps) that runs entirely between your instance and your users,</li>
                     </ul>
                     <p>
-                        then all related personal data, secrets, and security codes remain under your control and are not transmitted to 2BDeV Studio. As a result, 2BDeV Studio does not act as a data controller or processor for your users’ personal data in the sense of data protection laws such as the GDPR. Any privacy obligations related to your use of 2BWebMin in your environment are your responsibility. [web:65][web:74][web:77]
+                        then all related personal data, secrets, and security codes remain under your control and are not transmitted to 2BDeV Studio. As a result, 2BDeV Studio does not act as a data controller or processor for your users’ personal data in the sense of data protection laws such as the GDPR. Any privacy obligations related to your use of 2BWebMin in your environment are your responsibility.
                     </p>
                 </div>
 
                 <div class="section-block" id="third-party-section">
                     <h2>8. Third‑Party Services</h2>
                     <p>
-                        The Service may be used together with third‑party services that you choose and configure, such as tunneling solutions, reverse proxies, SMTP/email providers, DNS services, or monitoring tools. These services are provided by independent third parties under their own terms and privacy policies. [web:22][web:71]
+                        The Service may be used together with third‑party services that you choose and configure, such as tunneling solutions, reverse proxies, SMTP/email providers, DNS services, or monitoring tools. These services are provided by independent third parties under their own terms and privacy policies.
                     </p>
                     <p>
-                        2BDeV Studio has no control over, and assumes no responsibility for, any third‑party service that you configure with 2BWebMin. Your use of such services and any associated data processing or costs are solely between you and the relevant third party. [web:22][web:71]
+                        2BDeV Studio has no control over, and assumes no responsibility for, any third‑party service that you configure with 2BWebMin. Your use of such services and any associated data processing or costs are solely between you and the relevant third party.
                     </p>
                 </div>
 
                 <div class="section-block" id="ip-section">
                     <h2>9. Intellectual Property</h2>
                     <p>
-                        All rights, title, and interest in and to 2BWebMin, including its software, user interface, underlying code, design, and documentation, are owned by 2BDeV Studio or its licensors and are protected by copyright and other intellectual property laws. [web:22][web:23]
+                        All rights, title, and interest in and to 2BWebMin, including its software, user interface, underlying code, design, and documentation, are owned by 2BDeV Studio or its licensors and are protected by copyright and other intellectual property laws.
                     </p>
                     <p>
-                        These Terms do not grant you any ownership rights in the Service. Except for the limited license expressly granted in Section 4, all rights are reserved. If you provide feedback, ideas, or suggestions about 2BWebMin, 2BDeV Studio may use them without any obligation to you. [web:22][web:23]
+                        These Terms do not grant you any ownership rights in the Service. Except for the limited license expressly granted in Section 4, all rights are reserved. If you provide feedback, ideas, or suggestions about 2BWebMin, 2BDeV Studio may use them without any obligation to you.
                     </p>
                 </div>
 
                 <div class="section-block" id="warranty-section">
                     <h2>10. Disclaimer of Warranties</h2>
                     <p>
-                        The Service is provided on an <span class="emphasis">“AS IS”</span> and <span class="emphasis">“AS AVAILABLE”</span> basis, free of charge, without any express or implied warranties of any kind, including but not limited to implied warranties of merchantability, fitness for a particular purpose, title, and non‑infringement, to the maximum extent permitted by applicable law. [web:66][web:75]
+                        The Service is provided on an “AS IS” and “AS AVAILABLE” basis, free of charge, without any express or implied warranties of any kind, including but not limited to implied warranties of merchantability, fitness for a particular purpose, title, and non‑infringement, to the maximum extent permitted by applicable law.
                     </p>
                     <p>
-                        2BDeV Studio does not warrant that the Service will be error‑free, secure, or uninterrupted, that it will meet your requirements, or that it will function correctly in every hardware, operating system, or network configuration. You are responsible for testing and validating 2BWebMin in your own environment and for implementing appropriate backups and safeguards. [web:69][web:75]
+                        2BDeV Studio does not warrant that the Service will be error‑free, secure, or uninterrupted, that it will meet your requirements, or that it will function correctly in every hardware, operating system, or network configuration. You are responsible for testing and validating 2BWebMin in your own environment and for implementing appropriate backups and safeguards.
                     </p>
                 </div>
 
                 <div class="section-block" id="liability-section">
                     <h2>11. Limitation of Liability</h2>
                     <p>
-                        To the maximum extent permitted by applicable law, 2BDeV Studio shall not be liable for any indirect, incidental, consequential, special, exemplary, or punitive damages, or any loss of profits, revenue, data, or goodwill, arising out of or in connection with your use of or inability to use the Service, even if 2BDeV Studio has been advised of the possibility of such damages. This limitation applies whether the claim is based on contract, tort, negligence, strict liability, or any other legal theory. [web:69][web:75]
+                        To the maximum extent permitted by applicable law, 2BDeV Studio shall not be liable for any indirect, incidental, consequential, special, exemplary, or punitive damages, or any loss of profits, revenue, data, or goodwill, arising out of or in connection with your use of or inability to use the Service, even if 2BDeV Studio has been advised of the possibility of such damages. This limitation applies whether the claim is based on contract, tort, negligence, strict liability, or any other legal theory.
                     </p>
                     <p>
-                        Because the Service is provided free of charge, and without prejudice to any mandatory legal rights you may have under applicable law, any aggregate liability of 2BDeV Studio arising out of or in connection with the Service or these Terms shall be limited to the minimum amount required by such mandatory law, if any. If applicable law does not allow the exclusion or limitation of certain damages, the above limitations may not fully apply to you. [web:66][web:70]
+                        Because the Service is provided free of charge, and without prejudice to any mandatory legal rights you may have under applicable law, any aggregate liability of 2BDeV Studio arising out of or in connection with the Service or these Terms shall be limited to the minimum amount required by such mandatory law, if any. If applicable law does not allow the exclusion or limitation of certain damages, the above limitations may not fully apply to you.
                     </p>
                 </div>
 
                 <div class="section-block" id="compliance-section">
                     <h2>12. Compliance & Local Law</h2>
                     <p>
-                        You are solely responsible for ensuring that your use of 2BWebMin complies with all laws and regulations that apply to you, including any system administration, data protection, cybersecurity, or export control rules in your jurisdiction. 2BDeV Studio does not monitor your environment and cannot ensure that your particular use is lawful in every country. [web:41][web:59]
+                        You are solely responsible for ensuring that your use of 2BWebMin complies with all laws and regulations that apply to you, including any system administration, data protection, cybersecurity, or export control rules in your jurisdiction. 2BDeV Studio does not monitor your environment and cannot ensure that your particular use is lawful in every country.
                     </p>
                     <p>
-                        Nothing in these Terms is intended to limit any mandatory consumer or other rights that you may have under the laws of your country of residence that cannot be waived by contract. If there is a conflict between these Terms and such mandatory rights, the latter will prevail to the extent of the conflict. [web:46][web:55]
+                        Nothing in these Terms is intended to limit any mandatory consumer or other rights that you may have under the laws of your country of residence that cannot be waived by contract. If there is a conflict between these Terms and such mandatory rights, the latter will prevail to the extent of the conflict.
                     </p>
                 </div>
 
                 <div class="section-block" id="termination-section">
                     <h2>13. Suspension & Termination</h2>
                     <p>
-                        You may stop using the Service at any time by uninstalling 2BWebMin from your systems and disabling any related web interfaces or tunnels. These Terms will remain in effect for as long as you use the Service. [web:22]
+                        You may stop using the Service at any time by uninstalling 2BWebMin from your systems and disabling any related web interfaces or tunnels. These Terms will remain in effect for as long as you use the Service.
                     </p>
                     <p>
-                        2BDeV Studio reserves the right to discontinue, suspend, or modify the availability of new versions, updates, or any public distribution of 2BWebMin at any time, without liability to you. If 2BDeV Studio provides any optional online component or website related to the Service, it may suspend or terminate that online component if it reasonably believes that it is being used in violation of these Terms or applicable law. [web:23][web:88]
+                        2BDeV Studio reserves the right to discontinue, suspend, or modify the availability of new versions, updates, or any public distribution of 2BWebMin at any time, without liability to you. If 2BDeV Studio provides any optional online component or website related to the Service, it may suspend or terminate that online component if it reasonably believes that it is being used in violation of these Terms or applicable law.
                     </p>
                 </div>
 
                 <div class="section-block" id="governing-law-section">
                     <h2>14. Governing Law & Jurisdiction</h2>
                     <p>
-                        These Terms, and any dispute or claim arising out of or in connection with them or with the Service, shall be governed by and construed in accordance with the laws of Hungary, without regard to its conflict‑of‑laws principles. [web:46][web:61][web:67]
+                        These Terms, and any dispute or claim arising out of or in connection with them or with the Service, shall be governed by and construed in accordance with the laws of Hungary, without regard to its conflict‑of‑laws principles.
                     </p>
                     <p>
-                        Subject to any mandatory consumer protection provisions that grant you the right to bring claims before other courts, any dispute arising out of or in connection with these Terms or the Service shall be submitted to the exclusive jurisdiction of the competent courts located in Budapest, Hungary. [web:46][web:55][web:70]
+                        Subject to any mandatory consumer protection provisions that grant you the right to bring claims before other courts, any dispute arising out of or in connection with these Terms or the Service shall be submitted to the exclusive jurisdiction of the competent courts located in Budapest, Hungary.
                     </p>
                 </div>
 
                 <div class="section-block" id="changes-tos-section">
                     <h2>15. Changes to These Terms</h2>
                     <p>
-                        2BDeV Studio may update or modify these Terms from time to time, for example to reflect legal, technical, or business changes. When changes are made, the “Last updated” date at the top of this page will be revised. [web:22][web:23]
+                        2BDeV Studio may update or modify these Terms from time to time, for example to reflect legal, technical, or business changes. When changes are made, the “Last updated” date at the top of this page will be revised.
                     </p>
                     <p>
-                        If you continue to install, access, or use 2BWebMin after the updated Terms become effective, you are deemed to have accepted the changes. If you do not agree with the updated Terms, you must stop using the Service and uninstall it from your systems. [web:22][web:23]
+                        If you continue to install, access, or use 2BWebMin after the updated Terms become effective, you are deemed to have accepted the changes. If you do not agree with the updated Terms, you must stop using the Service and uninstall it from your systems.
                     </p>
                 </div>
 
@@ -628,7 +647,7 @@
                     </p>
 
                     <div class="footer-note">
-                        This Terms of Service page is a general template tailored for a free, self‑hosted Linux/Windows admin tool operated by 2BDeV Studio in Hungary. It does not constitute legal advice. You should consult with a qualified lawyer, preferably familiar with Hungarian and EU law, to review and adapt it to your specific circumstances. [web:57][web:61]
+                        This Terms of Service page is a general template tailored for a free, self‑hosted Linux/Windows admin tool operated by 2BDeV Studio in Hungary. It does not constitute legal advice. You should consult with a qualified lawyer, preferably familiar with Hungarian and EU law, to review and adapt it to your specific circumstances.
                     </div>
                 </div>
             </div>
