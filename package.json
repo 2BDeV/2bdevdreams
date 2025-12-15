@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "postinstall": "chmod +x ./node_modules/.bin/vite",
+    "postinstall": "echo skip postinstall on Windows",
     "build": "vite build",
     "preview": "vite preview"
   },
