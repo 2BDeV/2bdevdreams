@@ -18,32 +18,62 @@ import {
 import Turnstile from "react-turnstile";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NotFound from "./NotFound";
+import emailjs from "@emailjs/browser";
+
+// --- CONFIGURATION ---
+const CONFIG = {
+  EMAILJS_SERVICE: import.meta.env.VITE_EMAILJS_SERVICE_ID || "",
+  EMAILJS_TEMPLATE: import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "",
+  EMAILJS_PUBLIC_KEY: import.meta.env.VITE_EMAILJS_PUBLIC_KEY || "",
+  TURNSTILE_SITEKEY: import.meta.env.VITE_TURNSTILE_SITEKEY || "",
+};
 
 const Container = ({ children }: { children: React.ReactNode }) => (
   <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">{children}</div>
 );
 
+// Frissített PrimaryButton: kezeli az onClick-et és a disabled állapotot
 const PrimaryButton = ({
   children,
   type = "button",
+  onClick,
+  disabled = false,
 }: {
   children: React.ReactNode;
   type?: "button" | "submit" | "reset";
+  onClick?: () => void;
+  disabled?: boolean;
 }) => (
   <button
     type={type}
-    className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-400"
+    onClick={onClick}
+    disabled={disabled}
+    className={`group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-400 ${
+      disabled ? "opacity-70 cursor-not-allowed grayscale" : ""
+    }`}
   >
     <span className="relative z-10 flex items-center gap-2">
       {children}
-      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+      {!disabled && (
+        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+      )}
     </span>
     <span className="absolute inset-0 z-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></span>
   </button>
 );
 
-const GhostButton = ({ children }: { children: React.ReactNode }) => (
-  <button className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl border border-white/30 bg-transparent px-6 py-3 text-sm font-semibold text-white/90 backdrop-blur transition-all duration-300 hover:border-white/50 hover:bg-white/5 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-400">
+// Frissített GhostButton: kezeli az onClick-et
+const GhostButton = ({
+  children,
+  onClick,
+}: {
+  children: React.ReactNode;
+  onClick?: () => void;
+}) => (
+  <button
+    onClick={onClick}
+    className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl border border-white/30 bg-transparent px-6 py-3 text-sm font-semibold text-white/90 backdrop-blur transition-all duration-300 hover:border-white/50 hover:bg-white/5 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-pink-400"
+  >
     <span className="relative z-10 flex items-center gap-2">{children}</span>
     <span className="absolute inset-0 z-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></span>
   </button>
@@ -53,18 +83,24 @@ function MainAppContent() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showScroll, setShowScroll] = useState(false);
   
+  // Új state a küldés állapotához
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
-  // Ebben tároljuk a Cloudflare által adott tokent
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   const menuItems = ["About", "Projects", "Skills", "Contact"];
 
+  // Javított görgetés logika (figyelembe veszi a fejléc magasságát)
   const handleMenuClick = (id: string) => {
-    const el = document.getElementById(id);
+    const targetId = id.toLowerCase();
+    const el = document.getElementById(targetId);
     if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
+      const offset = 80; // Fejléc magasság kompenzálás
+      const elementPosition = el.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({ top: elementPosition - offset, behavior: "smooth" });
     }
     setMenuOpen(false);
   };
@@ -90,7 +126,8 @@ function MainAppContent() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [menuOpen, showScroll]);
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  // Email küldés logika
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!turnstileToken) {
@@ -98,21 +135,37 @@ function MainAppContent() {
       return;
     }
 
-    const formData = {
-      name,
-      email,
-      message,
-      token: turnstileToken,
-    };
+    setIsSubmitting(true);
 
-    console.log("Sending data to backend:", formData);
-    alert("Form submitted! Check the console for the data that would be sent.");
-
+    try {
+      await emailjs.send(
+        CONFIG.EMAILJS_SERVICE,
+        CONFIG.EMAILJS_TEMPLATE,
+        {
+          from_name: name,
+          from_email: email,
+          message: message,
+          "g-recaptcha-response": turnstileToken,
+        },
+        CONFIG.EMAILJS_PUBLIC_KEY
+      );
+      alert("Message sent successfully!");
+      setName("");
+      setEmail("");
+      setMessage("");
+      // Opcionális: Turnstile resetelése, ha a komponens támogatja, vagy token törlése
+      setTurnstileToken(null);
+    } catch (err) {
+      console.error("Email sending failed:", err);
+      alert("Failed to send message. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
-
 
   return (
     <div className="font-sans antialiased relative overflow-hidden">
+      {/* --- EREDETI HÁTTÉR DIZÁJN (Megtartva) --- */}
       <div className="fixed inset-0 -z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-black to-indigo-900 animate-gradient-slow"></div>
         <div className="absolute -top-40 -left-40 h-96 w-96 rounded-full bg-pink-500 opacity-30 blur-3xl animate-pulse"></div>
@@ -128,7 +181,8 @@ function MainAppContent() {
             transition={{ duration: 0.6 }}
             className="mt-4 flex items-center justify-between rounded-xl border border-white/20 bg-black/70 px-4 py-3 text-white backdrop-blur-xl shadow-lg"
           >
-            <div className="flex items-center gap-2">
+            {/* Logo klikkelhető, visszavisz a tetejére */}
+            <div className="flex items-center gap-2 cursor-pointer" onClick={scrollTop}>
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-pink-500 to-indigo-600">
                 <img src="/2bdev logo.png" alt="2BDeV logo" className="h-6 w-6" />
               </div>
@@ -176,7 +230,7 @@ function MainAppContent() {
                         visible: { y: 0, opacity: 1 },
                       }}
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                      onClick={() => handleMenuClick(item.toLowerCase())}
+                      onClick={() => handleMenuClick(item)}
                     >
                       {item}
                     </motion.li>
@@ -188,7 +242,8 @@ function MainAppContent() {
                     }}
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   >
-                    <PrimaryButton>Let’s Talk</PrimaryButton>
+                    {/* "Let's Talk" gomb bekötése a Contact szekcióhoz */}
+                    <PrimaryButton onClick={() => handleMenuClick('contact')}>Let’s Talk</PrimaryButton>
                   </motion.li>
                 </motion.ul>
               </Container>
@@ -217,8 +272,9 @@ function MainAppContent() {
                 I create modern, responsive websites and shot some good pictures.
               </p>
               <div className="mt-8 flex flex-wrap items-center gap-3">
-                <PrimaryButton>Contact Me</PrimaryButton>
-                <GhostButton>
+                {/* Gombok bekötve a navigációhoz */}
+                <PrimaryButton onClick={() => handleMenuClick('contact')}>Contact Me</PrimaryButton>
+                <GhostButton onClick={() => handleMenuClick('projects')}>
                   <Code className="h-4 w-4" /> View my works
                 </GhostButton>
               </div>
@@ -332,20 +388,19 @@ function MainAppContent() {
         <Container>
           <div className="flex flex-col items-center text-center">
             <h2 className="text-4xl font-bold mb-6">Contact</h2>
-            {/* Hozzáadtuk az onSubmit eseménykezelőt a formhoz */}
             <form onSubmit={handleFormSubmit} className="w-full max-w-xl space-y-4">
               <input
                 type="text"
                 placeholder="Name"
-                value={name} // Összekötés a 'name' state-tel
+                value={name}
                 onChange={(e) => setName(e.target.value)} 
-                required // mező kitöltése kötelező
+                required
                 className="w-full rounded-lg bg-white/10 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
               />
               <input
                 type="email"
                 placeholder="Email"
-                value={email} // Összekötés az 'email' state-tel
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full rounded-lg bg-white/10 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
@@ -353,7 +408,7 @@ function MainAppContent() {
               <textarea
                 placeholder="Message"
                 rows={4}
-                value={message} // Összekötés a 'message' state-tel
+                value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 required
                 className="w-full rounded-lg bg-white/10 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
@@ -361,20 +416,22 @@ function MainAppContent() {
               
               <div className="flex justify-center">
                 <Turnstile
-                  sitekey="0x4AAAAAAB4KBkZxjFBtjdKo"
+                  sitekey={CONFIG.TURNSTILE_SITEKEY}
                   onVerify={(token) => setTurnstileToken(token)}
-                  theme="auto"
+                  theme="dark"
                 />
               </div>
 
-              <PrimaryButton type="submit">Send</PrimaryButton>
+              <PrimaryButton type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Sending..." : "Send"}
+              </PrimaryButton>
             </form>
           </div>
         </Container>
       </section>
       
       <footer className="relative py-6 text-center text-white/70 text-sm">
-        <Container>© {new Date().getFullYear()} 2BDeV. All rights reserved.</Container>
+        <Container>© {new Date().getFullYear()} 2BDeV Studio Inc. All rights reserved.</Container>
       </footer>
       
       <AnimatePresence>
