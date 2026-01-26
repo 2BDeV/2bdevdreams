@@ -1,4 +1,3 @@
-// studio/schemas/siteSettings.ts
 export default {
   name: 'siteSettings',
   title: 'Weboldal Beállítások',
@@ -29,6 +28,13 @@ export default {
       title: 'Rólam szöveg',
       type: 'text',
       description: 'A főoldalon megjelenő bemutatkozó szöveg.',
+    },
+    {
+      name: 'adminPassword',
+      title: 'Admin Password',
+      description: 'Password to bypass maintenance mode via /login page',
+      type: 'string',
+      hidden: false
     }
   ],
 }
