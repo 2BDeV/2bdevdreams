@@ -268,7 +268,7 @@ function MainAppContent() {
         </Container>
       </section>
 
-      <section id="projects" className="relative py-24 text-white bg-black/20">
+      <section id="projects" className="relative py-24 text-white ">
         <Container>
           <h2 className="text-4xl font-bold mb-6">Projects</h2>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
