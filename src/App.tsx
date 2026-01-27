@@ -87,7 +87,7 @@ const MaintenanceScreen = ({ settings }: { settings: any }) => {
           {settings.maintenanceMessage || "I am currently updating my portfolio. Please check back soon!"}
         </p>
         
-        {/* Rejtett/kicsi login link az alján, mint a profi oldalakon */}
+        {/* Rejtett/kicsi login link az alján */}
         <div className="pt-10 opacity-30 hover:opacity-100 transition-opacity">
             <a href="/login" className="flex items-center justify-center gap-2 text-xs text-white">
                 <Lock className="h-3 w-3" /> Admin Login
@@ -117,17 +117,15 @@ const AdminLogin = ({ settings, onLoginSuccess }: { settings: any, onLoginSucces
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Ellenőrizzük a Sanity-ből jött jelszót
-    // Ha nincs beállítva jelszó a Sanity-ben, alapértelmezetten "admin" (fejlesztéshez)
     const validPassword = settings?.adminPassword || "admin";
     
     if (password === validPassword) {
       localStorage.setItem("isAdmin", "true");
-      onLoginSuccess(); // App state frissítése
-      navigate("/"); // Visszairányítás a főoldalra
+      onLoginSuccess(); 
+      navigate("/"); 
     } else {
       setError(true);
-      setTimeout(() => setError(false), 2000); // Hibaüzenet eltüntetése
+      setTimeout(() => setError(false), 2000); 
     }
   };
 
@@ -179,9 +177,8 @@ const AdminLogin = ({ settings, onLoginSuccess }: { settings: any, onLoginSucces
   );
 };
 
-// --- MAIN APP CONTENT (Nincs változás a tartalomban, csak a Logout gombot adtam hozzá a footerhez) ---
+// --- MAIN APP CONTENT ---
 function MainAppContent({ onLogout }: { onLogout?: () => void }) {
-  // ... Statek és effektek ugyanazok ...
   const [menuOpen, setMenuOpen] = useState(false);
   const [showScroll, setShowScroll] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -236,7 +233,6 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
     } catch { alert("Failed."); } finally { setIsSubmitting(false); }
   };
 
-  // --- RENDER (Csak a footer változott picit, hogy ki tudj lépni) ---
   return (
     <div className="font-sans antialiased relative overflow-hidden">
       <div className="fixed inset-0 -z-10">
@@ -318,17 +314,33 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
         </Container>
       </section>
 
+      {/* --- ITT AZ ÚJ SKILLS SZEKCIÓ --- */}
       <section id="skills" className="relative py-24 text-white">
         <Container>
-          <h2 className="text-4xl font-bold mb-6">Skills</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
-            <div className="flex flex-col items-center"><Monitor className="h-10 w-10 text-pink-400" /><span className="mt-2 text-sm">Frontend</span></div>
-            <div className="flex flex-col items-center"><Code className="h-10 w-10 text-indigo-400" /><span className="mt-2 text-sm">Backend</span></div>
-            <div className="flex flex-col items-center"><Zap className="h-10 w-10 text-fuchsia-400" /><span className="mt-2 text-sm">UI/UX</span></div>
-            <div className="flex flex-col items-center"><Github className="h-10 w-10 text-white" /><span className="mt-2 text-sm">GitHub</span></div>
-            <div className="flex flex-col items-center"><Linkedin className="h-10 w-10 text-blue-400" /><span className="mt-2 text-sm">LinkedIn</span></div>
-            <div className="flex flex-col items-center"><Mail className="h-10 w-10 text-green-400" /><span className="mt-2 text-sm">Contact</span></div>
-          </div>
+          <h2 className="text-4xl font-bold mb-10 text-center">My Tech Stack</h2>
+          
+          {settings?.skills && settings.skills.length > 0 ? (
+            <div className="flex flex-wrap justify-center gap-8">
+              {settings.skills.map((skill: string) => (
+                <div key={skill} className="group flex flex-col items-center justify-center p-4 transition-all duration-300 hover:-translate-y-2">
+                  <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 shadow-lg backdrop-blur-sm border border-white/10 transition-all group-hover:border-pink-500/50 group-hover:shadow-pink-500/20">
+                    <img 
+                      src={`https://cdn.simpleicons.org/${skill}/F472B6`} 
+                      alt={skill}
+                      className="h-8 w-8 transition-all group-hover:scale-110"
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                    />
+                  </div>
+                  <span className="mt-3 text-sm font-medium text-white/60 group-hover:text-white transition-colors capitalize">
+                    {skill.replace('dotjs', '.js').replace('webservices', '').replace('adobe', '')}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            // Ha nincs még beállítva Sanity-ben, vagy tölt, ez jelenik meg
+            <p className="text-center text-white/40">Loading skills...</p>
+          )}
         </Container>
       </section>
 
@@ -353,7 +365,6 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
         <Container>
             <div className="flex flex-col items-center gap-2">
                 <span>© {new Date().getFullYear()} 2BDeV Studio Inc. All rights reserved.</span>
-                {/* Ha be van lépve, itt megjelenik a kijelentkezés gomb */}
                 {localStorage.getItem("isAdmin") === "true" && (
                      <button onClick={onLogout} className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition-colors">
                         <LogOut className="h-3 w-3" /> Logout (Admin)
@@ -382,8 +393,6 @@ export default function App() {
   const [settings, setSettings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   
-  // Állapot: be van-e jelentkezve?
-  // Kezdeti érték: megnézzük a LocalStorage-t
   const [isAdmin, setIsAdmin] = useState(localStorage.getItem("isAdmin") === "true");
 
   useEffect(() => {
@@ -407,7 +416,7 @@ export default function App() {
   const handleLogout = () => {
       localStorage.removeItem("isAdmin");
       setIsAdmin(false);
-      window.location.reload(); // Frissítés, hogy biztosan kilépjen
+      window.location.reload(); 
   };
 
   if (loading) {
@@ -418,16 +427,13 @@ export default function App() {
     );
   }
 
-  
   const showMaintenance = settings?.maintenanceMode && !isAdmin;
 
   return (
     <Router>
       <Routes>
-        {/* LOGIN OLDAL - Bárki elérheti, itt tudsz belépni */}
         <Route path="/login" element={<AdminLogin settings={settings} onLoginSuccess={handleLoginSuccess} />} />
 
-        {/* FŐOLDAL - Itt döntünk a karbantartásról */}
         <Route 
           path="/" 
           element={
@@ -439,7 +445,6 @@ export default function App() {
           } 
         />
         
-        {/* Minden más visszadob a főoldalra */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
