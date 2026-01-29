@@ -25,15 +25,15 @@ import { createClient } from "@sanity/client";
 
 // --- SANITY CLIENT CONFIG ---
 const sanity = createClient({
-  projectId: "2a99ehdl",
-  dataset: "2bdevdreams",
+  projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
+  dataset: import.meta.env.VITE_SANITY_DATASET,
   useCdn: true, 
   apiVersion: "2024-01-10",
 });
 
 // --- CONFIGURATION ---
 const CONFIG = {
-  GOOGLE_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwo0FSJLpCng21-xBbNEe7LrD6oJLENBhRKEIWhdRm7Qjz-NukRWKKx9tu--Zntul6W9A/exec", 
+  GOOGLE_SCRIPT_URL: import.meta.env.VITE_GOOGLE_SCRIPT_URL || "", 
   
   TURNSTILE_SITEKEY: import.meta.env.VITE_TURNSTILE_SITEKEY || "",
 };
