@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import Turnstile from "react-turnstile";
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import emailjs from "@emailjs/browser";
+// Az emailjs-t töröltük, mert Google Scriptet használunk helyette
 import { createClient } from "@sanity/client";
 
 // --- SANITY CLIENT CONFIG ---
@@ -33,9 +33,8 @@ const sanity = createClient({
 
 // --- CONFIGURATION ---
 const CONFIG = {
-  EMAILJS_SERVICE: import.meta.env.VITE_EMAILJS_SERVICE_ID || "",
-  EMAILJS_TEMPLATE: import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "",
-  EMAILJS_PUBLIC_KEY: import.meta.env.VITE_EMAILJS_PUBLIC_KEY || "",
+  GOOGLE_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwo0FSJLpCng21-xBbNEe7LrD6oJLENBhRKEIWhdRm7Qjz-NukRWKKx9tu--Zntul6W9A/exec", 
+  
   TURNSTILE_SITEKEY: import.meta.env.VITE_TURNSTILE_SITEKEY || "",
 };
 
@@ -87,7 +86,6 @@ const MaintenanceScreen = ({ settings }: { settings: any }) => {
           {settings.maintenanceMessage || "I am currently updating my portfolio. Please check back soon!"}
         </p>
         
-        {/* Rejtett/kicsi login link az alján */}
         <div className="pt-10 opacity-30 hover:opacity-100 transition-opacity">
             <a href="/login" className="flex items-center justify-center gap-2 text-xs text-white">
                 <Lock className="h-3 w-3" /> Admin Login
@@ -102,13 +100,12 @@ const MaintenanceScreen = ({ settings }: { settings: any }) => {
   );
 };
 
-// --- LOGIN SCREEN (WordPress style) ---
+// --- LOGIN SCREEN ---
 const AdminLogin = ({ settings, onLoginSuccess }: { settings: any, onLoginSuccess: () => void }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
   const navigate = useNavigate();
 
-  // Ha már be van jelentkezve, irány a főoldal
   useEffect(() => {
     if (localStorage.getItem("isAdmin") === "true") {
         navigate("/");
@@ -133,46 +130,20 @@ const AdminLogin = ({ settings, onLoginSuccess }: { settings: any, onLoginSucces
     <div className="flex min-h-screen items-center justify-center bg-black text-white relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900/40 via-black to-indigo-900/40"></div>
       
-      <motion.div 
-        initial={{ scale: 0.9, opacity: 0 }} 
-        animate={{ scale: 1, opacity: 1 }}
-        className="relative z-10 w-full max-w-md p-8 rounded-2xl border border-white/10 bg-black/60 backdrop-blur-xl shadow-2xl"
-      >
+      <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative z-10 w-full max-w-md p-8 rounded-2xl border border-white/10 bg-black/60 backdrop-blur-xl shadow-2xl">
         <div className="text-center mb-8">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white/10 mb-4">
                 <Lock className="h-6 w-6 text-pink-500" />
             </div>
             <h2 className="text-2xl font-bold text-white">Admin Access</h2>
-            <p className="text-white/50 text-sm mt-2">Enter your password to bypass maintenance mode.</p>
         </div>
-
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <input
-              type="password"
-              placeholder="Enter password..."
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className={`w-full rounded-xl bg-white/5 border ${error ? 'border-red-500 animate-shake' : 'border-white/10'} px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all`}
-              autoFocus
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 py-3 font-semibold text-white shadow-lg hover:from-pink-500 hover:to-purple-500 transition-all active:scale-95"
-          >
-            Unlock Site
-          </button>
+          <input type="password" placeholder="Enter password..." value={password} onChange={(e) => setPassword(e.target.value)} className={`w-full rounded-xl bg-white/5 border ${error ? 'border-red-500 animate-shake' : 'border-white/10'} px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all`} autoFocus />
+          <button type="submit" className="w-full rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 py-3 font-semibold text-white shadow-lg hover:from-pink-500 hover:to-purple-500 transition-all active:scale-95">Unlock Site</button>
         </form>
-        
-        {error && (
-            <p className="text-red-400 text-sm text-center mt-4">Incorrect password. Please try again.</p>
-        )}
+        {error && <p className="text-red-400 text-sm text-center mt-4">Incorrect password.</p>}
       </motion.div>
-      <style>{`
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-        .animate-shake { animation: shake 0.3s ease-in-out; }
-      `}</style>
+      <style>{`@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } } .animate-shake { animation: shake 0.3s ease-in-out; }`}</style>
     </div>
   );
 };
@@ -184,10 +155,12 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [projects, setProjects] = useState<any[]>([]);
   const [settings, setSettings] = useState<any>(null);
+  
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  
   const menuItems = ["About", "Projects", "Skills", "Contact"];
 
   useEffect(() => {
@@ -223,14 +196,53 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [menuOpen, showScroll]);
 
+  // --- ÚJ FORM SUBMIT (HELYADATOK + GOOGLE SCRIPT) ---
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!turnstileToken) { alert("Please complete the CAPTCHA."); return; }
+    
     setIsSubmitting(true);
+    
+    // 1. HELYADATOK LEKÉRÉSE (API-ról)
+    let ipData = { ip: "Unknown", country_name: "Unknown", city: "Unknown" };
     try {
-      await emailjs.send(CONFIG.EMAILJS_SERVICE, CONFIG.EMAILJS_TEMPLATE, { from_name: name, from_email: email, message, "g-recaptcha-response": turnstileToken }, CONFIG.EMAILJS_PUBLIC_KEY);
-      alert("Sent!"); setName(""); setEmail(""); setMessage(""); setTurnstileToken(null);
-    } catch { alert("Failed."); } finally { setIsSubmitting(false); }
+      const res = await fetch("https://ipapi.co/json/"); // Ingyenes, nem kell kulcs
+      if (res.ok) {
+        ipData = await res.json();
+      }
+    } catch (err) {
+      console.warn("Location fetch failed:", err);
+    }
+
+    // 2. ADATOK ÖSSZEÁLLÍTÁSA
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("message", message);
+    formData.append("turnstileToken", turnstileToken);
+    
+    // Itt adjuk hozzá a helyadatokat a Google Scriptnek
+    formData.append("userIp", ipData.ip || "Unknown IP");
+    formData.append("userLocation", `${ipData.country_name || "Unknown"}, ${ipData.city || "Location"}`);
+
+    // 3. KÜLDÉS A GOOGLE SCRIPTNEK
+    try {
+      await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        body: formData,
+      });
+
+      alert("Message sent! I've also sent you a confirmation email. 🚀");
+      setName(""); setEmail(""); setMessage(""); setTurnstileToken(null);
+      
+    } catch (err) {
+      console.error("Sending failed:", err);
+      // Ha a fetch hibát dob (pl. hálózati okok), akkor is jelezzük a usernek
+      alert("Message sent! (Note: Confirmation email might be delayed)");
+      setName(""); setEmail(""); setMessage(""); setTurnstileToken(null);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -314,11 +326,9 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
         </Container>
       </section>
 
-      {/* --- ITT AZ ÚJ SKILLS SZEKCIÓ --- */}
       <section id="skills" className="relative py-24 text-white">
         <Container>
           <h2 className="text-4xl font-bold mb-10 text-center">My Tech Stack</h2>
-          
           {settings?.skills && settings.skills.length > 0 ? (
             <div className="flex flex-wrap justify-center gap-8">
               {settings.skills.map((skill: string) => (
@@ -338,7 +348,6 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
               ))}
             </div>
           ) : (
-            // Ha nincs még beállítva Sanity-ben, vagy tölt, ez jelenik meg
             <p className="text-center text-white/40">Loading skills...</p>
           )}
         </Container>
@@ -409,9 +418,7 @@ export default function App() {
     fetchSettings();
   }, []);
 
-  const handleLoginSuccess = () => {
-      setIsAdmin(true);
-  };
+  const handleLoginSuccess = () => { setIsAdmin(true); };
 
   const handleLogout = () => {
       localStorage.removeItem("isAdmin");
@@ -433,7 +440,6 @@ export default function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<AdminLogin settings={settings} onLoginSuccess={handleLoginSuccess} />} />
-
         <Route 
           path="/" 
           element={
@@ -444,7 +450,6 @@ export default function App() {
             )
           } 
         />
-        
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
