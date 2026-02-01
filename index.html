@@ -10,6 +10,39 @@
 
     <meta name="description" content="Welcome to my little webpage <3" />
     <title>2BDeV Dreams</title>
+
+    <!-- ANTI-FLASHBANG CSS -->
+    <style>
+      /* Azonnal feketére festjük a hátteret, még a React betöltése előtt */
+      html, body {
+        background-color: #0a0a0a; /* Vagy #000000, ízlés szerint */
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+      }
+      
+      /* Opcionális: egy kis betöltő szöveg vagy spinner, amíg a React elindul */
+      #root:empty::before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 30px;
+        height: 30px;
+        transform: translate(-50%, -50%);
+        border: 2px solid #333;
+        border-top-color: #ec4899; /* Pink-500 szín */
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to { transform: translate(-50%, -50%) rotate(360deg); }
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>

@@ -42,7 +42,7 @@ export default {
       type: 'array',
       of: [{type: 'string'}]
     },
-    // --- EZ AZ ÚJ RÉSZ: SKILLS LISTA ---
+    // --- SKILLS LISTA ---
     {
       name: 'skills',
       title: 'Technikai Skill-ek',
@@ -92,6 +92,70 @@ export default {
           {title: 'Wordpress', value: 'wordpress'},
         ]
       }
-    }
+    },
+
+    // --- ÚJ RÉSZ: ÉRTESÍTÉSI SÁV (ANNOUNCEMENT BAR) ---
+    {
+      name: 'announcement',
+      title: 'Felső Értesítési Sáv',
+      type: 'object',
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        {
+          name: 'isActive',
+          title: 'Bekapcsolva',
+          type: 'boolean',
+          description: 'Ha nincs bepipálva, semmiképp nem jelenik meg.',
+          initialValue: false
+        },
+        {
+          name: 'text',
+          title: 'Üzenet szövege',
+          type: 'string',
+        },
+        {
+          name: 'link',
+          title: 'Link (opcionális)',
+          type: 'url',
+          description: 'Ha kitöltöd, az üzenet kattintható lesz.',
+        },
+        {
+          name: 'type',
+          title: 'Típus (Színkód)',
+          type: 'string',
+          options: {
+            list: [
+              {title: 'Info (Kék)', value: 'info'},
+              {title: 'Figyelem (Sárga/Narancs)', value: 'warning'},
+              {title: 'Hiba/Fontos (Piros)', value: 'error'},
+              {title: 'Siker (Zöld)', value: 'success'},
+              {title: 'Brand (Pink/Lila)', value: 'brand'},
+            ],
+            layout: 'radio'
+          },
+          initialValue: 'brand'
+        },
+        // --- IDŐZÍTÉS ---
+        {
+          name: 'startDate',
+          title: 'Megjelenés kezdete (Opcionális)',
+          type: 'datetime',
+          description: 'Hagyd üresen, ha azonnal meg akarod jeleníteni.',
+        },
+        {
+          name: 'endDate',
+          title: 'Megjelenés vége (Opcionális)',
+          type: 'datetime',
+          description: 'Hagyd üresen, ha nem akarod, hogy eltűnjön magától.',
+        },
+        {
+          name: 'closable',
+          title: 'Bezárható?',
+          type: 'boolean',
+          description: 'Engedjük-e a felhasználónak, hogy bezárja (X gomb)?',
+          initialValue: true
+        }
+      ]
+    },
   ],
 }
