@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal - 2BDeV Studio</title>
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --text-color: #e5e5e5;
+            --accent-color: #ec4899; /* Pink-500 */
+            --secondary-accent: #8b5cf6; /* Purple-500 */
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(139, 92, 246, 0.15) 0%, transparent 50%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(to right, var(--accent-color), var(--secondary-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.05em;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: #fff;
+            border-left: 4px solid var(--accent-color);
+            padding-left: 15px;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: #fff;
+            margin-top: 25px;
+        }
+
+        p, ul {
+            color: #a3a3a3;
+            font-size: 0.95rem;
+        }
+
+        a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: var(--secondary-accent);
+            text-decoration: underline;
+        }
+
+        .legal-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #666;
+        }
+
+        .last-updated {
+            font-size: 0.8rem;
+            color: #555;
+            margin-bottom: 20px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 10px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            font-size: 0.8rem;
+            color: #555;
+        }
+
+        /* Selection color */
+        ::selection {
+            background: var(--accent-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <a href="https://2bdevon.top" class="back-link">← Back to Home</a>
+            <h1>Legal Documents</h1>
+            <p>Transparency is key. Here is how we operate.</p>
+        </header>
+
+        <!-- PRIVACY POLICY -->
+        <section id="privacy-policy" class="legal-section">
+            <span class="last-updated">Last Updated: February 2026</span>
+            <h2>Privacy Policy</h2>
+            
+            <p>Welcome to <strong>2BDeV Studio</strong> ("we," "our," or "us"). We are committed to protecting your privacy. This Privacy Policy explains how we collect, use, and share your personal information when you visit our website or contact us.</p>
+
+            <h3>1. Information We Collect</h3>
+            <p>We only collect information that you voluntarily provide to us via our contact forms or email interactions. This includes:</p>
+            <ul>
+                <li><strong>Personal Identification:</strong> Name, Email address.</li>
+                <li><strong>Message Content:</strong> Any details you provide in the "Message" field.</li>
+                <li><strong>Technical Data:</strong> We may collect your IP address and approximate location (Country/City) for security purposes (spam prevention) and analytics.</li>
+            </ul>
+
+            <h3>2. How We Use Your Information</h3>
+            <p>We use the collected data solely for the following purposes:</p>
+            <ul>
+                <li>To respond to your inquiries or project requests.</li>
+                <li>To prevent spam and abuse of our contact forms (via Google Turnstile).</li>
+                <li>To improve the technical performance of our website.</li>
+            </ul>
+            <p><strong>We do not sell, trade, or rent your personal identification information to others.</strong></p>
+
+            <h3>3. Third-Party Services</h3>
+            <p>We use trusted third-party services to operate our site:</p>
+            <ul>
+                <li><strong>Google Apps Script & Gmail:</strong> To process and send your contact form messages securely.</li>
+                <li><strong>Sanity.io:</strong> To manage our portfolio content.</li>
+                <li><strong>Cloudflare / Turnstile:</strong> For CAPTCHA protection against bots.</li>
+                <li><strong>Vercel Analytics:</strong> To monitor website traffic anonymously.</li>
+            </ul>
+            <p>These third parties have their own privacy policies governing how they use data.</p>
+
+            <h3>4. Data Security</h3>
+            <p>We implement appropriate security measures to maintain the safety of your personal information. However, please note that no method of transmission over the Internet is 100% secure.</p>
+
+            <h3>5. Contact Us</h3>
+            <p>If you have any questions about this Privacy Policy, please contact us at:</p>
+            <p><a href="mailto:contact@2bdev.com">contact@2bdev.com</a></p>
+        </section>
+
+        <!-- TERMS OF SERVICE -->
+        <section id="terms-of-service" class="legal-section">
+            <span class="last-updated">Last Updated: February 2026</span>
+            <h2>Terms of Service</h2>
+
+            <h3>1. Acceptance of Terms</h3>
+            <p>By accessing and using the website of <strong>2BDeV Studio</strong>, you accept and agree to be bound by the terms and provision of this agreement.</p>
+
+            <h3>2. Intellectual Property</h3>
+            <p>All content published and made available on this site is the property of 2BDeV Studio and the site's creators. This includes, but is not limited to images, text, logos, documents, downloadable files, and source code. Unauthorized use is prohibited.</p>
+
+            <h3>3. User Conduct</h3>
+            <p>When using our "Contact" feature, you agree not to send content that is illegal, harassing, threatening, or contains malware/viruses. We reserve the right to block users who abuse our communication channels.</p>
+
+            <h3>4. Limitation of Liability</h3>
+            <p>2BDeV Studio and its employees will not be liable for any actions, claims, losses, damages, liabilities, and expenses including legal fees from your use of the site.</p>
+
+            <h3>5. External Links</h3>
+            <p>Our website may contain links to third-party websites (e.g., GitHub, LinkedIn) that we do not own or control. We are not responsible for the content, privacy policies, or practices of any third-party websites.</p>
+
+            <h3>6. Changes to These Terms</h3>
+            <p>We reserve the right to modify these terms at any time. We will do so by posting and drawing attention to the updated terms on the Site. Your continued use of the Site after any such changes constitutes your acceptance of the new Terms.</p>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 2BDeV Studio. All rights reserved.</p>
+        </footer>
+    </div>
+
+</body>
+</html>
