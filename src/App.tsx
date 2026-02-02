@@ -81,7 +81,7 @@ const PageTransition = ({ children }: { children: React.ReactNode }) => (
   </motion.div>
 );
 
-// --- RETRO SYSTEM MESSAGE COMPONENT ---
+// --- RETRO SYSTEM MESSAGE COMPONENT (LASSÚ ANIMÁCIÓVAL) ---
 const RetroSystemMessage = ({ data, updatedAt }: { data: any, updatedAt?: string }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -128,14 +128,14 @@ const RetroSystemMessage = ({ data, updatedAt }: { data: any, updatedAt?: string
           className="fixed inset-0 z-[9999] flex items-center justify-center font-mono p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { delay: 0.8, duration: 0.5 } }}
+          exit={{ opacity: 0, transition: { delay: 0.8, duration: 0.5 } }} // Késleltetett háttér eltűnés
         >
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={data.closable ? handleClose : undefined}></div>
           <motion.div 
             key="retro-window"
             initial={{ scaleY: 0, scaleX: 0.1, opacity: 0 }}
             animate={{ scaleY: 1, scaleX: 1, opacity: 1, transition: { type: "spring", stiffness: 120, damping: 15, mass: 0.5 } }}
-            exit={{ scaleY: 0.001, scaleX: 0, opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }}
+            exit={{ scaleY: 0.001, scaleX: 0, opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }} // Lassú becsukódás
             className="relative w-full max-w-lg border-2 border-gray-400 shadow-[12px_12px_0px_rgba(0,0,0,0.6)] text-white overflow-hidden"
             style={{ backgroundColor: bgColor }}
           >
@@ -189,12 +189,12 @@ const MaintenanceScreen = ({ settings }: { settings: any }) => {
   );
 };
 
-// --- DEDICATED CONTACT PAGE (MOST MÁR STATE-ALAPÚ, MINT A FŐOLDAL) ---
+// --- DEDICATED CONTACT PAGE (MEGJAVÍTVA: KEREKÍTETT + KÉSLELTETÉS) ---
 const ContactPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [name, setName] = useState(""); // ÚJ: State
-  const [email, setEmail] = useState(""); // ÚJ: State
-  const [message, setMessage] = useState(""); // ÚJ: State
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -209,24 +209,29 @@ const ContactPage = () => {
     try { const res = await fetch("https://ipapi.co/json/"); if (res.ok) ipData = await res.json(); } catch (err) {}
 
     const scriptData = new URLSearchParams();
-    scriptData.append("name", name); // State-ből olvasunk
-    scriptData.append("email", email); // State-ből olvasunk
-    scriptData.append("message", message); // State-ből olvasunk
+    scriptData.append("name", name);
+    scriptData.append("email", email);
+    scriptData.append("message", message);
     scriptData.append("userIp", ipData.ip || "Unknown");
     scriptData.append("userLocation", `${ipData.country_name || "?"}, ${ipData.city || "?"}`);
     scriptData.append("turnstileToken", turnstileToken); 
 
     try {
+      // 1. LÉPÉS: Mesterséges várakozás (1.5 másodperc)
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // 2. LÉPÉS: Stabil küldés no-cors módban
       await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
         method: "POST",
         mode: "no-cors", 
         body: scriptData,
       });
-      alert("Message sent successfully! 🚀");
+
+      alert("Message sent successfully! 🚀 Note: If you do not see the confirmation email, please check your spam folder. If you did not receive a confirmation email in any way, it is likely that your email did not reach us. In this case, you can also contact us via this email: contact-error@2bdevon.top ");
       navigate('/');
     } catch (error) {
       console.error("Submission error:", error);
-      alert("Error sending message. Please try again.");
+      alert("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -241,7 +246,6 @@ const ContactPage = () => {
             <h1 className="text-2xl font-light uppercase tracking-[8px] mb-2 text-white">Get in Touch</h1>
             <p className="text-gray-500 mb-8 text-[11px] uppercase tracking-[2px]">Fill out the form below.</p>
             <form onSubmit={handleSubmit} className="space-y-5">
-              {/* INPUTOK BEKÖTÉSE A STATE-BE */}
               <input 
                 name="name" 
                 type="text" 
@@ -306,7 +310,7 @@ const AdminLogin = ({ settings, onLoginSuccess }: { settings: any, onLoginSucces
   );
 };
 
-// --- MAIN APP CONTENT ---
+// --- MAIN APP CONTENT (EZT IS EGYSÉGESÍTETTEM A BIZTONSÁG KEDVÉÉRT) ---
 function MainAppContent({ onLogout }: { onLogout?: () => void }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showScroll, setShowScroll] = useState(false);
@@ -346,12 +350,15 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
     scriptData.append("turnstileToken", turnstileToken); 
 
     try { 
+      // Itt is beletettem a mesterséges késleltetést és a no-cors-t, hogy egységes legyen az élmény
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
       await fetch(CONFIG.GOOGLE_SCRIPT_URL, { 
           method: "POST", 
           mode: "no-cors",
           body: scriptData 
       }); 
-      alert("Message sent! 🚀"); 
+      alert("Message sent successfully! 🚀 Note: If you do not see the confirmation email, please check your spam folder. If you did not receive a confirmation email in any way, it is likely that your email did not reach us. In this case, you can also contact us via this email: contact-error@2bdevon.top "); 
       setName(""); setEmail(""); setMessage(""); setTurnstileToken(null); 
     } 
     catch (err) { alert("Error sending message."); console.error(err); } finally { setIsSubmitting(false); }
