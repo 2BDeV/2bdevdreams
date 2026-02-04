@@ -81,7 +81,57 @@ const PageTransition = ({ children }: { children: React.ReactNode }) => (
   </motion.div>
 );
 
-// --- RETRO SYSTEM MESSAGE COMPONENT (LASSÚ ANIMÁCIÓVAL) ---
+// --- RETRO COOKIE CONSENT ---
+const RetroCookieConsent = () => {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const consent = localStorage.getItem("cookie_consent");
+    if (!consent) {
+      const timer = setTimeout(() => setShow(true), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleAction = (status: "accepted" | "declined") => {
+    localStorage.setItem("cookie_consent", status);
+    setShow(false);
+  };
+
+  const bgColor = "#008888"; // Retro Cyan/Teal
+
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1, transition: { type: "spring", stiffness: 100, damping: 15 } }}
+          exit={{ y: 100, opacity: 0, transition: { duration: 0.5 } }}
+          className="fixed bottom-4 right-4 z-[9990] w-full max-w-sm px-4 md:px-0"
+        >
+          <div className="border-2 border-gray-400 shadow-[8px_8px_0px_rgba(0,0,0,0.8)] text-white overflow-hidden font-mono text-sm" style={{ backgroundColor: bgColor }}>
+            <div className="border border-white/40 m-1 flex flex-col">
+              <div className="flex justify-between items-center px-2 py-1 border-b border-white/40 bg-black/10">
+                <span className="font-bold uppercase tracking-wider animate-pulse text-yellow-300">[ COOKIE_PROTOCOL.EXE ]</span>
+                <button onClick={() => handleAction("declined")} className="hover:text-black hover:bg-white px-1">[x]</button>
+              </div>
+              <div className="p-4 text-center">
+                <p className="mb-4 leading-relaxed drop-shadow-md">We use cookies to optimize system performance and analyze data streams.</p>
+                <a href="/legal.html" target="_blank" className="text-xs uppercase underline hover:text-yellow-300 mb-4 block">View Privacy Protocols</a>
+                <div className="flex gap-2 justify-center mt-2">
+                  <button onClick={() => handleAction("declined")} className="flex-1 border border-white/50 py-1 hover:bg-white hover:text-black transition-colors uppercase text-xs">[ Decline ]</button>
+                  <button onClick={() => handleAction("accepted")} className="flex-1 border-2 border-white bg-black/20 py-1 hover:bg-white hover:text-black transition-colors uppercase font-bold text-xs shadow-[2px_2px_0px_black]">[ Accept ]</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+// --- RETRO SYSTEM MESSAGE COMPONENT ---
 const RetroSystemMessage = ({ data, updatedAt }: { data: any, updatedAt?: string }) => {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -106,16 +156,7 @@ const RetroSystemMessage = ({ data, updatedAt }: { data: any, updatedAt?: string
 
   const dateStr = data.startDate || updatedAt || new Date().toISOString();
   const displayDate = new Date(dateStr).toISOString().replace("T", " ").substring(0, 16);
-
-  const getRetroColor = (type: string) => {
-    switch (type) {
-      case 'error': return '#AA0000';
-      case 'warning': return '#AA5500';
-      case 'success': return '#00AA00';
-      case 'brand': return '#AA00AA';
-      case 'info': default: return '#0000AA';
-    }
-  };
+  const getRetroColor = (type: string) => { switch (type) { case 'error': return '#AA0000'; case 'warning': return '#AA5500'; case 'success': return '#00AA00'; case 'brand': return '#AA00AA'; case 'info': default: return '#0000AA'; } };
   const bgColor = getRetroColor(data.type);
 
   if (!isVisible) return null;
@@ -123,22 +164,9 @@ const RetroSystemMessage = ({ data, updatedAt }: { data: any, updatedAt?: string
   return (
     <AnimatePresence>
       {isVisible && (
-        <motion.div
-          key="retro-overlay"
-          className="fixed inset-0 z-[9999] flex items-center justify-center font-mono p-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { delay: 0.8, duration: 0.5 } }} // Késleltetett háttér eltűnés
-        >
+        <motion.div key="retro-overlay" className="fixed inset-0 z-[9999] flex items-center justify-center font-mono p-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { delay: 0.8, duration: 0.5 } }}>
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={data.closable ? handleClose : undefined}></div>
-          <motion.div 
-            key="retro-window"
-            initial={{ scaleY: 0, scaleX: 0.1, opacity: 0 }}
-            animate={{ scaleY: 1, scaleX: 1, opacity: 1, transition: { type: "spring", stiffness: 120, damping: 15, mass: 0.5 } }}
-            exit={{ scaleY: 0.001, scaleX: 0, opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }} // Lassú becsukódás
-            className="relative w-full max-w-lg border-2 border-gray-400 shadow-[12px_12px_0px_rgba(0,0,0,0.6)] text-white overflow-hidden"
-            style={{ backgroundColor: bgColor }}
-          >
+          <motion.div key="retro-window" initial={{ scaleY: 0, scaleX: 0.1, opacity: 0 }} animate={{ scaleY: 1, scaleX: 1, opacity: 1, transition: { type: "spring", stiffness: 120, damping: 15, mass: 0.5 } }} exit={{ scaleY: 0.001, scaleX: 0, opacity: 0, transition: { duration: 0.8, ease: "easeInOut" } }} className="relative w-full max-w-lg border-2 border-gray-400 shadow-[12px_12px_0px_rgba(0,0,0,0.6)] text-white overflow-hidden" style={{ backgroundColor: bgColor }}>
             <div className="border border-white/40 m-1 flex flex-col relative h-full">
               <div className="flex justify-between items-center px-3 py-2 border-b border-white/40 select-none" style={{ backgroundColor: bgColor }}>
                 <span className="text-xs text-yellow-300 font-bold uppercase tracking-wider animate-pulse">{displayDate}</span>
@@ -148,9 +176,7 @@ const RetroSystemMessage = ({ data, updatedAt }: { data: any, updatedAt?: string
                 <p className="text-lg md:text-xl leading-relaxed whitespace-pre-wrap font-bold tracking-wide drop-shadow-md">{data.text}</p>
                 {data.link && (<div className="mt-6"><a href={data.link} target="_blank" rel="noreferrer" className="inline-block bg-gray-300 px-6 py-2 font-bold hover:bg-white transition-colors shadow-[4px_4px_0px_black] uppercase text-sm border-2 border-black" style={{ color: bgColor }}>&lt; Open Link &gt;</a></div>)}
               </div>
-              <div className="border-t border-white/40 py-2 text-center select-none" style={{ backgroundColor: bgColor }}>
-                <span className="text-xs text-gray-300 font-bold tracking-widest">&lt; 2BDeV Studio &gt;</span>
-              </div>
+              <div className="border-t border-white/40 py-2 text-center select-none" style={{ backgroundColor: bgColor }}><span className="text-xs text-gray-300 font-bold tracking-widest">&lt; 2BDeV Studio &gt;</span></div>
             </div>
           </motion.div>
         </motion.div>
@@ -165,9 +191,7 @@ const MaintenanceScreen = ({ settings }: { settings: any }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({ x: (window.innerWidth / 2 - e.pageX) / 50, y: (window.innerHeight / 2 - e.pageY) / 50 });
-    };
+    const handleMouseMove = (e: MouseEvent) => { setMousePos({ x: (window.innerWidth / 2 - e.pageX) / 50, y: (window.innerHeight / 2 - e.pageY) / 50 }); };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
@@ -189,7 +213,7 @@ const MaintenanceScreen = ({ settings }: { settings: any }) => {
   );
 };
 
-// --- DEDICATED CONTACT PAGE (MEGJAVÍTVA: KEREKÍTETT + KÉSLELTETÉS) ---
+// --- DEDICATED CONTACT PAGE ---
 const ContactPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [name, setName] = useState("");
@@ -201,10 +225,7 @@ const ContactPage = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!turnstileToken) { alert("Please complete the CAPTCHA."); return; }
-    
     setIsSubmitting(true);
-    
-    // IP lekérés
     let ipData = { ip: "Unknown", country_name: "Unknown", city: "Unknown" };
     try { const res = await fetch("https://ipapi.co/json/"); if (res.ok) ipData = await res.json(); } catch (err) {}
 
@@ -217,24 +238,14 @@ const ContactPage = () => {
     scriptData.append("turnstileToken", turnstileToken); 
 
     try {
-      // 1. LÉPÉS: Mesterséges várakozás (1.5 másodperc)
       await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // 2. LÉPÉS: Stabil küldés no-cors módban
-      await fetch(CONFIG.GOOGLE_SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors", 
-        body: scriptData,
-      });
-
-      alert("Message sent successfully! 🚀 Note: If you do not see the confirmation email, please check your spam folder. If you did not receive a confirmation email in any way, it is likely that your email did not reach us. In this case, you can also contact us via this email: contact-error@2bdevon.top ");
+      await fetch(CONFIG.GOOGLE_SCRIPT_URL, { method: "POST", mode: "no-cors", body: scriptData });
+      alert("Message sent successfully! 🚀 Note: If you do not see the confirmation email, please check your spam folder. If you did not receive a confirmation email in any way, it is likely that your email did not reach us. In this case, you can also contact us via this email: [contact-error@2bdevon.top](mailto:contact-error@2bdevon.top) ");
       navigate('/');
     } catch (error) {
       console.error("Submission error:", error);
       alert("Something went wrong. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    } finally { setIsSubmitting(false); }
   };
 
   return (
@@ -246,39 +257,11 @@ const ContactPage = () => {
             <h1 className="text-2xl font-light uppercase tracking-[8px] mb-2 text-white">Get in Touch</h1>
             <p className="text-gray-500 mb-8 text-[11px] uppercase tracking-[2px]">Fill out the form below.</p>
             <form onSubmit={handleSubmit} className="space-y-5">
-              <input 
-                name="name" 
-                type="text" 
-                placeholder="NAME" 
-                value={name} 
-                onChange={(e) => setName(e.target.value)} 
-                required 
-                className="w-full rounded-xl bg-[#111] border border-[#333] p-4 text-xs text-white placeholder-gray-600 focus:border-white focus:outline-none transition-all tracking-wider" 
-              />
-              <input 
-                name="email" 
-                type="email" 
-                placeholder="EMAIL" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-                required 
-                className="w-full rounded-xl bg-[#111] border border-[#333] p-4 text-xs text-white placeholder-gray-600 focus:border-white focus:outline-none transition-all tracking-wider" 
-              />
-              <textarea 
-                name="message" 
-                rows={5} 
-                placeholder="MESSAGE" 
-                value={message} 
-                onChange={(e) => setMessage(e.target.value)} 
-                required 
-                className="w-full rounded-xl bg-[#111] border border-[#333] p-4 text-xs text-white placeholder-gray-600 focus:border-white focus:outline-none transition-all resize-none tracking-wider" 
-              />
-              <div className="flex justify-center py-2 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all">
-                <Turnstile sitekey={CONFIG.TURNSTILE_SITEKEY} onVerify={(token) => setTurnstileToken(token)} theme="dark" />
-              </div>
-              <button type="submit" disabled={isSubmitting} className="w-full rounded-xl border border-white bg-transparent py-4 text-[11px] font-bold uppercase tracking-[3px] text-white hover:bg-white hover:text-black disabled:opacity-50 disabled:cursor-not-allowed transition-all">
-                {isSubmitting ? "Sending..." : "Send Message"}
-              </button>
+              <input name="name" type="text" placeholder="NAME" value={name} onChange={(e) => setName(e.target.value)} required className="w-full rounded-xl bg-[#111] border border-[#333] p-4 text-xs text-white placeholder-gray-600 focus:border-white focus:outline-none transition-all tracking-wider" />
+              <input name="email" type="email" placeholder="EMAIL" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full rounded-xl bg-[#111] border border-[#333] p-4 text-xs text-white placeholder-gray-600 focus:border-white focus:outline-none transition-all tracking-wider" />
+              <textarea name="message" rows={5} placeholder="MESSAGE" value={message} onChange={(e) => setMessage(e.target.value)} required className="w-full rounded-xl bg-[#111] border border-[#333] p-4 text-xs text-white placeholder-gray-600 focus:border-white focus:outline-none transition-all resize-none tracking-wider" />
+              <div className="flex justify-center py-2 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all"><Turnstile sitekey={CONFIG.TURNSTILE_SITEKEY} onVerify={(token) => setTurnstileToken(token)} theme="dark" /></div>
+              <button type="submit" disabled={isSubmitting} className="w-full rounded-xl border border-white bg-transparent py-4 text-[11px] font-bold uppercase tracking-[3px] text-white hover:bg-white hover:text-black disabled:opacity-50 disabled:cursor-not-allowed transition-all">{isSubmitting ? "Sending..." : "Send Message"}</button>
             </form>
          </div>
       </div>
@@ -310,7 +293,7 @@ const AdminLogin = ({ settings, onLoginSuccess }: { settings: any, onLoginSucces
   );
 };
 
-// --- MAIN APP CONTENT (EZT IS EGYSÉGESÍTETTEM A BIZTONSÁG KEDVÉÉRT) ---
+// --- MAIN APP CONTENT (JAVÍTOTT: GOMBOK + NAVIGÁCIÓ + SCROLL) ---
 function MainAppContent({ onLogout }: { onLogout?: () => void }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showScroll, setShowScroll] = useState(false);
@@ -321,6 +304,7 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const navigate = useNavigate();
   const menuItems = ["About", "Projects", "Skills", "Contact"];
 
   useEffect(() => {
@@ -330,7 +314,14 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
     fetchData();
   }, []);
   
-  const handleMenuClick = (id: string) => { const targetId = id.toLowerCase(); const el = document.getElementById(targetId); if (el) { const offset = 80; const elementPosition = el.getBoundingClientRect().top + window.pageYOffset; window.scrollTo({ top: elementPosition - offset, behavior: "smooth" }); } setMenuOpen(false); };
+  const handleMenuClick = (id: string) => { 
+    const targetId = id.toLowerCase(); 
+    if (targetId === 'contact') { navigate('/contact'); setMenuOpen(false); return; }
+    const el = document.getElementById(targetId); 
+    if (el) { const offset = 80; const elementPosition = el.getBoundingClientRect().top + window.pageYOffset; window.scrollTo({ top: elementPosition - offset, behavior: "smooth" }); } 
+    setMenuOpen(false); 
+  };
+  
   const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
   useEffect(() => { const handleScroll = () => { if (menuOpen) setMenuOpen(false); if(window.scrollY > 400) setShowScroll(true); else setShowScroll(false); }; window.addEventListener("scroll", handleScroll); return () => window.removeEventListener("scroll", handleScroll); }, [menuOpen, showScroll]);
 
@@ -350,15 +341,9 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
     scriptData.append("turnstileToken", turnstileToken); 
 
     try { 
-      // Itt is beletettem a mesterséges késleltetést és a no-cors-t, hogy egységes legyen az élmény
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      await fetch(CONFIG.GOOGLE_SCRIPT_URL, { 
-          method: "POST", 
-          mode: "no-cors",
-          body: scriptData 
-      }); 
-      alert("Message sent successfully! 🚀 Note: If you do not see the confirmation email, please check your spam folder. If you did not receive a confirmation email in any way, it is likely that your email did not reach us. In this case, you can also contact us via this email: contact-error@2bdevon.top "); 
+      await fetch(CONFIG.GOOGLE_SCRIPT_URL, { method: "POST", mode: "no-cors", body: scriptData }); 
+      alert("Message sent successfully! 🚀 Note: If you do not see the confirmation email, please check your spam folder. If you did not receive a confirmation email in any way, it is likely that your email did not reach us. In this case, you can also contact us via this email: [contact-error@2bdevon.top](mailto:contact-error@2bdevon.top) "); 
       setName(""); setEmail(""); setMessage(""); setTurnstileToken(null); 
     } 
     catch (err) { alert("Error sending message."); console.error(err); } finally { setIsSubmitting(false); }
@@ -384,7 +369,7 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
                 <motion.button className="rounded-xl p-2 hover:bg-white/10" onClick={() => setMenuOpen((v) => !v)} animate={{ rotate: menuOpen ? 90 : 0 }}>{menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}</motion.button>
               </motion.div>
             </Container>
-            <AnimatePresence>{menuOpen && (<motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}><Container><ul className="mt-2 space-y-2 rounded-xl border border-white/20 bg-black/80 p-4 text-white backdrop-blur-xl">{menuItems.map((item, idx) => (<li key={idx} className="block rounded-xl px-3 py-2 hover:bg-white/10 cursor-pointer" onClick={() => handleMenuClick(item)}>{item}</li>))}<li><PrimaryButton onClick={() => handleMenuClick('contact')}>Let’s Talk</PrimaryButton></li></ul></Container></motion.div>)}</AnimatePresence>
+            <AnimatePresence>{menuOpen && (<motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}><Container><ul className="mt-2 space-y-2 rounded-xl border border-white/20 bg-black/80 p-4 text-white backdrop-blur-xl">{menuItems.map((item, idx) => (<li key={idx} className="block rounded-xl px-3 py-2 hover:bg-white/10 cursor-pointer" onClick={() => handleMenuClick(item)}>{item}</li>))}<li><PrimaryButton onClick={() => navigate('/contact')}>Let’s Talk</PrimaryButton></li></ul></Container></motion.div>)}</AnimatePresence>
           </header>
           <section className="relative isolate overflow-hidden pt-40 text-white">
             <Container>
@@ -392,7 +377,7 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
                 <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}>
                   <h1 className="mt-6 text-5xl font-extrabold leading-tight tracking-tight sm:text-6xl">Hi, I’m <span className="bg-gradient-to-r from-pink-400 via-fuchsia-500 to-indigo-500 bg-clip-text text-transparent">2BDeV</span>.<br />Web Developer, Creative Problem Solver & Photographer :)</h1>
                   <p className="mt-4 text-white/80 max-w-xl">Btw i created this website too, cuz this is mine (˶˃ ᵕ ˂˶) </p>
-                  <div className="mt-8 flex flex-wrap items-center gap-3"><PrimaryButton onClick={() => handleMenuClick('contact')}>Contact Me</PrimaryButton><GhostButton onClick={() => handleMenuClick('projects')}><Code className="h-4 w-4" /> View my works</GhostButton></div>
+                  <div className="mt-8 flex flex-wrap items-center gap-3"><PrimaryButton onClick={() => navigate('/contact')}>Contact Me</PrimaryButton><GhostButton onClick={() => handleMenuClick('projects')}><Code className="h-4 w-4" /> View my works</GhostButton></div>
                 </motion.div>
                 <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative flex justify-center"><Logo3d /></motion.div>
               </div>
@@ -401,11 +386,11 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
           <section id="about" className="relative py-24 text-white"><Container><h2 className="text-4xl font-bold mb-6">About</h2><p className="text-white/80 max-w-3xl">{settings?.aboutText || "Loading profile..."}</p></Container></section>
           <section id="projects" className="relative py-24 text-white"><Container><h2 className="text-4xl font-bold mb-6">Projects</h2><div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">{projects.length > 0 ? (projects.map((project, i) => (<a key={project._id || i} href={project.link} target="_blank" rel="noopener noreferrer" className="group rounded-xl bg-gradient-to-tr from-pink-500/10 to-purple-600/10 p-6 border border-white/10 transition-all duration-300 hover:scale-105 hover:border-pink-500/50"><h3 className="text-xl font-semibold">{project.title}</h3><p className="mt-2 text-sm text-white/70">{project.description}</p><div className="mt-4 flex items-center gap-2 text-pink-400 text-sm font-medium">View Project <ArrowRight className="h-4 w-4" /></div></a>))) : <p className="text-white/40">Loading projects...</p>}</div></Container></section>
           <section id="skills" className="relative py-24 text-white"><Container><h2 className="text-4xl font-bold mb-10 text-center">My Tech Stack</h2>{settings?.skills && settings.skills.length > 0 ? (<div className="flex flex-wrap justify-center gap-8">{settings.skills.map((skill: string) => (<div key={skill} className="group flex flex-col items-center justify-center p-4 transition-all duration-300 hover:-translate-y-2"><div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 shadow-lg backdrop-blur-sm border border-white/10 transition-all group-hover:border-pink-500/50 group-hover:shadow-pink-500/20"><img src={`https://cdn.simpleicons.org/${skill}/F472B6`} alt={skill} className="h-8 w-8 transition-all group-hover:scale-110" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} /></div><span className="mt-3 text-sm font-medium text-white/60 group-hover:text-white transition-colors capitalize">{skill.replace('dotjs', '.js').replace('webservices', '').replace('adobe', '')}</span></div>))}</div>) : (<p className="text-center text-white/40">Loading skills...</p>)}</Container></section>
-          <section id="contact" className="relative py-24 text-white"><Container><div className="flex flex-col items-center text-center"><h2 className="text-4xl font-bold mb-6">Contact</h2><form onSubmit={handleFormSubmit} className="w-full max-w-xl space-y-4"><input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" /><input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" /><textarea placeholder="Message" rows={4} value={message} onChange={(e) => setMessage(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" ></textarea><div className="flex justify-center"><Turnstile sitekey={CONFIG.TURNSTILE_SITEKEY} onVerify={(token) => setTurnstileToken(token)} theme="dark" /></div><PrimaryButton type="submit" disabled={isSubmitting}>{isSubmitting ? "Sending..." : "Send"}</PrimaryButton></form></div></Container></section>
+          {/* Secondary Contact Form at bottom */}
+          <section className="relative py-24 text-white"><Container><div className="flex flex-col items-center text-center"><h2 className="text-4xl font-bold mb-6">Quick Message</h2><form onSubmit={handleFormSubmit} className="w-full max-w-xl space-y-4"><input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" /><input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" /><textarea placeholder="Message" rows={4} value={message} onChange={(e) => setMessage(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" ></textarea><div className="flex justify-center"><Turnstile sitekey={CONFIG.TURNSTILE_SITEKEY} onVerify={(token) => setTurnstileToken(token)} theme="dark" /></div><PrimaryButton type="submit" disabled={isSubmitting}>{isSubmitting ? "Sending..." : "Send"}</PrimaryButton></form></div></Container></section>
           <footer className="relative py-6 text-center text-white/70 text-sm"><Container><div className="flex flex-col items-center gap-2"><span>© {new Date().getFullYear()} 2BDeV Studio Inc. All rights reserved.</span>{localStorage.getItem("isAdmin") === "true" && (<button onClick={onLogout} className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition-colors"><LogOut className="h-3 w-3" /> Logout (Admin)</button>)}</div></Container></footer>
           <AnimatePresence>{showScroll && (<motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={scrollTop} className="fixed bottom-6 right-6 z-40 rounded-full p-4 bg-white/10 text-white backdrop-blur-xl border border-white/20 shadow-lg" ><ArrowUp className="h-6 w-6" /></motion.button>)}</AnimatePresence>
         </div>
-
         <Analytics />
         <SpeedInsights />
         <style>{`html { scroll-behavior: smooth; } .animate-gradient-slow { background-size: 400% 400%; animation: gradientBG 15s ease infinite; } @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }`}</style>
@@ -417,22 +402,12 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
 // --- GLOBAL ROUTING & ANIMATIONS ---
 function AnimatedRoutes({ settings, onLoginSuccess, onLogout, showMaintenance }: any) {
   const location = useLocation();
-
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/login" element={<AdminLogin settings={settings} onLoginSuccess={onLoginSuccess} />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route 
-          path="/" 
-          element={
-            showMaintenance ? (
-              <MaintenanceScreen settings={settings} />
-            ) : (
-              <MainAppContent onLogout={onLogout} />
-            )
-          } 
-        />
+        <Route path="/" element={showMaintenance ? (<MaintenanceScreen settings={settings} />) : (<MainAppContent onLogout={onLogout} />)} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AnimatePresence>
@@ -445,12 +420,7 @@ export default function App() {
   const [isAdmin, setIsAdmin] = useState(localStorage.getItem("isAdmin") === "true");
 
   useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const data = await sanity.fetch(`*[_type == "siteSettings"][0]`);
-        setSettings(data);
-      } catch (err) { console.error("Settings fetch error:", err); } finally { setLoading(false); }
-    };
+    const fetchSettings = async () => { try { const data = await sanity.fetch(`*[_type == "siteSettings"][0]`); setSettings(data); } catch (err) { console.error("Settings fetch error:", err); } finally { setLoading(false); } };
     fetchSettings();
   }, []);
 
@@ -458,22 +428,13 @@ export default function App() {
   const handleLogout = () => { localStorage.removeItem("isAdmin"); setIsAdmin(false); window.location.reload(); };
 
   if (loading) return <div className="flex min-h-screen items-center justify-center bg-black text-white"><div className="h-12 w-12 animate-spin rounded-full border-4 border-pink-500 border-t-transparent"></div></div>;
-
   const showMaintenance = settings?.maintenanceMode && !isAdmin;
 
   return (
     <Router>
-      {/* RETRO ÜZENET (MODAL) */}
-      {settings?.announcement && (
-        <RetroSystemMessage data={settings.announcement} updatedAt={settings?._updatedAt} />
-      )}
-
-      <AnimatedRoutes 
-        settings={settings} 
-        onLoginSuccess={handleLoginSuccess} 
-        onLogout={handleLogout} 
-        showMaintenance={showMaintenance} 
-      />
+      <RetroCookieConsent />
+      {settings?.announcement && (<RetroSystemMessage data={settings.announcement} updatedAt={settings?._updatedAt} />)}
+      <AnimatedRoutes settings={settings} onLoginSuccess={handleLoginSuccess} onLogout={handleLogout} showMaintenance={showMaintenance} />
     </Router>
   );
 }
