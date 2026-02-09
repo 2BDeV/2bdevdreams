@@ -2,13 +2,5 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  plugins: [react()],
-  build: {
-    cssCodeSplit: true,
-    minify: 'esbuild',
-    target: 'esnext',
-    esbuild: {
-      drop: ['console', 'debugger'],
-    }
-  }
+  plugins: [react()]
 })
