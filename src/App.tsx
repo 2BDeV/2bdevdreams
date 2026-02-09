@@ -68,6 +68,136 @@ const GhostButton = ({ children, onClick }: any) => (
   </button>
 );
 
+// --- ✅ JAVÍTOTT DYNAMIC NAVBAR ---
+const DynamicNavbar = ({ 
+  menuItems, 
+  onMenuClick 
+}: { 
+  menuItems: string[], 
+  onMenuClick: (id: string) => void 
+}) => {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <div className="fixed top-4 inset-x-0 z-50 flex justify-center pointer-events-none">
+      <motion.div
+        layout
+        initial={{ width: "95%", borderRadius: 24 }}
+        animate={{ 
+          width: isScrolled ? "auto" : "95%",
+          backgroundColor: isScrolled ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.15)" 
+        }}
+        transition={{ type: "spring", stiffness: 120, damping: 20 }}
+        className="pointer-events-auto flex items-center justify-between p-2 backdrop-blur-xl border border-white/10 shadow-2xl overflow-hidden min-h-[60px]"
+        style={{ maxWidth: "1280px" }}
+      >
+        
+        {/* --- BAL OLDAL: GIF (Fent) vs LOGÓ (Lent) --- */}
+        <div className="flex items-center gap-4 pl-2">
+          <AnimatePresence mode="wait">
+            {!isScrolled ? (
+              <motion.div 
+                key="video-mode"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                className="flex items-center"
+              >
+                {/* ✅ GIF KERET NÉLKÜL - Cseréld ki a saját GIF-edre */}
+                <div className="h-18 w-18 overflow-hidden relative bg-transparent">
+                   <img 
+                     src="/dreams.png" 
+                     alt="Logo Animation" 
+                     className="h-10 object-contain"
+                   />
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div 
+                key="icon-mode"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="cursor-pointer"              
+              >
+                <img src="/2bdev logo.png" alt="Logo" className="h-8 w-8" />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* --- KÖZÉP: MENÜPONTOK --- */}
+        <div className="flex items-center justify-center absolute left-1/2 -translate-x-1/2">
+          <AnimatePresence mode="wait">
+            {!isScrolled ? (
+              <motion.div 
+                key="full-menu"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="hidden md:flex items-center gap-1"
+              >
+                {menuItems.map((item) => (
+                  <button 
+                    key={item} 
+                    onClick={() => onMenuClick(item)}
+                    className="px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all"
+                  >
+                    {item}
+                  </button>
+                ))}
+              </motion.div>
+            ) : (
+              <motion.div 
+                key="compact-menu"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="flex items-center gap-2"
+              >
+                <button 
+                    onClick={() => onMenuClick('Projects')} 
+                    className="px-3 py-1.5 text-xs font-bold bg-white/10 rounded-full hover:bg-white/20 transition-all text-white"
+                >
+                  Works
+                </button>
+                <button 
+                    onClick={() => onMenuClick('Contact')} 
+                    className="px-3 py-1.5 text-xs font-bold bg-gradient-to-r from-pink-500 to-indigo-500 rounded-full text-white shadow-lg"
+                >
+                  Talk
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* --- JOBB OLDAL: Contact Gomb (✅ ÚJ HOVER ANIMÁCIÓ) --- */}
+        <div className="flex items-center gap-2 pr-2">
+            {!isScrolled && (
+              <button 
+                  onClick={() => onMenuClick('Contact')}
+                  className="hidden sm:flex items-center gap-2 bg-white text-black px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 hover:scale-105 hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 hover:text-white hover:shadow-lg hover:shadow-pink-500/50"
+              >
+                  Let's Talk <ArrowRight className="h-3 w-3" />
+              </button>
+            )}
+        </div>
+
+      </motion.div>
+    </div>
+  );
+};
+
 // --- ANIMÁLT ÁTMENET WRAPPER ---
 const PageTransition = ({ children }: { children: React.ReactNode }) => (
   <motion.div
@@ -98,7 +228,7 @@ const RetroCookieConsent = () => {
     setShow(false);
   };
 
-  const bgColor = "#008888"; // Retro Cyan/Teal
+  const bgColor = "#008888";
 
   return (
     <AnimatePresence>
@@ -107,7 +237,7 @@ const RetroCookieConsent = () => {
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1, transition: { type: "spring", stiffness: 100, damping: 15 } }}
           exit={{ y: 100, opacity: 0, transition: { duration: 0.5 } }}
-          className="fixed bottom-4 right-4 z-[9990] w-full max-w-sm px-4 md:px-0"
+          className="fixed bottom-4 right-4 z-[9990] w-full max-w-sm px-4 md:px-0 pointer-events-auto"
         >
           <div className="border-2 border-gray-400 shadow-[8px_8px_0px_rgba(0,0,0,0.8)] text-white overflow-hidden font-mono text-sm" style={{ backgroundColor: bgColor }}>
             <div className="border border-white/40 m-1 flex flex-col">
@@ -206,7 +336,10 @@ const MaintenanceScreen = ({ settings }: { settings: any }) => {
           <p className="mb-10 text-[11px] uppercase tracking-[4px] text-gray-500 max-w-md mx-auto leading-relaxed">{settings?.maintenanceMessage || "We are currently evolving. Check back soon."}</p>
           <button onClick={() => navigate('/contact')} className="group relative px-8 py-3 text-[10px] uppercase tracking-[3px] text-white overflow-hidden rounded-full border border-white/20 bg-transparent hover:bg-white/5 transition-all"><span className="relative z-10 group-hover:text-white transition-colors">Contact Us</span></button>
         </motion.div>
-        <div className="fixed bottom-8 w-full text-center z-10 opacity-40"><p className="text-[10px] tracking-[2px] text-white">&copy; {new Date().getFullYear()} 2BDeV Studio.</p></div>
+        <div className="fixed bottom-8 w-full text-center z-10 opacity-40">
+          <p className="text-[10px] tracking-[2px] text-white">&copy; {new Date().getFullYear()} 2BDeV Studio.</p>
+          <a href="https://2bdevon.top/legal-2bdevmail" target="_blank" rel="noopener noreferrer" className="text-[10px] tracking-[2px] text-white hover:opacity-100 transition-opacity underline">Privacy Policy and Terms of Service</a>
+        </div>
         <style>{`@keyframes breathe { 0% { transform: scale(1); opacity: 0.3; box-shadow: 0 0 0px white; } 50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 30px rgba(255,255,255,0.1); } 100% { transform: scale(1); opacity: 0.3; box-shadow: 0 0 0px white; } } .animate-breathe { animation: breathe 4s ease-in-out infinite; }`}</style>
       </div>
     </PageTransition>
@@ -293,9 +426,8 @@ const AdminLogin = ({ settings, onLoginSuccess }: { settings: any, onLoginSucces
   );
 };
 
-// --- MAIN APP CONTENT (JAVÍTOTT: GOMBOK + NAVIGÁCIÓ + SCROLL) ---
+// --- MAIN APP CONTENT ---
 function MainAppContent({ onLogout }: { onLogout?: () => void }) {
-  const [menuOpen, setMenuOpen] = useState(false);
   const [showScroll, setShowScroll] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [projects, setProjects] = useState<any[]>([]);
@@ -305,7 +437,8 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
   const [message, setMessage] = useState("");
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const navigate = useNavigate();
-  const menuItems = ["About", "Projects", "Skills", "Contact"];
+  
+  const menuItems = ["About", "Projects", "Skills"]; 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -316,14 +449,13 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
   
   const handleMenuClick = (id: string) => { 
     const targetId = id.toLowerCase(); 
-    if (targetId === 'contact') { navigate('/contact'); setMenuOpen(false); return; }
+    if (targetId === 'contact') { navigate('/contact'); return; }
     const el = document.getElementById(targetId); 
-    if (el) { const offset = 80; const elementPosition = el.getBoundingClientRect().top + window.pageYOffset; window.scrollTo({ top: elementPosition - offset, behavior: "smooth" }); } 
-    setMenuOpen(false); 
+    if (el) { const offset = 120; const elementPosition = el.getBoundingClientRect().top + window.pageYOffset; window.scrollTo({ top: elementPosition - offset, behavior: "smooth" }); } 
   };
   
   const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
-  useEffect(() => { const handleScroll = () => { if (menuOpen) setMenuOpen(false); if(window.scrollY > 400) setShowScroll(true); else setShowScroll(false); }; window.addEventListener("scroll", handleScroll); return () => window.removeEventListener("scroll", handleScroll); }, [menuOpen, showScroll]);
+  useEffect(() => { const handleScroll = () => { if(window.scrollY > 400) setShowScroll(true); else setShowScroll(false); }; window.addEventListener("scroll", handleScroll); return () => window.removeEventListener("scroll", handleScroll); }, [showScroll]);
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -359,23 +491,18 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
         </div>
 
         <div className="relative z-10">
-          <header className="fixed inset-x-0 top-0 z-50">
-            <Container>
-              <motion.div initial={{ y: -60, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="mt-4 flex items-center justify-between rounded-xl border border-white/20 bg-black/70 px-4 py-3 text-white backdrop-blur-xl shadow-lg">
-                <div className="flex items-center gap-2 cursor-pointer" onClick={scrollTop}>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-pink-500 to-indigo-600"><img src="/2bdev logo.png" alt="2BDeV logo" className="h-6 w-6" /></div>
-                  <span className="text-base font-bold tracking-tight">2BDeV</span>
-                </div>
-                <motion.button className="rounded-xl p-2 hover:bg-white/10" onClick={() => setMenuOpen((v) => !v)} animate={{ rotate: menuOpen ? 90 : 0 }}>{menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}</motion.button>
-              </motion.div>
-            </Container>
-            <AnimatePresence>{menuOpen && (<motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}><Container><ul className="mt-2 space-y-2 rounded-xl border border-white/20 bg-black/80 p-4 text-white backdrop-blur-xl">{menuItems.map((item, idx) => (<li key={idx} className="block rounded-xl px-3 py-2 hover:bg-white/10 cursor-pointer" onClick={() => handleMenuClick(item)}>{item}</li>))}<li><PrimaryButton onClick={() => navigate('/contact')}>Let’s Talk</PrimaryButton></li></ul></Container></motion.div>)}</AnimatePresence>
-          </header>
-          <section className="relative isolate overflow-hidden pt-40 text-white">
+          
+          {/* ✅ JAVÍTOTT LEBEGŐ MENÜ */}
+          <DynamicNavbar 
+            menuItems={menuItems} 
+            onMenuClick={handleMenuClick} 
+          />
+
+          <section className="relative isolate overflow-hidden pt-48 text-white">
             <Container>
               <div className="grid items-center gap-10 md:grid-cols-2">
                 <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}>
-                  <h1 className="mt-6 text-5xl font-extrabold leading-tight tracking-tight sm:text-6xl">Hi, I’m <span className="bg-gradient-to-r from-pink-400 via-fuchsia-500 to-indigo-500 bg-clip-text text-transparent">2BDeV</span>.<br />Web Developer, Creative Problem Solver & Photographer :)</h1>
+                  <h1 className="mt-6 text-5xl font-extrabold leading-tight tracking-tight sm:text-6xl">Hi, I'm <span className="bg-gradient-to-r from-pink-400 via-fuchsia-500 to-indigo-500 bg-clip-text text-transparent">2BDeV</span>.<br />Web Developer, Creative Problem Solver & Photographer :)</h1>
                   <p className="mt-4 text-white/80 max-w-xl">Btw i created this website too, cuz this is mine (˶˃ ᵕ ˂˶) </p>
                   <div className="mt-8 flex flex-wrap items-center gap-3"><PrimaryButton onClick={() => navigate('/contact')}>Contact Me</PrimaryButton><GhostButton onClick={() => handleMenuClick('projects')}><Code className="h-4 w-4" /> View my works</GhostButton></div>
                 </motion.div>
@@ -383,10 +510,11 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
               </div>
             </Container>
           </section>
+          
           <section id="about" className="relative py-24 text-white"><Container><h2 className="text-4xl font-bold mb-6">About</h2><p className="text-white/80 max-w-3xl">{settings?.aboutText || "Loading profile..."}</p></Container></section>
           <section id="projects" className="relative py-24 text-white"><Container><h2 className="text-4xl font-bold mb-6">Projects</h2><div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">{projects.length > 0 ? (projects.map((project, i) => (<a key={project._id || i} href={project.link} target="_blank" rel="noopener noreferrer" className="group rounded-xl bg-gradient-to-tr from-pink-500/10 to-purple-600/10 p-6 border border-white/10 transition-all duration-300 hover:scale-105 hover:border-pink-500/50"><h3 className="text-xl font-semibold">{project.title}</h3><p className="mt-2 text-sm text-white/70">{project.description}</p><div className="mt-4 flex items-center gap-2 text-pink-400 text-sm font-medium">View Project <ArrowRight className="h-4 w-4" /></div></a>))) : <p className="text-white/40">Loading projects...</p>}</div></Container></section>
           <section id="skills" className="relative py-24 text-white"><Container><h2 className="text-4xl font-bold mb-10 text-center">My Tech Stack</h2>{settings?.skills && settings.skills.length > 0 ? (<div className="flex flex-wrap justify-center gap-8">{settings.skills.map((skill: string) => (<div key={skill} className="group flex flex-col items-center justify-center p-4 transition-all duration-300 hover:-translate-y-2"><div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 shadow-lg backdrop-blur-sm border border-white/10 transition-all group-hover:border-pink-500/50 group-hover:shadow-pink-500/20"><img src={`https://cdn.simpleicons.org/${skill}/F472B6`} alt={skill} className="h-8 w-8 transition-all group-hover:scale-110" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} /></div><span className="mt-3 text-sm font-medium text-white/60 group-hover:text-white transition-colors capitalize">{skill.replace('dotjs', '.js').replace('webservices', '').replace('adobe', '')}</span></div>))}</div>) : (<p className="text-center text-white/40">Loading skills...</p>)}</Container></section>
-          {/* Secondary Contact Form at bottom */}
+          
           <section className="relative py-24 text-white"><Container><div className="flex flex-col items-center text-center"><h2 className="text-4xl font-bold mb-6">Quick Message</h2><form onSubmit={handleFormSubmit} className="w-full max-w-xl space-y-4"><input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" /><input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" /><textarea placeholder="Message" rows={4} value={message} onChange={(e) => setMessage(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" ></textarea><div className="flex justify-center"><Turnstile sitekey={CONFIG.TURNSTILE_SITEKEY} onVerify={(token) => setTurnstileToken(token)} theme="dark" /></div><PrimaryButton type="submit" disabled={isSubmitting}>{isSubmitting ? "Sending..." : "Send"}</PrimaryButton></form></div></Container></section>
           <footer className="relative py-6 text-center text-white/70 text-sm"><Container><div className="flex flex-col items-center gap-2"><span>© {new Date().getFullYear()} 2BDeV Studio Inc. All rights reserved.</span>{localStorage.getItem("isAdmin") === "true" && (<button onClick={onLogout} className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition-colors"><LogOut className="h-3 w-3" /> Logout (Admin)</button>)}</div></Container></footer>
           <AnimatePresence>{showScroll && (<motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={scrollTop} className="fixed bottom-6 right-6 z-40 rounded-full p-4 bg-white/10 text-white backdrop-blur-xl border border-white/20 shadow-lg" ><ArrowUp className="h-6 w-6" /></motion.button>)}</AnimatePresence>
