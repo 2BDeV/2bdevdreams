@@ -68,7 +68,7 @@ const GhostButton = ({ children, onClick }: any) => (
   </button>
 );
 
-// --- ✅ JAVÍTOTT DYNAMIC NAVBAR ---
+// --- DYNAMIC NAVBAR ---
 const DynamicNavbar = ({ 
   menuItems, 
   onMenuClick 
@@ -111,7 +111,6 @@ const DynamicNavbar = ({
                 exit={{ opacity: 0, scale: 0.8 }}
                 className="flex items-center"
               >
-                {/* ✅ GIF KERET NÉLKÜL - Cseréld ki a saját GIF-edre */}
                 <div className="h-18 w-18 overflow-hidden relative bg-transparent">
                    <img 
                      src="/dreams.png" 
@@ -181,7 +180,7 @@ const DynamicNavbar = ({
           </AnimatePresence>
         </div>
 
-        {/* --- JOBB OLDAL: Contact Gomb (✅ ÚJ HOVER ANIMÁCIÓ) --- */}
+        {/* --- JOBB OLDAL: Contact Gomb --- */}
         <div className="flex items-center gap-2 pr-2">
             {!isScrolled && (
               <button 
@@ -211,7 +210,7 @@ const PageTransition = ({ children }: { children: React.ReactNode }) => (
   </motion.div>
 );
 
-// --- RETRO COOKIE CONSENT ---
+// --- ✅ JAVÍTOTT RETRO COOKIE CONSENT (KONTRASZT JAVÍTVA) ---
 const RetroCookieConsent = () => {
   const [show, setShow] = useState(false);
 
@@ -242,12 +241,12 @@ const RetroCookieConsent = () => {
           <div className="border-2 border-gray-400 shadow-[8px_8px_0px_rgba(0,0,0,0.8)] text-white overflow-hidden font-mono text-sm" style={{ backgroundColor: bgColor }}>
             <div className="border border-white/40 m-1 flex flex-col">
               <div className="flex justify-between items-center px-2 py-1 border-b border-white/40 bg-black/10">
-                <span className="font-bold uppercase tracking-wider animate-pulse text-yellow-300">[ COOKIE_PROTOCOL.EXE ]</span>
+                <span className="font-bold uppercase tracking-wider animate-pulse text-white">[ COOKIE_PROTOCOL.EXE ]</span>
                 <button onClick={() => handleAction("declined")} className="hover:text-black hover:bg-white px-1">[x]</button>
               </div>
               <div className="p-4 text-center">
                 <p className="mb-4 leading-relaxed drop-shadow-md">We use cookies to optimize system performance and analyze data streams.</p>
-                <a href="/legal.html" target="_blank" className="text-xs uppercase underline hover:text-yellow-300 mb-4 block">View Privacy Protocols</a>
+                <a href="/legal.html" target="_blank" className="text-xs uppercase underline hover:text-yellow-300 mb-4 block text-white">View Privacy Protocols</a>
                 <div className="flex gap-2 justify-center mt-2">
                   <button onClick={() => handleAction("declined")} className="flex-1 border border-white/50 py-1 hover:bg-white hover:text-black transition-colors uppercase text-xs">[ Decline ]</button>
                   <button onClick={() => handleAction("accepted")} className="flex-1 border-2 border-white bg-black/20 py-1 hover:bg-white hover:text-black transition-colors uppercase font-bold text-xs shadow-[2px_2px_0px_black]">[ Accept ]</button>
@@ -315,7 +314,7 @@ const RetroSystemMessage = ({ data, updatedAt }: { data: any, updatedAt?: string
   );
 };
 
-// --- MAINTENANCE SCREEN ---
+// --- ✅ JAVÍTOTT MAINTENANCE SCREEN (GPU-GYORSÍTOTT ANIMÁCIÓ) ---
 const MaintenanceScreen = ({ settings }: { settings: any }) => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const navigate = useNavigate();
@@ -340,7 +339,26 @@ const MaintenanceScreen = ({ settings }: { settings: any }) => {
           <p className="text-[10px] tracking-[2px] text-white">&copy; {new Date().getFullYear()} 2BDeV Studio.</p>
           <a href="https://2bdevon.top/legal-2bdevmail" target="_blank" rel="noopener noreferrer" className="text-[10px] tracking-[2px] text-white hover:opacity-100 transition-opacity underline">Privacy Policy and Terms of Service</a>
         </div>
-        <style>{`@keyframes breathe { 0% { transform: scale(1); opacity: 0.3; box-shadow: 0 0 0px white; } 50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 30px rgba(255,255,255,0.1); } 100% { transform: scale(1); opacity: 0.3; box-shadow: 0 0 0px white; } } .animate-breathe { animation: breathe 4s ease-in-out infinite; }`}</style>
+        <style>{`
+          @keyframes breathe { 
+            0% { 
+              transform: scale(1); 
+              opacity: 0.3; 
+            } 
+            50% { 
+              transform: scale(1.1); 
+              opacity: 1; 
+            } 
+            100% { 
+              transform: scale(1); 
+              opacity: 0.3; 
+            } 
+          } 
+          .animate-breathe { 
+            animation: breathe 4s ease-in-out infinite; 
+            will-change: transform, opacity;
+          }
+        `}</style>
       </div>
     </PageTransition>
   );
@@ -492,7 +510,6 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
 
         <div className="relative z-10">
           
-          {/* ✅ JAVÍTOTT LEBEGŐ MENÜ */}
           <DynamicNavbar 
             menuItems={menuItems} 
             onMenuClick={handleMenuClick} 

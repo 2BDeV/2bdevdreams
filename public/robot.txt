@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Sitemap: https://2bdevon.top/sitemap.xml
+
+User-agent: *
+Disallow: /admin
+Disallow: /login
