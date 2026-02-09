@@ -1,51 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <link rel="preconnect" href="https://2a99ehdl.apicdn.sanity.io" crossorigin>
+  <link rel="dns-prefetch" href="https://2a99ehdl.apicdn.sanity.io">
+  
+  <link rel="preconnect" href="https://ipapi.co" crossorigin>
+  <link rel="dns-prefetch" href="https://ipapi.co">
+  
+  <link rel="preconnect" href="https://script.google.com" crossorigin>
+  
+  <link rel="preconnect" href="https://challenges.cloudflare.com" crossorigin>
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/2bdev-logo.png" />
-    <link rel="shortcut icon" href="/2bdev-logo.png" />
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/2bdev-logo.png" />
+  <link rel="shortcut icon" href="/2bdev-logo.png" />
 
-    <meta name="description" content="Welcome to my little webpage <3" />
-    <title>2BDeV Dreams</title>
+  <meta name="description" content="Welcome to my little webpage <3" />
+  <title>2BDeV Dreams</title>
 
-    <!-- ANTI-FLASHBANG CSS -->
-    <style>
-      /* Azonnal feketére festjük a hátteret, még a React betöltése előtt */
-      html, body {
-        background-color: #0a0a0a; /* Vagy #000000, ízlés szerint */
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        overflow-x: hidden;
-      }
-      
-      /* Opcionális: egy kis betöltő szöveg vagy spinner, amíg a React elindul */
-      #root:empty::before {
-        content: "";
-        display: block;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 30px;
-        height: 30px;
-        transform: translate(-50%, -50%);
-        border: 2px solid #333;
-        border-top-color: #ec4899; /* Pink-500 szín */
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-      }
+  <!-- ANTI-FLASHBANG CSS -->
+  <style>
+    /* Azonnal feketére festjük a hátteret, még a React betöltése előtt */
+    html, body {
+      background-color: #0a0a0a;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+    }
 
-      @keyframes spin {
-        to { transform: translate(-50%, -50%) rotate(360deg); }
-      }
-    </style>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    /* Opcionális: egy kis betöltő szöveg vagy spinner, amíg a React elindul */
+    #root::before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 30px;
+      height: 30px;
+      transform: translate(-50%, -50%);
+      border: 2px solid #333;
+      border-top-color: #ec4899; /* Pink-500 szín */
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+</body>
 </html>

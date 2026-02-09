@@ -1,12 +1,26 @@
 import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  plugins: [vue()],
-  server: {
-    headers: new Map([
-      ['Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'"],
-      ['X-Frame-Options', 'DENY']
-    ])
+  plugins: [react()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor': ['react', 'react-dom', 'react-router-dom'],
+          'framer': ['framer-motion'],
+          'icons': ['lucide-react'],
+          'sanity': ['@sanity/client'],
+        }
+      }
+    },
+    cssCodeSplit: true,
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    }
   }
 })

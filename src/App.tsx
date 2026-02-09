@@ -1,7 +1,6 @@
 import { Analytics } from "@vercel/analytics/react";
-import Logo3d from "./Logo3d";
 import { SpeedInsights } from "@vercel/speed-insights/react";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Code,
@@ -22,6 +21,9 @@ import {
 import Turnstile from "react-turnstile";
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import { createClient } from "@sanity/client";
+
+// ✅ LAZY LOAD Logo3d (csak amikor látható)
+const Logo3d = lazy(() => import("./Logo3d"));
 
 // --- CONFIG ---
 const sanity = createClient({
@@ -100,7 +102,6 @@ const DynamicNavbar = ({
         style={{ maxWidth: "1280px" }}
       >
         
-        {/* --- BAL OLDAL: GIF (Fent) vs LOGÓ (Lent) --- */}
         <div className="flex items-center gap-4 pl-2">
           <AnimatePresence mode="wait">
             {!isScrolled ? (
@@ -134,7 +135,6 @@ const DynamicNavbar = ({
           </AnimatePresence>
         </div>
 
-        {/* --- KÖZÉP: MENÜPONTOK --- */}
         <div className="flex items-center justify-center absolute left-1/2 -translate-x-1/2">
           <AnimatePresence mode="wait">
             {!isScrolled ? (
@@ -180,7 +180,6 @@ const DynamicNavbar = ({
           </AnimatePresence>
         </div>
 
-        {/* --- JOBB OLDAL: Contact Gomb --- */}
         <div className="flex items-center gap-2 pr-2">
             {!isScrolled && (
               <button 
@@ -210,7 +209,7 @@ const PageTransition = ({ children }: { children: React.ReactNode }) => (
   </motion.div>
 );
 
-// --- ✅ JAVÍTOTT RETRO COOKIE CONSENT (KONTRASZT JAVÍTVA) ---
+// --- RETRO COOKIE CONSENT ---
 const RetroCookieConsent = () => {
   const [show, setShow] = useState(false);
 
@@ -314,7 +313,7 @@ const RetroSystemMessage = ({ data, updatedAt }: { data: any, updatedAt?: string
   );
 };
 
-// --- ✅ JAVÍTOTT MAINTENANCE SCREEN (GPU-GYORSÍTOTT ANIMÁCIÓ) ---
+// --- MAINTENANCE SCREEN ---
 const MaintenanceScreen = ({ settings }: { settings: any }) => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const navigate = useNavigate();
@@ -523,7 +522,13 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
                   <p className="mt-4 text-white/80 max-w-xl">Btw i created this website too, cuz this is mine (˶˃ ᵕ ˂˶) </p>
                   <div className="mt-8 flex flex-wrap items-center gap-3"><PrimaryButton onClick={() => navigate('/contact')}>Contact Me</PrimaryButton><GhostButton onClick={() => handleMenuClick('projects')}><Code className="h-4 w-4" /> View my works</GhostButton></div>
                 </motion.div>
-                <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative flex justify-center"><Logo3d /></motion.div>
+                
+                {/* ✅ LAZY LOADED Logo3d + FALLBACK */}
+                <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative flex justify-center">
+                  <Suspense fallback={<div className="h-64 w-64 animate-pulse bg-white/5 rounded-full"></div>}>
+                    <Logo3d />
+                  </Suspense>
+                </motion.div>
               </div>
             </Container>
           </section>
