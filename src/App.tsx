@@ -1,6 +1,7 @@
 import { Analytics } from "@vercel/analytics/react";
+import Logo3d from "./Logo3d"; // ✅ NEM lazy load
 import { SpeedInsights } from "@vercel/speed-insights/react";
-import React, { useState, useEffect, lazy, Suspense } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Code,
@@ -21,9 +22,6 @@ import {
 import Turnstile from "react-turnstile";
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import { createClient } from "@sanity/client";
-
-// ✅ LAZY LOAD Logo3d (csak amikor látható)
-const Logo3d = lazy(() => import("./Logo3d"));
 
 // --- CONFIG ---
 const sanity = createClient({
@@ -523,11 +521,9 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
                   <div className="mt-8 flex flex-wrap items-center gap-3"><PrimaryButton onClick={() => navigate('/contact')}>Contact Me</PrimaryButton><GhostButton onClick={() => handleMenuClick('projects')}><Code className="h-4 w-4" /> View my works</GhostButton></div>
                 </motion.div>
                 
-                {/* ✅ LAZY LOADED Logo3d + FALLBACK */}
+                {/* ✅ NEM lazy load - normal import */}
                 <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative flex justify-center">
-                  <Suspense fallback={<div className="h-64 w-64 animate-pulse bg-white/5 rounded-full"></div>}>
-                    <Logo3d />
-                  </Suspense>
+                  <Logo3d />
                 </motion.div>
               </div>
             </Container>
