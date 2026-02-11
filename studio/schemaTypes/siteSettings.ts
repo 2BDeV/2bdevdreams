@@ -155,12 +155,6 @@ export default {
           description: 'Engedjük-e a felhasználónak, hogy bezárja (X gomb)?',
           initialValue: true
         }
-        {
-         name: 'guestCode',
-         title: 'Guest Access Code (One-time use)',
-         type: 'string',
-         description: 'Code for guest access during maintenance mode'
-        }  
       ]
     },
   ],

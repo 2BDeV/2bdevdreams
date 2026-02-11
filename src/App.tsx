@@ -17,8 +17,7 @@ import {
   Settings,
   Lock,
   LogOut,
-  ChevronLeft,
-  Key
+  ChevronLeft
 } from "lucide-react";
 import Turnstile from "react-turnstile";
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
@@ -331,12 +330,7 @@ const MaintenanceScreen = ({ settings }: { settings: any }) => {
           <div className="mx-auto mb-10 flex h-[120px] w-[120px] items-center justify-center rounded-full border border-white animate-breathe"><div className="h-2.5 w-2.5 rounded-full bg-white"></div></div>
           <h1 className="mb-4 text-sm font-light uppercase tracking-[12px] opacity-90 text-white">Under Construction</h1>
           <p className="mb-10 text-[11px] uppercase tracking-[4px] text-gray-500 max-w-md mx-auto leading-relaxed">{settings?.maintenanceMessage || "We are currently evolving. Check back soon."}</p>
-          
-          <div className="flex flex-col gap-3 items-center">
-            <button onClick={() => navigate('/contact')} className="group relative px-8 py-3 text-[10px] uppercase tracking-[3px] text-white overflow-hidden rounded-full border border-white/20 bg-transparent hover:bg-white/5 transition-all">
-              <span className="relative z-10 group-hover:text-white transition-colors">Contact Us</span>
-            </button>
-          </div>
+          <button onClick={() => navigate('/contact')} className="group relative px-8 py-3 text-[10px] uppercase tracking-[3px] text-white overflow-hidden rounded-full border border-white/20 bg-transparent hover:bg-white/5 transition-all"><span className="relative z-10 group-hover:text-white transition-colors">Contact Us</span></button>
         </motion.div>
         <div className="fixed bottom-8 w-full text-center z-10 opacity-40">
           <p className="text-[10px] tracking-[2px] text-white">&copy; {new Date().getFullYear()} 2BDeV Studio.</p>
@@ -362,90 +356,6 @@ const MaintenanceScreen = ({ settings }: { settings: any }) => {
             will-change: transform, opacity;
           }
         `}</style>
-      </div>
-    </PageTransition>
-  );
-};
-
-const GuestLogin = ({ settings, onGuestSuccess }: { settings: any, onGuestSuccess: () => void }) => {
-  const [code, setCode] = useState("");
-  const [error, setError] = useState(false);
-  const navigate = useNavigate();
-  
-  useEffect(() => { 
-    if (localStorage.getItem("isGuest") === "true") { 
-      navigate("/"); 
-    } 
-  }, [navigate]);
-  
-  const handleSubmit = (e: React.FormEvent) => { 
-    e.preventDefault(); 
-    
-    if (code === (settings?.guestCode || "GUEST2024")) { 
-      localStorage.setItem("isGuest", "true"); 
-      localStorage.setItem("guestCodeUsed", code); // Használt kód tárolása
-      onGuestSuccess(); 
-      navigate("/"); 
-    } else { 
-      setError(true); 
-      setTimeout(() => setError(false), 2000); 
-    } 
-  };
-  
-  return (
-    <PageTransition>
-      <div className="flex min-h-screen items-center justify-center bg-black text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/40 via-black to-purple-900/40"></div>
-        
-        {/* Back to Maintenance Button */}
-        <button 
-          onClick={() => navigate('/')} 
-          className="absolute top-8 left-8 flex items-center gap-2 text-[10px] uppercase tracking-[2px] text-gray-500 hover:text-white transition-colors z-20"
-        >
-          <ChevronLeft className="h-4 w-4" /> Back
-        </button>
-        
-        <motion.div 
-          initial={{ scale: 0.9, opacity: 0 }} 
-          animate={{ scale: 1, opacity: 1 }} 
-          className="relative z-10 w-full max-w-md p-8 rounded-2xl border border-white/10 bg-black/60 backdrop-blur-xl shadow-2xl"
-        >
-          <div className="flex justify-center mb-6">
-            <div className="p-4 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-white/10">
-              <Key className="h-8 w-8 text-indigo-400" />
-            </div>
-          </div>
-          
-          <h2 className="text-2xl font-bold text-white text-center mb-2">Guest Access</h2>
-          <p className="text-sm text-white/60 text-center mb-8">Enter your one-time access code</p>
-          
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <input 
-              type="text" 
-              placeholder="Guest Code" 
-              value={code} 
-              onChange={(e) => setCode(e.target.value)} 
-              className={`w-full rounded-xl bg-white/5 border ${error ? 'border-red-500 animate-shake' : 'border-white/10'} px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all uppercase tracking-wider text-center`} 
-              autoFocus 
-            />
-            
-            {error && (
-              <p className="text-red-400 text-xs text-center animate-pulse">Invalid or expired code</p>
-            )}
-            
-            <button 
-              type="submit" 
-              className="w-full rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 py-3 font-semibold text-white hover:from-indigo-500 hover:to-purple-500 transition-all"
-            >
-              Enter Site
-            </button>
-          </form>
-          
-          <p className="mt-6 text-xs text-white/40 text-center">
-            This code can only be used once. Contact admin for a new code.
-          </p>
-        </motion.div>
-        <style>{`@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } } .animate-shake { animation: shake 0.3s ease-in-out; }`}</style>
       </div>
     </PageTransition>
   );
@@ -507,6 +417,84 @@ const ContactPage = () => {
   );
 };
 
+// ✅ --- ABOUT MAIL PAGE (Google OAuth verification) ---
+const AboutMailPage = () => {
+  const navigate = useNavigate();
+
+  return (
+    <PageTransition>
+      <div className="flex min-h-screen items-center justify-center bg-[#0a0a0a] text-white font-sans relative overflow-hidden">
+         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#1a1a1a_0%,#0a0a0a_100%)] z-0"></div>
+         <div className="relative z-10 w-full max-w-3xl p-8">
+            <button onClick={() => navigate('/')} className="mb-8 flex items-center gap-2 text-[10px] uppercase tracking-[2px] text-gray-500 hover:text-white transition-colors">
+              <ChevronLeft className="h-4 w-4" /> Back to Home
+            </button>
+            
+            <h1 className="text-4xl font-light uppercase tracking-[8px] mb-6 text-white">2BDeV Mail</h1>
+            <p className="text-gray-400 mb-8 text-sm leading-relaxed">
+              A secure and privacy-focused email management system designed for personal and business communication.
+            </p>
+
+            <div className="space-y-8">
+              <div>
+                <h2 className="text-2xl font-semibold mb-4 text-pink-400">What is 2BDeV Mail?</h2>
+                <p className="text-gray-300 leading-relaxed">
+                  2BDeV Mail is a web-based email service that integrates with Google Workspace to provide secure email sending and management capabilities. 
+                  It allows users to send emails through a verified and authenticated system, ensuring deliverability and security.
+                </p>
+              </div>
+
+              <div>
+                <h2 className="text-2xl font-semibold mb-4 text-pink-400">Key Features</h2>
+                <ul className="list-disc list-inside space-y-2 text-gray-300">
+                  <li>Secure email sending through Google OAuth 2.0 authentication</li>
+                  <li>Contact form integration for website communication</li>
+                  <li>IP tracking and location data for security purposes</li>
+                  <li>Cloudflare Turnstile CAPTCHA protection against spam</li>
+                  <li>Automatic email confirmation and delivery tracking</li>
+                </ul>
+              </div>
+
+              <div>
+                <h2 className="text-2xl font-semibold mb-4 text-pink-400">Privacy & Security</h2>
+                <p className="text-gray-300 leading-relaxed">
+                  We take your privacy seriously. All emails are sent through encrypted connections, and we only request the minimum permissions necessary to provide our service. 
+                  User data is never shared with third parties, and all communications are logged for security purposes only.
+                </p>
+                <a href="https://2bdevon.top/legal-2bdevmail" target="_blank" rel="noopener noreferrer" className="inline-block mt-4 text-indigo-400 hover:text-indigo-300 underline">
+                  Read our Privacy Policy →
+                </a>
+              </div>
+
+              <div>
+                <h2 className="text-2xl font-semibold mb-4 text-pink-400">How It Works</h2>
+                <ol className="list-decimal list-inside space-y-2 text-gray-300">
+                  <li>User submits the contact form on our website</li>
+                  <li>System validates the request using Cloudflare Turnstile</li>
+                  <li>Email is sent through Google Workspace API with OAuth 2.0</li>
+                  <li>User receives automatic confirmation of successful delivery</li>
+                  <li>Admin receives the message with metadata (IP, location, timestamp)</li>
+                </ol>
+              </div>
+
+              <div className="pt-6 border-t border-white/10">
+                <p className="text-gray-400 text-sm">
+                  © {new Date().getFullYear()} 2BDeV Studio Inc. All rights reserved. | 
+                  <a href="https://2bdevon.top/legal-2bdevmail" target="_blank" rel="noopener noreferrer" className="ml-2 text-white/50 hover:text-white underline">
+                    Privacy Policy
+                  </a> | 
+                  <a href="https://2bdevon.top/legal-2bdevmail" target="_blank" rel="noopener noreferrer" className="ml-2 text-white/50 hover:text-white underline">
+                    Terms of Service
+                  </a>
+                </p>
+              </div>
+            </div>
+         </div>
+      </div>
+    </PageTransition>
+  );
+};
+
 // --- LOGIN SCREEN ---
 const AdminLogin = ({ settings, onLoginSuccess }: { settings: any, onLoginSuccess: () => void }) => {
   const [password, setPassword] = useState("");
@@ -532,7 +520,7 @@ const AdminLogin = ({ settings, onLoginSuccess }: { settings: any, onLoginSucces
 };
 
 // --- MAIN APP CONTENT ---
-function MainAppContent({ onLogout, onGuestLogout }: { onLogout?: () => void, onGuestLogout?: () => void }) {
+function MainAppContent({ onLogout }: { onLogout?: () => void }) {
   const [showScroll, setShowScroll] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [projects, setProjects] = useState<any[]>([]);
@@ -544,8 +532,6 @@ function MainAppContent({ onLogout, onGuestLogout }: { onLogout?: () => void, on
   const navigate = useNavigate();
   
   const menuItems = ["About", "Projects", "Skills"]; 
-  const isGuest = localStorage.getItem("isGuest") === "true";
-  const isAdmin = localStorage.getItem("isAdmin") === "true";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -626,14 +612,18 @@ function MainAppContent({ onLogout, onGuestLogout }: { onLogout?: () => void, on
           
           <section className="relative py-24 text-white"><Container><div className="flex flex-col items-center text-center"><h2 className="text-4xl font-bold mb-6">Quick Message</h2><form onSubmit={handleFormSubmit} className="w-full max-w-xl space-y-4"><input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" /><input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" /><textarea placeholder="Message" rows={4} value={message} onChange={(e) => setMessage(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" ></textarea><div className="flex justify-center"><Turnstile sitekey={CONFIG.TURNSTILE_SITEKEY} onVerify={(token) => setTurnstileToken(token)} theme="dark" /></div><PrimaryButton type="submit" disabled={isSubmitting}>{isSubmitting ? "Sending..." : "Send"}</PrimaryButton></form></div></Container></section>
           
-          {/* ✅ FOOTER WITH LEGAL LINKS */}
+          {/* ✅ FOOTER WITH LEGAL LINKS + ABOUT MAIL */}
           <footer className="relative py-6 text-center text-white/70 text-sm border-t border-white/5">
             <Container>
               <div className="flex flex-col items-center gap-4">
                 <span>© {new Date().getFullYear()} 2BDeV Studio Inc. All rights reserved.</span>
                 
-                {/* ✅ Privacy Policy + Terms of Service */}
-                <div className="flex gap-4 text-xs">
+                {/* ✅ About Mail + Privacy Policy + Terms of Service */}
+                <div className="flex gap-4 text-xs flex-wrap justify-center">
+                  <a href="/about-mail" className="text-white/50 hover:text-white transition-colors underline">
+                    About 2BDeV Mail
+                  </a>
+                  <span className="text-white/30">|</span>
                   <a href="https://2bdevon.top/legal-2bdevmail" target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-white transition-colors underline">
                     Privacy Policy
                   </a>
@@ -643,15 +633,10 @@ function MainAppContent({ onLogout, onGuestLogout }: { onLogout?: () => void, on
                   </a>
                 </div>
                 
-                {/* Admin/Guest Logout */}
-                {isAdmin && (
+                {/* Admin Logout */}
+                {localStorage.getItem("isAdmin") === "true" && (
                   <button onClick={onLogout} className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition-colors">
                     <LogOut className="h-3 w-3" /> Logout (Admin)
-                  </button>
-                )}
-                {isGuest && (
-                  <button onClick={onGuestLogout} className="flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 transition-colors">
-                    <LogOut className="h-3 w-3" /> Logout (Guest)
                   </button>
                 )}
               </div>
@@ -669,15 +654,15 @@ function MainAppContent({ onLogout, onGuestLogout }: { onLogout?: () => void, on
 }
 
 // --- GLOBAL ROUTING & ANIMATIONS ---
-function AnimatedRoutes({ settings, onLoginSuccess, onGuestSuccess, onLogout, onGuestLogout, showMaintenance }: any) {
+function AnimatedRoutes({ settings, onLoginSuccess, onLogout, showMaintenance }: any) {
   const location = useLocation();
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/login" element={<AdminLogin settings={settings} onLoginSuccess={onLoginSuccess} />} />
-        <Route path="/guest" element={<GuestLogin settings={settings} onGuestSuccess={onGuestSuccess} />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route path="/" element={showMaintenance ? (<MaintenanceScreen settings={settings} />) : (<MainAppContent onLogout={onLogout} onGuestLogout={onGuestLogout} />)} />
+        <Route path="/about-mail" element={<AboutMailPage />} /> {/* ✅ ÚJ ROUTE */}
+        <Route path="/" element={showMaintenance ? (<MaintenanceScreen settings={settings} />) : (<MainAppContent onLogout={onLogout} />)} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AnimatePresence>
@@ -688,7 +673,6 @@ export default function App() {
   const [settings, setSettings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(localStorage.getItem("isAdmin") === "true");
-  const [isGuest, setIsGuest] = useState(localStorage.getItem("isGuest") === "true");
 
   useEffect(() => {
     const fetchSettings = async () => { try { const data = await sanity.fetch(`*[_type == "siteSettings"][0]`); setSettings(data); } catch (err) { console.error("Settings fetch error:", err); } finally { setLoading(false); } };
@@ -696,25 +680,16 @@ export default function App() {
   }, []);
 
   const handleLoginSuccess = () => { setIsAdmin(true); };
-  const handleGuestSuccess = () => { setIsGuest(true); };
   const handleLogout = () => { localStorage.removeItem("isAdmin"); setIsAdmin(false); window.location.reload(); };
-  const handleGuestLogout = () => { localStorage.removeItem("isGuest"); localStorage.removeItem("guestCodeUsed"); setIsGuest(false); window.location.reload(); };
 
   if (loading) return <div className="flex min-h-screen items-center justify-center bg-black text-white"><div className="h-12 w-12 animate-spin rounded-full border-4 border-pink-500 border-t-transparent"></div></div>;
-  const showMaintenance = settings?.maintenanceMode && !isAdmin && !isGuest;
+  const showMaintenance = settings?.maintenanceMode && !isAdmin;
 
   return (
     <Router>
       <RetroCookieConsent />
       {settings?.announcement && (<RetroSystemMessage data={settings.announcement} updatedAt={settings?._updatedAt} />)}
-      <AnimatedRoutes 
-        settings={settings} 
-        onLoginSuccess={handleLoginSuccess} 
-        onGuestSuccess={handleGuestSuccess}
-        onLogout={handleLogout} 
-        onGuestLogout={handleGuestLogout}
-        showMaintenance={showMaintenance} 
-      />
+      <AnimatedRoutes settings={settings} onLoginSuccess={handleLoginSuccess} onLogout={handleLogout} showMaintenance={showMaintenance} />
     </Router>
   );
 }
