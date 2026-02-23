@@ -334,7 +334,7 @@ const MaintenanceScreen = ({ settings }: { settings: any }) => {
         </motion.div>
         <div className="fixed bottom-8 w-full text-center z-10 opacity-40">
           <p className="text-[10px] tracking-[2px] text-white">&copy; {new Date().getFullYear()} 2BDeV Studio.</p>
-          <a href="https://2bdevon.top/legal-2bdevmail" target="_blank" rel="noopener noreferrer" className="text-[10px] tracking-[2px] text-white hover:opacity-100 transition-opacity underline">Privacy Policy and Terms of Service</a>
+          <a href="https://2bdevon.top/legal" target="_blank" rel="noopener noreferrer" className="text-[10px] tracking-[2px] text-white hover:opacity-100 transition-opacity underline">Privacy Policy and Terms of Service</a>
         </div>
         <style>{`
           @keyframes breathe { 
@@ -479,11 +479,11 @@ const AboutMailPage = () => {
 
               <div className="pt-6 border-t border-white/10">
                 <p className="text-gray-400 text-sm">
-                  © {new Date().getFullYear()} 2BDeV Studio Inc. All rights reserved. | 
-                  <a href="https://2bdevon.top/legal-2bdevmail" target="_blank" rel="noopener noreferrer" className="ml-2 text-white/50 hover:text-white underline">
+                  © 2024 - {new Date().getFullYear()} 2BDeV Studio Inc. All rights reserved. | 
+                  <a href="https://2bdevon.top/legal" target="_blank" rel="noopener noreferrer" className="ml-2 text-white/50 hover:text-white underline">
                     Privacy Policy
                   </a> | 
-                  <a href="https://2bdevon.top/legal-2bdevmail" target="_blank" rel="noopener noreferrer" className="ml-2 text-white/50 hover:text-white underline">
+                  <a href="https://2bdevon.top/legal" target="_blank" rel="noopener noreferrer" className="ml-2 text-white/50 hover:text-white underline">
                     Terms of Service
                   </a>
                 </p>

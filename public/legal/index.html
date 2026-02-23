@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Legal | 2bdevon.top</title>
+  <style>
+    :root {
+      --bg: #050510;
+      --bg-alt: #0b0b1a;
+      --card: #111124;
+      --border: #2a2a48;
+      --accent: #b279ff;
+      --accent-soft: rgba(178, 121, 255, 0.15);
+      --text: #f5f5ff;
+      --muted: #a0a0c0;
+      --danger: #ff4d7a;
+      --radius-lg: 18px;
+      --radius-md: 10px;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', sans-serif;
+      background: radial-gradient(circle at top, #18182f 0, #050510 45%, #020208 100%);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    .shell {
+      width: 100%;
+      max-width: 1120px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.7));
+      border-radius: 26px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .shell::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0 0, rgba(178, 121, 255, 0.18), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(119, 216, 255, 0.12), transparent 55%);
+      opacity: 0.7;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .chrome {
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(120deg, #090916, #050510);
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.85), transparent 45%),
+        var(--danger);
+      box-shadow: 0 0 8px rgba(255, 77, 122, 0.8);
+    }
+
+    .dot:nth-child(2) {
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.85), transparent 45%),
+        #ffcf4d;
+      box-shadow: 0 0 8px rgba(255, 207, 77, 0.8);
+    }
+
+    .dot:nth-child(3) {
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.85), transparent 45%),
+        #62e36f;
+      box-shadow: 0 0 8px rgba(98, 227, 111, 0.8);
+    }
+
+    .address {
+      flex: 1;
+      max-width: 420px;
+      margin: 0 auto;
+      border-radius: 999px;
+      padding: 8px 14px;
+      background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.12), transparent 60%),
+        #050510;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .address span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 10px;
+    }
+
+    .pill-switch {
+      display: inline-flex;
+      gap: 4px;
+      padding: 2px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      font-size: 11px;
+    }
+
+    .pill-switch button {
+      border: none;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .pill-switch button.active {
+      background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.18), transparent 60%),
+        var(--accent-soft);
+      color: var(--text);
+      box-shadow: 0 0 14px rgba(178, 121, 255, 0.55);
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.25fr);
+      gap: 1px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02));
+    }
+
+    .side {
+      background: radial-gradient(circle at top, #191932 0, #050510 60%);
+      padding: 26px 22px 26px 24px;
+      border-right: 1px solid rgba(255, 255, 255, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      background: rgba(3, 252, 157, 0.06);
+      border: 1px solid rgba(3, 252, 157, 0.35);
+      font-size: 11px;
+      color: #82ffd2;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .badge span {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 30% 30%, #ffffff, transparent 55%),
+        #03fc9d;
+      box-shadow: 0 0 14px rgba(3, 252, 157, 0.8);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 26px;
+      letter-spacing: 0.03em;
+    }
+
+    .sub {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 320px;
+    }
+
+    .grid {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .tile {
+      padding: 10px 11px;
+      border-radius: var(--radius-md);
+      background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.08), transparent 70%),
+        rgba(9, 9, 30, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 11px;
+    }
+
+    .tile strong {
+      display: block;
+      font-size: 11px;
+      margin-bottom: 2px;
+    }
+
+    .link-box {
+      margin-top: 10px;
+      padding: 10px 11px;
+      border-radius: var(--radius-md);
+      border: 1px dashed rgba(255, 255, 255, 0.18);
+      background:
+        radial-gradient(circle at top left, rgba(178, 121, 255, 0.12), transparent 70%),
+        rgba(8, 8, 22, 0.98);
+      font-size: 11px;
+    }
+
+    .link-box a {
+      color: var(--accent);
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    .hint {
+      margin-top: auto;
+      font-size: 11px;
+      color: var(--muted);
+      opacity: 0.9;
+    }
+
+    .hint strong {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .panel {
+      background: radial-gradient(circle at top, #15152d 0, #050510 55%);
+      padding: 24px 22px 22px 22px;
+      max-height: min(560px, 80vh);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .panel-inner {
+      height: 100%;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: linear-gradient(135deg, rgba(5, 5, 20, 0.96), rgba(5, 5, 18, 0.98));
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+      padding: 18px 18px 18px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel-inner::before {
+      content: "";
+      position: absolute;
+      inset: -30%;
+      background:
+        radial-gradient(circle at 10% 0, rgba(178, 121, 255, 0.15), transparent 60%),
+        radial-gradient(circle at 90% 100%, rgba(119, 216, 255, 0.12), transparent 60%);
+      opacity: 0.8;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+
+    .panel-header {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .panel-header span {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+        'Courier New', monospace;
+      font-size: 11px;
+      opacity: 0.9;
+    }
+
+    .badge-soft {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .scroll {
+      position: relative;
+      height: calc(100% - 26px);
+      padding-right: 12px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(178, 121, 255, 0.7) rgba(0, 0, 0, 0.4);
+    }
+
+    .scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .scroll::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 999px;
+    }
+
+    .scroll::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, rgba(178, 121, 255, 0.9), rgba(96, 188, 255, 0.9));
+      border-radius: 999px;
+    }
+
+    h2 {
+      font-size: 15px;
+      margin: 0 0 4px 0;
+    }
+
+    .muted {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    h3 {
+      font-size: 13px;
+      margin: 16px 0 4px 0;
+    }
+
+    h4 {
+      font-size: 12px;
+      margin: 12px 0 4px 0;
+    }
+
+    p {
+      font-size: 12px;
+      line-height: 1.6;
+      margin: 4px 0 8px 0;
+      color: #e0e0ff;
+    }
+
+    ul {
+      margin: 4px 0 8px 18px;
+      padding: 0;
+      font-size: 12px;
+      line-height: 1.55;
+      color: #d6d6ff;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .ts, .pp {
+      display: none;
+    }
+
+    .ts.active, .pp.active {
+      display: block;
+    }
+
+    @media (max-width: 840px) {
+      body {
+        padding: 18px 10px;
+        align-items: stretch;
+      }
+
+      .shell {
+        border-radius: 18px;
+      }
+
+      .content {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .side {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .panel {
+        padding: 18px 14px 16px 14px;
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="chrome">
+      <div class="dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <div class="address">
+        <span>🔒</span>
+        <div>https://2bdevon.top/legal</div>
+      </div>
+      <div class="pill-switch" aria-label="Select document">
+        <button class="active" data-target="ts">Terms</button>
+        <button data-target="pp">Privacy</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <aside class="side">
+        <div>
+          <div class="badge">
+            <span></span>
+            LIVE LEGAL SCREEN
+          </div>
+          <h1>2BDeV Studio Inc.  / LEGAL</h1>
+
+          <div class="grid">
+            <div class="tile">
+              <strong>Site type</strong>
+              Personal portfolio, no webshop, no login.
+            </div>
+            <div class="tile">
+              <strong>Data scope</strong>
+              Contact form, basic logs, light analytics.
+            </div>
+            <div class="tile">
+              <strong>Region</strong>
+              Hungary / EU, GDPR applies.
+            </div>
+            <div class="tile">
+              <strong>Last updated</strong>
+              23 Feb 2026.
+            </div>
+          </div>
+
+          <div class="link-box">
+            <div class="section-label">Domain contact</div>
+            <p style="margin: 0 0 4px 0;">
+              For complaints or data requests, use the domain provider's WHOIS contact:
+            </p>
+            <p style="margin: 0 0 4px 0;">
+              <a href="https://www.spaceship.com/domains/whois/contact/?d=2bdevon.top"
+                 target="_blank" rel="noopener noreferrer">
+                https://www.spaceship.com/domains/whois/contact/?d=2bdevon.top
+              </a>
+            </p>
+          </div>
+        </div>
+      </aside>
+
+      <section class="panel">
+        <div class="panel-inner">
+          <div class="panel-header">
+            <span>// legal/2bdevon.top</span>
+            <div class="badge-soft">READ‑ONLY</div>
+          </div>
+          <div class="scroll">
+            <!-- TERMS -->
+            <article class="ts active" id="ts">
+              <h2>Terms of Service</h2>
+              <p class="muted">Last updated: 23 February 2026</p>
+
+              <p>
+                Welcome to <strong>2bdevon.top</strong>. By accessing or using this website, you agree to be bound
+                by these Terms of Service. If you do not agree with these Terms, please do not use this website.
+              </p>
+
+              <h3>1. Website owner and contact</h3>
+              <p>
+                This website is available at <strong>2bdevon.top</strong>. If you have any questions, complaints
+                or requests regarding this website, you can submit them through the domain provider's contact form at:
+              </p>
+              <p>
+                <a href="https://www.spaceship.com/domains/whois/contact/?d=2bdevon.top"
+                   target="_blank" rel="noopener noreferrer">
+                  https://www.spaceship.com/domains/whois/contact/?d=2bdevon.top
+                </a>
+              </p>
+
+              <h3>2. Purpose of the website</h3>
+              <p>
+                This website is a personal portfolio site showcasing projects, skills and related information.
+                It is provided for informational and presentation purposes only and does not constitute professional
+                advice, an offer, or a binding commitment of any kind.
+              </p>
+
+              <h3>3. Acceptable use</h3>
+              <p>When using this website, you agree that you will not:</p>
+              <ul>
+                <li>Attempt to gain unauthorized access to the website, its servers or related systems.</li>
+                <li>Use the website in any way that may damage, disable, overburden or impair it.</li>
+                <li>Use the website for any illegal or harmful activities, including distributing malware, spam or other malicious code.</li>
+              </ul>
+
+              <h3>4. Intellectual property</h3>
+              <p>
+                Unless otherwise stated, all content on this website, including text, graphics, layouts and code,
+                is provided for viewing only. You may not copy, reproduce, distribute, modify or publicly display any
+                content from this website without prior permission, except where permitted by applicable law.
+              </p>
+
+              <h3>5. Third‑party services</h3>
+              <p>
+                This website may use third‑party services such as hosting providers, analytics tools and performance
+                monitoring services (for example, Vercel or similar tools) to operate and improve the site.
+                These services may process technical data about your visit as described in the Privacy Policy.
+              </p>
+
+              <h3>6. No warranties</h3>
+              <p>
+                This website is provided on an "as is" and "as available" basis. No warranties or representations
+                of any kind are made regarding the accuracy, completeness, reliability or availability of the website
+                or its content. You use the website at your own risk.
+              </p>
+
+              <h3>7. Limitation of liability</h3>
+              <p>
+                To the maximum extent permitted by applicable law, no liability is accepted for any direct, indirect,
+                incidental, consequential or special damages arising out of or in connection with your use of this
+                website or reliance on its content.
+              </p>
+
+              <h3>8. Links to other sites</h3>
+              <p>
+                This website may contain links to third‑party websites. Those sites are operated by their own owners
+                and are not controlled or endorsed here. No responsibility is taken for their content, privacy
+                practices or terms.
+              </p>
+
+              <h3>9. Changes to these Terms</h3>
+              <p>
+                These Terms of Service may be updated from time to time. Changes will be posted on this page with an
+                updated "Last updated" date. Continued use of the website after changes are posted means you accept
+                the revised Terms.
+              </p>
+
+              <h3>10. Governing law</h3>
+              <p>
+                These Terms and your use of the website are governed by the laws of Hungary and applicable European
+                Union law, without regard to conflict of law rules.
+              </p>
+            </article>
+
+            <!-- PRIVACY -->
+            <article class="pp" id="pp">
+              <h2>Privacy Policy</h2>
+              <p class="muted">Last updated: 23 February 2026</p>
+
+              <p>
+                This Privacy Policy explains how personal data is collected and used when you visit
+                <strong>2bdevon.top</strong> or contact the site owner through the contact form.
+              </p>
+
+              <h3>1. Data controller and contact</h3>
+              <p>
+                For the purposes of data protection laws (including the GDPR), the data controller is the person
+                responsible for the domain <strong>2bdevon.top</strong>.
+              </p>
+              <p>
+                If you have any questions or requests regarding your personal data, you can submit them through the
+                domain provider's contact form at:
+              </p>
+              <p>
+                <a href="https://www.spaceship.com/domains/whois/contact/?d=2bdevon.top"
+                   target="_blank" rel="noopener noreferrer">
+                  https://www.spaceship.com/domains/whois/contact/?d=2bdevon.top
+                </a>
+              </p>
+
+              <h3>2. Data collected</h3>
+
+              <h4>2.1 Data you provide via contact form</h4>
+              <p>When you use the contact form, the following information may be collected:</p>
+              <ul>
+                <li>Name</li>
+                <li>Email address</li>
+                <li>Your message</li>
+                <li>IP address and technical metadata (for security and spam prevention)</li>
+              </ul>
+
+              <p>
+                Providing this data is voluntary, but if you choose not to provide it, it may not be possible
+                to respond to your message.
+              </p>
+
+              <h4>2.2 Data collected automatically</h4>
+              <p>
+                When you visit the website, certain technical information is automatically collected, which may include:
+              </p>
+              <ul>
+                <li>IP address</li>
+                <li>Browser type and version</li>
+                <li>Device and operating system information</li>
+                <li>Referrer URL</li>
+                <li>Date and time of access</li>
+                <li>Basic usage statistics (pages viewed, time spent, etc.)</li>
+              </ul>
+
+              <p>
+                This information may be collected through hosting logs and tools such as Vercel Analytics or similar
+                performance and usage analytics services.
+              </p>
+
+              <h4>2.3 Cookies and similar technologies</h4>
+              <p>The website may use cookies or similar technologies to:</p>
+              <ul>
+                <li>Remember basic settings (for example, whether you have accepted the cookie notice).</li>
+                <li>Measure usage and performance (for example, page views, loading speed).</li>
+              </ul>
+
+              <p>
+                Where required by law, a cookie banner or notice is used to inform you and, if necessary,
+                obtain your consent.
+              </p>
+
+              <h3>3. Purposes and legal bases of processing</h3>
+              <p>Personal data is processed for the following purposes and legal bases under the GDPR:</p>
+
+              <ul>
+                <li>
+                  <strong>Responding to contact requests:</strong> data: name, email address, message, IP address;
+                  purpose: to read and answer your message and to prevent abuse/spam; legal basis: your consent
+                  (when you submit the form) and the legitimate interest in operating and protecting the site.
+                </li>
+                <li>
+                  <strong>Operating and securing the website:</strong> data: IP address, logs, technical information;
+                  purpose: to ensure the security, availability, debugging and proper functioning of the site;
+                  legal basis: legitimate interest in providing a secure and functional website.
+                </li>
+                <li>
+                  <strong>Analytics and performance monitoring:</strong> data: usage statistics and technical metrics
+                  (for example, via Vercel Analytics or similar tools); purpose: to understand how the site is used
+                  and to improve performance and design; legal basis: legitimate interest in improving the website and,
+                  where necessary, your consent via the cookie notice.
+                </li>
+              </ul>
+
+              <h3>4. Data sharing and processors</h3>
+              <p>Personal data may be shared with or processed by the following categories of recipients:</p>
+              <ul>
+                <li>
+                  Hosting and infrastructure providers (for example, the hosting provider running the website and
+                  domain services).
+                </li>
+                <li>
+                  Analytics and performance services (for example, Vercel Analytics or similar tools) that provide
+                  aggregated usage statistics.
+                </li>
+              </ul>
+
+              <p>
+                These service providers act as data processors and only process data as necessary to provide their
+                services, under appropriate data protection safeguards. Personal data is not sold to third parties.
+              </p>
+
+              <h3>5. Data retention</h3>
+              <p>
+                Personal data is kept only for as long as necessary for the purposes listed above or as required by
+                applicable law:
+              </p>
+              <ul>
+                <li>
+                  Contact form messages may be retained for as long as needed to handle your request and maintain
+                  basic records of communication.
+                </li>
+                <li>
+                  Technical logs and analytics data may be stored for a limited period necessary for security,
+                  troubleshooting and statistical analysis.
+                </li>
+              </ul>
+
+              <p>When data is no longer needed, it is deleted or anonymized.</p>
+
+              <h3>6. Your rights under GDPR</h3>
+              <p>
+                If you are in the European Union or the European Economic Area, you have the following rights
+                regarding your personal data, subject to legal conditions:
+              </p>
+              <ul>
+                <li>Right of access – to know what personal data is held about you.</li>
+                <li>Right to rectification – to request correction of inaccurate or incomplete data.</li>
+                <li>Right to erasure – to request deletion of your personal data in certain circumstances.</li>
+                <li>Right to restriction – to request limitation of processing in certain cases.</li>
+                <li>
+                  Right to data portability – to receive your data in a structured, commonly used and machine-readable
+                  format where applicable.
+                </li>
+                <li>
+                  Right to object – to object to processing based on legitimate interests, including analytics,
+                  in some cases.
+                </li>
+                <li>
+                  Right to withdraw consent – where processing is based on consent, you may withdraw it at any time
+                  (this does not affect past processing).
+                </li>
+              </ul>
+
+              <p>To exercise these rights, you can submit a request via:</p>
+              <p>
+                <a href="https://www.spaceship.com/domains/whois/contact/?d=2bdevon.top"
+                   target="_blank" rel="noopener noreferrer">
+                  https://www.spaceship.com/domains/whois/contact/?d=2bdevon.top
+                </a>
+              </p>
+
+              <p>
+                You also have the right to lodge a complaint with your local data protection authority.
+                In Hungary, this is the Nemzeti Adatvédelmi és Információszabadság Hatóság (NAIH).
+              </p>
+
+              <h3>7. International transfers</h3>
+              <p>
+                Where service providers are located outside the European Economic Area, data transfers will be made
+                in accordance with the GDPR, using appropriate safeguards such as standard contractual clauses or
+                equivalent mechanisms, where required.
+              </p>
+
+              <h3>8. Security</h3>
+              <p>
+                Reasonable technical and organizational measures are taken to protect personal data against accidental
+                or unlawful destruction, loss, alteration, unauthorized disclosure or access. However, no system can
+                be guaranteed to be completely secure.
+              </p>
+
+              <h3>9. Changes to this Privacy Policy</h3>
+              <p>
+                This Privacy Policy may be updated from time to time. Any changes will be posted on this page with an
+                updated "Last updated" date. Your continued use of the website after the posting of changes means you
+                accept the updated Policy.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const buttons = document.querySelectorAll('.pill-switch button');
+    const ts = document.querySelector('.ts');
+    const pp = document.querySelector('.pp');
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        buttons.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const target = btn.getAttribute('data-target');
+        if (target === 'ts') {
+          ts.classList.add('active');
+          pp.classList.remove('active');
+        } else {
+          pp.classList.add('active');
+          ts.classList.remove('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
