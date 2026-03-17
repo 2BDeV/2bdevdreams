@@ -370,12 +370,30 @@ const ContactPage = () => {
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!turnstileToken) { alert("Please complete the CAPTCHA."); return; }
-    setIsSubmitting(true);
-    let ipData = { ip: "Unknown", country_name: "Unknown", city: "Unknown" };
-    try { const res = await fetch("https://ipapi.co/json/"); if (res.ok) ipData = await res.json(); } catch (err) {}
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setError(false);
+
+  try {
+    const res = await fetch("/api/admin-login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password }),
+    });
+
+    if (res.ok) {
+      localStorage.setItem("isAdmin", "true");
+      onLoginSuccess();
+      navigate("/");
+    } else {
+      setError(true);
+      setTimeout(() => setError(false), 2000);
+    }
+   } catch {
+    setError(true);
+    setTimeout(() => setError(false), 2000);
+   }
+  };
 
     const scriptData = new URLSearchParams();
     scriptData.append("name", name);
