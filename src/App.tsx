@@ -519,7 +519,7 @@ const AdminLogin = ({ settings, onLoginSuccess }: { settings: any, onLoginSucces
   const [error, setError] = useState(false);
   const navigate = useNavigate();
   useEffect(() => { if (localStorage.getItem("isAdmin") === "true") { navigate("/"); } }, [navigate]);
-  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); if (password === (settings?.adminPassword || "admin")) { localStorage.setItem("isAdmin", "true"); onLoginSuccess(); navigate("/"); } else { setError(true); setTimeout(() => setError(false), 2000); } };
+  const handleSubmit = async (e: React.FormEvent) => { e.preventDefault(); if (password === (settings?.adminPassword || "admin")) { localStorage.setItem("isAdmin", "true"); onLoginSuccess(); navigate("/"); } else { setError(true); setTimeout(() => setError(false), 2000); } };
   return (
     <PageTransition>
       <div className="flex min-h-screen items-center justify-center bg-black text-white relative overflow-hidden">
