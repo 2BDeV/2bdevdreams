@@ -4,7 +4,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { code } = req.query;
   if (!code) return res.redirect("/?error=no_code");
 
-  const redirectUri = `${process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:5173"}/api/auth/callback`;
+  const redirectUri = "https://2bdevon.top/api/auth/callback";
 
   const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
@@ -30,6 +30,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.redirect("/?error=unauthorized");
   }
 
-  res.setHeader("Set-Cookie", `admin_session=${process.env.SESSION_SECRET}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=86400`);
+  res.setHeader(
+    "Set-Cookie",
+    `admin_session=${process.env.SESSION_SECRET}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=86400`
+  );
   res.redirect("/");
 }
