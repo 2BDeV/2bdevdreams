@@ -370,30 +370,12 @@ const ContactPage = () => {
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setError(false);
-
-  try {
-    const res = await fetch("/api/admin-login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
-
-    if (res.ok) {
-      localStorage.setItem("isAdmin", "true");
-      onLoginSuccess();
-      navigate("/");
-    } else {
-      setError(true);
-      setTimeout(() => setError(false), 2000);
-    }
-   } catch {
-    setError(true);
-    setTimeout(() => setError(false), 2000);
-   }
-  };
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!turnstileToken) { alert("Please complete the CAPTCHA."); return; }
+    setIsSubmitting(true);
+    let ipData = { ip: "Unknown", country_name: "Unknown", city: "Unknown" };
+    try { const res = await fetch("https://ipapi.co/json/"); if (res.ok) ipData = await res.json(); } catch (err) {}
 
     const scriptData = new URLSearchParams();
     scriptData.append("name", name);
@@ -401,12 +383,12 @@ const ContactPage = () => {
     scriptData.append("message", message);
     scriptData.append("userIp", ipData.ip || "Unknown");
     scriptData.append("userLocation", `${ipData.country_name || "?"}, ${ipData.city || "?"}`);
-    scriptData.append("turnstileToken", turnstileToken); 
+    scriptData.append("turnstileToken", turnstileToken);
 
     try {
       await new Promise(resolve => setTimeout(resolve, 1500));
       await fetch(CONFIG.GOOGLE_SCRIPT_URL, { method: "POST", mode: "no-cors", body: scriptData });
-      alert("Message sent successfully! 🚀 Note: If you do not see the confirmation email, please check your spam folder. If you did not receive a confirmation email in any way, it is likely that your email did not reach us. In this case, you can also contact us via this email: [contact-error@2bdevon.top](mailto:contact-error@2bdevon.top) ");
+      alert("Message sent successfully! 🚀 Note: If you do not see the confirmation email, please check your spam folder. If you did not receive a confirmation email in any way, it is likely that your email did not reach us. In this case, you can also contact us via this email: contact-error@2bdevon.top");
       navigate('/');
     } catch (error) {
       console.error("Submission error:", error);
