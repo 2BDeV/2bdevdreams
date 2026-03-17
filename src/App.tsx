@@ -338,23 +338,11 @@ const MaintenanceScreen = ({ settings }: { settings: any }) => {
         </div>
         <style>{`
           @keyframes breathe { 
-            0% { 
-              transform: scale(1); 
-              opacity: 0.3; 
-            } 
-            50% { 
-              transform: scale(1.1); 
-              opacity: 1; 
-            } 
-            100% { 
-              transform: scale(1); 
-              opacity: 0.3; 
-            } 
+            0% { transform: scale(1); opacity: 0.3; } 
+            50% { transform: scale(1.1); opacity: 1; } 
+            100% { transform: scale(1); opacity: 0.3; } 
           } 
-          .animate-breathe { 
-            animation: breathe 4s ease-in-out infinite; 
-            will-change: transform, opacity;
-          }
+          .animate-breathe { animation: breathe 4s ease-in-out infinite; will-change: transform, opacity; }
         `}</style>
       </div>
     </PageTransition>
@@ -370,30 +358,13 @@ const ContactPage = () => {
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setError(false);
-
-  try {
-    const res = await fetch("/api/admin-login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
-
-    if (res.ok) {
-      localStorage.setItem("isAdmin", "true");
-      onLoginSuccess();
-      navigate("/");
-    } else {
-      setError(true);
-      setTimeout(() => setError(false), 2000);
-    }
-   } catch {
-    setError(true);
-    setTimeout(() => setError(false), 2000);
-   }
-  };
+  // ✅ JAVÍTOTT handleSubmit
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!turnstileToken) { alert("Please complete the CAPTCHA."); return; }
+    setIsSubmitting(true);
+    let ipData = { ip: "Unknown", country_name: "Unknown", city: "Unknown" };
+    try { const res = await fetch("https://ipapi.co/json/"); if (res.ok) ipData = await res.json(); } catch (err) {}
 
     const scriptData = new URLSearchParams();
     scriptData.append("name", name);
@@ -401,12 +372,12 @@ const ContactPage = () => {
     scriptData.append("message", message);
     scriptData.append("userIp", ipData.ip || "Unknown");
     scriptData.append("userLocation", `${ipData.country_name || "?"}, ${ipData.city || "?"}`);
-    scriptData.append("turnstileToken", turnstileToken); 
+    scriptData.append("turnstileToken", turnstileToken);
 
     try {
       await new Promise(resolve => setTimeout(resolve, 1500));
       await fetch(CONFIG.GOOGLE_SCRIPT_URL, { method: "POST", mode: "no-cors", body: scriptData });
-      alert("Message sent successfully! 🚀 Note: If you do not see the confirmation email, please check your spam folder. If you did not receive a confirmation email in any way, it is likely that your email did not reach us. In this case, you can also contact us via this email: [contact-error@2bdevon.top](mailto:contact-error@2bdevon.top) ");
+      alert("Message sent successfully! 🚀 Note: If you do not see the confirmation email, please check your spam folder. If you did not receive a confirmation email in any way, it is likely that your email did not reach us. In this case, you can also contact us via this email: contact-error@2bdevon.top");
       navigate('/');
     } catch (error) {
       console.error("Submission error:", error);
@@ -586,7 +557,7 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
     try { 
       await new Promise(resolve => setTimeout(resolve, 1500));
       await fetch(CONFIG.GOOGLE_SCRIPT_URL, { method: "POST", mode: "no-cors", body: scriptData }); 
-      alert("Message sent successfully! 🚀 Note: If you do not see the confirmation email, please check your spam folder. If you did not receive a confirmation email in any way, it is likely that your email did not reach us. In this case, you can also contact us via this email: [contact-error@2bdevon.top](mailto:contact-error@2bdevon.top) "); 
+      alert("Message sent successfully! 🚀 Note: If you do not see the confirmation email, please check your spam folder. If you did not receive a confirmation email in any way, it is likely that your email did not reach us. In this case, you can also contact us via this email: contact-error@2bdevon.top"); 
       setName(""); setEmail(""); setMessage(""); setTurnstileToken(null); 
     } 
     catch (err) { alert("Error sending message."); console.error(err); } finally { setIsSubmitting(false); }
@@ -630,28 +601,17 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
           
           <section className="relative py-24 text-white"><Container><div className="flex flex-col items-center text-center"><h2 className="text-4xl font-bold mb-6">Quick Message</h2><form onSubmit={handleFormSubmit} className="w-full max-w-xl space-y-4"><input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" /><input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" /><textarea placeholder="Message" rows={4} value={message} onChange={(e) => setMessage(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" ></textarea><div className="flex justify-center"><Turnstile sitekey={CONFIG.TURNSTILE_SITEKEY} onVerify={(token) => setTurnstileToken(token)} theme="dark" /></div><PrimaryButton type="submit" disabled={isSubmitting}>{isSubmitting ? "Sending..." : "Send"}</PrimaryButton></form></div></Container></section>
           
-          {/* ✅ FOOTER WITH LEGAL LINKS + ABOUT MAIL */}
           <footer className="relative py-6 text-center text-white/70 text-sm border-t border-white/5">
             <Container>
               <div className="flex flex-col items-center gap-4">
                 <span>© {new Date().getFullYear()} 2BDeV Studio Inc. All rights reserved.</span>
-                
-                {/* ✅ About Mail + Privacy Policy + Terms of Service */}
                 <div className="flex gap-4 text-xs flex-wrap justify-center">
-                  <a href="/about-mail" className="text-white/50 hover:text-white transition-colors underline">
-                    About 2BDeV Mail
-                  </a>
+                  <a href="/about-mail" className="text-white/50 hover:text-white transition-colors underline">About 2BDeV Mail</a>
                   <span className="text-white/30">|</span>
-                  <a href="https://2bdevon.top/legal-2bdevmail" target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-white transition-colors underline">
-                    Privacy Policy
-                  </a>
+                  <a href="https://2bdevon.top/legal-2bdevmail" target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-white transition-colors underline">Privacy Policy</a>
                   <span className="text-white/30">|</span>
-                  <a href="https://2bdevon.top/legal-2bdevmail" target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-white transition-colors underline">
-                    Terms of Service
-                  </a>
+                  <a href="https://2bdevon.top/legal-2bdevmail" target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-white transition-colors underline">Terms of Service</a>
                 </div>
-                
-                {/* Admin Logout */}
                 {localStorage.getItem("isAdmin") === "true" && (
                   <button onClick={onLogout} className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition-colors">
                     <LogOut className="h-3 w-3" /> Logout (Admin)
@@ -679,7 +639,7 @@ function AnimatedRoutes({ settings, onLoginSuccess, onLogout, showMaintenance }:
       <Routes location={location} key={location.pathname}>
         <Route path="/login" element={<AdminLogin settings={settings} onLoginSuccess={onLoginSuccess} />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route path="/about-mail" element={<AboutMailPage />} /> {/* ✅ ÚJ ROUTE */}
+        <Route path="/about-mail" element={<AboutMailPage />} />
         <Route path="/" element={showMaintenance ? (<MaintenanceScreen settings={settings} />) : (<MainAppContent onLogout={onLogout} />)} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
