@@ -417,7 +417,7 @@ const ContactPage = () => {
   );
 };
 
-// ✅ --- ABOUT MAIL PAGE (Google OAuth verification) ---
+//  --- ABOUT MAIL PAGE (Google OAuth verification) ---
 const AboutMailPage = () => {
   const navigate = useNavigate();
 
@@ -601,13 +601,13 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
           
           <section className="relative py-24 text-white"><Container><div className="flex flex-col items-center text-center"><h2 className="text-4xl font-bold mb-6">Quick Message</h2><form onSubmit={handleFormSubmit} className="w-full max-w-xl space-y-4"><input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" /><input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" /><textarea placeholder="Message" rows={4} value={message} onChange={(e) => setMessage(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" ></textarea><div className="flex justify-center"><Turnstile sitekey={CONFIG.TURNSTILE_SITEKEY} onVerify={(token) => setTurnstileToken(token)} theme="dark" /></div><PrimaryButton type="submit" disabled={isSubmitting}>{isSubmitting ? "Sending..." : "Send"}</PrimaryButton></form></div></Container></section>
           
-          {/* ✅ FOOTER WITH LEGAL LINKS + ABOUT MAIL */}
+          {/*  FOOTER WITH LEGAL LINKS + ABOUT MAIL */}
           <footer className="relative py-6 text-center text-white/70 text-sm border-t border-white/5">
             <Container>
               <div className="flex flex-col items-center gap-4">
                 <span>© {new Date().getFullYear()} 2BDeV Studio Inc. All rights reserved.</span>
                 
-                {/* ✅ About Mail + Privacy Policy + Terms of Service */}
+                {/*  About Mail + Privacy Policy + Terms of Service */}
                 <div className="flex gap-4 text-xs flex-wrap justify-center">
                   <a href="/about-mail" className="text-white/50 hover:text-white transition-colors underline">
                     About 2BDeV Mail
@@ -650,7 +650,7 @@ function AnimatedRoutes({ settings, onLogout, showMaintenance }: any) {
       <Routes location={location} key={location.pathname}>
         <Route path="/login" element={<GoogleLoginRedirect />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route path="/about-mail" element={<AboutMailPage />} /> {/* ✅ ÚJ ROUTE */}
+        <Route path="/about-mail" element={<AboutMailPage />} />
         <Route path="/" element={showMaintenance ? (<MaintenanceScreen settings={settings} />) : (<MainAppContent onLogout={onLogout} />)} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
@@ -667,12 +667,17 @@ export default function App() {
     const init = async () => {
       try {
         const authRes = await fetch("/api/auth/verify");
-        const authData = await authRes.json();
-        setIsAdmin(authData.isAdmin);
+        if (authRes.ok) {
+          const authData = await authRes.json();
+          setIsAdmin(authData.isAdmin === true);
+        }
+      } catch (err) {}
+
+      try {
         const data = await sanity.fetch(`*[_type == "siteSettings"][0]`);
         setSettings(data);
       } catch (err) {
-        console.error("Init error:", err);
+        console.error("Settings fetch error:", err);
       } finally {
         setLoading(false);
       }

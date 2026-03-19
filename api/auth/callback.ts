@@ -32,7 +32,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   res.setHeader(
     "Set-Cookie",
-    `admin_session=${process.env.SESSION_SECRET}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=86400`
+    `admin_session=${process.env.SESSION_SECRET}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=86400`
   );
   res.redirect("/");
 }
