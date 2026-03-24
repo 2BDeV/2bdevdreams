@@ -685,8 +685,10 @@ export default function App() {
     init();
   }, []);
 
-  const handleLogout = () => {
-    document.cookie = "admin_session=; Max-Age=0; Path=/";
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch (err) {}
     setIsAdmin(false);
     window.location.reload();
   };
