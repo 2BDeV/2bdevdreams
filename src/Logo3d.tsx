@@ -3,7 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, useGLTF, Environment, ContactShadows } from "@react-three/drei";
 
 function Logo3DModel() {
-  const { scene } = useGLTF("/2bdev-logo3d.g"); 
+  const { scene } = useGLTF("/2bdev-logo3d.glb"); 
   const ref = useRef<any>();
 
   useFrame(() => {
