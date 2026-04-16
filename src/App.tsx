@@ -1,21 +1,11 @@
 import { Analytics } from "@vercel/analytics/react";
-import Logo3d from "./Logo3d";
 import { SpeedInsights } from "@vercel/speed-insights/react";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense, lazy } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Code,
-  Zap,
-  Monitor,
-  Github,
-  Linkedin,
-  Mail,
-  Menu,
-  X,
   ArrowRight,
   ArrowUp,
-  Settings,
-  Lock,
   LogOut,
   ChevronLeft
 } from "lucide-react";
@@ -23,16 +13,19 @@ import Turnstile from "react-turnstile";
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import { createClient } from "@sanity/client";
 
+// --- LAZY 3D LOGO ---
+const Logo3d = lazy(() => import("./Logo3d"));
+
 // --- CONFIG ---
 const sanity = createClient({
   projectId: import.meta.env.VITE_SANITY_PROJECT_ID,
   dataset: import.meta.env.VITE_SANITY_DATASET,
-  useCdn: true, 
+  useCdn: true,
   apiVersion: "2024-01-10",
 });
 
 const CONFIG = {
-  GOOGLE_SCRIPT_URL: import.meta.env.VITE_GOOGLE_SCRIPT_URL || "", 
+  GOOGLE_SCRIPT_URL: import.meta.env.VITE_GOOGLE_SCRIPT_URL || "",
   TURNSTILE_SITEKEY: import.meta.env.VITE_TURNSTILE_SITEKEY || "",
 };
 
@@ -69,19 +62,17 @@ const GhostButton = ({ children, onClick }: any) => (
 );
 
 // --- DYNAMIC NAVBAR ---
-const DynamicNavbar = ({ 
-  menuItems, 
-  onMenuClick 
-}: { 
-  menuItems: string[], 
-  onMenuClick: (id: string) => void 
+const DynamicNavbar = ({
+  menuItems,
+  onMenuClick
+}: {
+  menuItems: string[],
+  onMenuClick: (id: string) => void
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => { setIsScrolled(window.scrollY > 50); };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -91,42 +82,24 @@ const DynamicNavbar = ({
       <motion.div
         layout
         initial={{ width: "95%", borderRadius: 24 }}
-        animate={{ 
+        animate={{
           width: isScrolled ? "auto" : "95%",
-          backgroundColor: isScrolled ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.15)" 
+          backgroundColor: isScrolled ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.15)"
         }}
         transition={{ type: "spring", stiffness: 120, damping: 20 }}
         className="pointer-events-auto flex items-center justify-between p-2 backdrop-blur-xl border border-white/10 shadow-2xl overflow-hidden min-h-[60px]"
         style={{ maxWidth: "1280px" }}
       >
-        
         <div className="flex items-center gap-4 pl-2">
           <AnimatePresence mode="wait">
             {!isScrolled ? (
-              <motion.div 
-                key="video-mode"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                className="flex items-center"
-              >
+              <motion.div key="video-mode" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="flex items-center">
                 <div className="h-18 w-18 overflow-hidden relative bg-transparent">
-                   <img 
-                     src="/dreams.gif" 
-                     alt="Logo Animation" 
-                     className="h-10 object-contain"
-                   />
+                  <img src="/dreams.gif" alt="Logo Animation" className="h-10 object-contain" />
                 </div>
               </motion.div>
             ) : (
-              <motion.div 
-                key="icon-mode"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="cursor-pointer"              
-              >
+              <motion.div key="icon-mode" initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="cursor-pointer">
                 <img src="/2bdev logo.png" alt="Logo" className="h-8 w-8" />
               </motion.div>
             )}
@@ -136,59 +109,29 @@ const DynamicNavbar = ({
         <div className="flex items-center justify-center absolute left-1/2 -translate-x-1/2">
           <AnimatePresence mode="wait">
             {!isScrolled ? (
-              <motion.div 
-                key="full-menu"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="hidden md:flex items-center gap-1"
-              >
+              <motion.div key="full-menu" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="hidden md:flex items-center gap-1">
                 {menuItems.map((item) => (
-                  <button 
-                    key={item} 
-                    onClick={() => onMenuClick(item)}
-                    className="px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all"
-                  >
+                  <button key={item} onClick={() => onMenuClick(item)} className="px-4 py-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all">
                     {item}
                   </button>
                 ))}
               </motion.div>
             ) : (
-              <motion.div 
-                key="compact-menu"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="flex items-center gap-2"
-              >
-                <button 
-                    onClick={() => onMenuClick('Projects')} 
-                    className="px-3 py-1.5 text-xs font-bold bg-white/10 rounded-full hover:bg-white/20 transition-all text-white"
-                >
-                  Works
-                </button>
-                <button 
-                    onClick={() => onMenuClick('Contact')} 
-                    className="px-3 py-1.5 text-xs font-bold bg-gradient-to-r from-pink-500 to-indigo-500 rounded-full text-white shadow-lg"
-                >
-                  Talk
-                </button>
+              <motion.div key="compact-menu" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="flex items-center gap-2">
+                <button onClick={() => onMenuClick("Projects")} className="px-3 py-1.5 text-xs font-bold bg-white/10 rounded-full hover:bg-white/20 transition-all text-white">Works</button>
+                <button onClick={() => onMenuClick("Contact")} className="px-3 py-1.5 text-xs font-bold bg-gradient-to-r from-pink-500 to-indigo-500 rounded-full text-white shadow-lg">Talk</button>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
 
         <div className="flex items-center gap-2 pr-2">
-            {!isScrolled && (
-              <button 
-                  onClick={() => onMenuClick('Contact')}
-                  className="hidden sm:flex items-center gap-2 bg-white text-black px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 hover:scale-105 hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 hover:text-white hover:shadow-lg hover:shadow-pink-500/50"
-              >
-                  Let's Talk <ArrowRight className="h-3 w-3" />
-              </button>
-            )}
+          {!isScrolled && (
+            <button onClick={() => onMenuClick("Contact")} className="hidden sm:flex items-center gap-2 bg-white text-black px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 hover:scale-105 hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 hover:text-white hover:shadow-lg hover:shadow-pink-500/50">
+              Let's Talk <ArrowRight className="h-3 w-3" />
+            </button>
+          )}
         </div>
-
       </motion.div>
     </div>
   );
@@ -200,7 +143,7 @@ const PageTransition = ({ children }: { children: React.ReactNode }) => (
     initial={{ opacity: 0, scale: 0.98 }}
     animate={{ opacity: 1, scale: 1 }}
     exit={{ opacity: 0, scale: 1.02 }}
-    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }} 
+    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
     className="w-full h-full"
   >
     {children}
@@ -266,7 +209,6 @@ const RetroSystemMessage = ({ data, updatedAt }: { data: any, updatedAt?: string
     const now = new Date();
     if (data.startDate && new Date(data.startDate) > now) { setIsVisible(false); return; }
     if (data.endDate && new Date(data.endDate) < now) { setIsVisible(false); return; }
-
     const storageKey = `sys_msg_${btoa(encodeURIComponent(data.text)).slice(0, 16)}`;
     const isClosed = localStorage.getItem(storageKey);
     if (data.closable && isClosed) { setIsVisible(false); } else { setIsVisible(true); }
@@ -282,7 +224,7 @@ const RetroSystemMessage = ({ data, updatedAt }: { data: any, updatedAt?: string
 
   const dateStr = data.startDate || updatedAt || new Date().toISOString();
   const displayDate = new Date(dateStr).toISOString().replace("T", " ").substring(0, 16);
-  const getRetroColor = (type: string) => { switch (type) { case 'error': return '#AA0000'; case 'warning': return '#AA5500'; case 'success': return '#00AA00'; case 'brand': return '#AA00AA'; case 'info': default: return '#0000AA'; } };
+  const getRetroColor = (type: string) => { switch (type) { case "error": return "#AA0000"; case "warning": return "#AA5500"; case "success": return "#00AA00"; case "brand": return "#AA00AA"; case "info": default: return "#0000AA"; } };
   const bgColor = getRetroColor(data.type);
 
   if (!isVisible) return null;
@@ -330,32 +272,13 @@ const MaintenanceScreen = ({ settings }: { settings: any }) => {
           <div className="mx-auto mb-10 flex h-[120px] w-[120px] items-center justify-center rounded-full border border-white animate-breathe"><div className="h-2.5 w-2.5 rounded-full bg-white"></div></div>
           <h1 className="mb-4 text-sm font-light uppercase tracking-[12px] opacity-90 text-white">Under Construction</h1>
           <p className="mb-10 text-[11px] uppercase tracking-[4px] text-gray-500 max-w-md mx-auto leading-relaxed">{settings?.maintenanceMessage || "We are currently evolving. Check back soon."}</p>
-          <button onClick={() => navigate('/contact')} className="group relative px-8 py-3 text-[10px] uppercase tracking-[3px] text-white overflow-hidden rounded-full border border-white/20 bg-transparent hover:bg-white/5 transition-all"><span className="relative z-10 group-hover:text-white transition-colors">Contact Us</span></button>
+          <button onClick={() => navigate("/contact")} className="group relative px-8 py-3 text-[10px] uppercase tracking-[3px] text-white overflow-hidden rounded-full border border-white/20 bg-transparent hover:bg-white/5 transition-all"><span className="relative z-10 group-hover:text-white transition-colors">Contact Us</span></button>
         </motion.div>
         <div className="fixed bottom-8 w-full text-center z-10 opacity-40">
           <p className="text-[10px] tracking-[2px] text-white">&copy; {new Date().getFullYear()} 2BDeV Studio.</p>
           <a href="https://2bdevon.top/legal" target="_blank" rel="noopener noreferrer" className="text-[10px] tracking-[2px] text-white hover:opacity-100 transition-opacity underline">Privacy Policy and Terms of Service</a>
         </div>
-        <style>{`
-          @keyframes breathe { 
-            0% { 
-              transform: scale(1); 
-              opacity: 0.3; 
-            } 
-            50% { 
-              transform: scale(1.1); 
-              opacity: 1; 
-            } 
-            100% { 
-              transform: scale(1); 
-              opacity: 0.3; 
-            } 
-          } 
-          .animate-breathe { 
-            animation: breathe 4s ease-in-out infinite; 
-            will-change: transform, opacity;
-          }
-        `}</style>
+        <style>{`@keyframes breathe { 0% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.3; } } .animate-breathe { animation: breathe 4s ease-in-out infinite; will-change: transform, opacity; }`}</style>
       </div>
     </PageTransition>
   );
@@ -389,7 +312,7 @@ const ContactPage = () => {
       await new Promise(resolve => setTimeout(resolve, 1500));
       await fetch(CONFIG.GOOGLE_SCRIPT_URL, { method: "POST", mode: "no-cors", body: scriptData });
       alert("Message sent successfully! 🚀 Note: If you do not see the confirmation email, please check your spam folder. If you did not receive a confirmation email in any way, it is likely that your email did not reach us. In this case, you can also contact us via this email: contact-error@2bdevon.top");
-      navigate('/');
+      navigate("/");
     } catch (error) {
       console.error("Submission error:", error);
       alert("Something went wrong. Please try again.");
@@ -399,97 +322,43 @@ const ContactPage = () => {
   return (
     <PageTransition>
       <div className="flex min-h-screen items-center justify-center bg-[#0a0a0a] text-white font-sans relative overflow-hidden">
-         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#1a1a1a_0%,#0a0a0a_100%)] z-0"></div>
-         <div className="relative z-10 w-full max-w-lg p-6">
-            <button onClick={() => navigate('/')} className="mb-8 flex items-center gap-2 text-[10px] uppercase tracking-[2px] text-gray-500 hover:text-white transition-colors"><ChevronLeft className="h-4 w-4" /> Back</button>
-            <h1 className="text-2xl font-light uppercase tracking-[8px] mb-2 text-white">Get in Touch</h1>
-            <p className="text-gray-500 mb-8 text-[11px] uppercase tracking-[2px]">Fill out the form below.</p>
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <input name="name" type="text" placeholder="NAME" value={name} onChange={(e) => setName(e.target.value)} required className="w-full rounded-xl bg-[#111] border border-[#333] p-4 text-xs text-white placeholder-gray-600 focus:border-white focus:outline-none transition-all tracking-wider" />
-              <input name="email" type="email" placeholder="EMAIL" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full rounded-xl bg-[#111] border border-[#333] p-4 text-xs text-white placeholder-gray-600 focus:border-white focus:outline-none transition-all tracking-wider" />
-              <textarea name="message" rows={5} placeholder="MESSAGE" value={message} onChange={(e) => setMessage(e.target.value)} required className="w-full rounded-xl bg-[#111] border border-[#333] p-4 text-xs text-white placeholder-gray-600 focus:border-white focus:outline-none transition-all resize-none tracking-wider" />
-              <div className="flex justify-center py-2 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all"><Turnstile sitekey={CONFIG.TURNSTILE_SITEKEY} onVerify={(token) => setTurnstileToken(token)} theme="dark" /></div>
-              <button type="submit" disabled={isSubmitting} className="w-full rounded-xl border border-white bg-transparent py-4 text-[11px] font-bold uppercase tracking-[3px] text-white hover:bg-white hover:text-black disabled:opacity-50 disabled:cursor-not-allowed transition-all">{isSubmitting ? "Sending..." : "Send Message"}</button>
-            </form>
-         </div>
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#1a1a1a_0%,#0a0a0a_100%)] z-0"></div>
+        <div className="relative z-10 w-full max-w-lg p-6">
+          <button onClick={() => navigate("/")} className="mb-8 flex items-center gap-2 text-[10px] uppercase tracking-[2px] text-gray-500 hover:text-white transition-colors"><ChevronLeft className="h-4 w-4" /> Back</button>
+          <h1 className="text-2xl font-light uppercase tracking-[8px] mb-2 text-white">Get in Touch</h1>
+          <p className="text-gray-500 mb-8 text-[11px] uppercase tracking-[2px]">Fill out the form below.</p>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <input name="name" type="text" placeholder="NAME" value={name} onChange={(e) => setName(e.target.value)} required className="w-full rounded-xl bg-[#111] border border-[#333] p-4 text-xs text-white placeholder-gray-600 focus:border-white focus:outline-none transition-all tracking-wider" />
+            <input name="email" type="email" placeholder="EMAIL" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full rounded-xl bg-[#111] border border-[#333] p-4 text-xs text-white placeholder-gray-600 focus:border-white focus:outline-none transition-all tracking-wider" />
+            <textarea name="message" rows={5} placeholder="MESSAGE" value={message} onChange={(e) => setMessage(e.target.value)} required className="w-full rounded-xl bg-[#111] border border-[#333] p-4 text-xs text-white placeholder-gray-600 focus:border-white focus:outline-none transition-all resize-none tracking-wider" />
+            <div className="flex justify-center py-2 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all"><Turnstile sitekey={CONFIG.TURNSTILE_SITEKEY} onVerify={(token) => setTurnstileToken(token)} theme="dark" /></div>
+            <button type="submit" disabled={isSubmitting} className="w-full rounded-xl border border-white bg-transparent py-4 text-[11px] font-bold uppercase tracking-[3px] text-white hover:bg-white hover:text-black disabled:opacity-50 disabled:cursor-not-allowed transition-all">{isSubmitting ? "Sending..." : "Send Message"}</button>
+          </form>
+        </div>
       </div>
     </PageTransition>
   );
 };
 
-//  --- ABOUT MAIL PAGE (Google OAuth verification) ---
+// --- ABOUT MAIL PAGE ---
 const AboutMailPage = () => {
   const navigate = useNavigate();
-
   return (
     <PageTransition>
       <div className="flex min-h-screen items-center justify-center bg-[#0a0a0a] text-white font-sans relative overflow-hidden">
-         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#1a1a1a_0%,#0a0a0a_100%)] z-0"></div>
-         <div className="relative z-10 w-full max-w-3xl p-8">
-            <button onClick={() => navigate('/')} className="mb-8 flex items-center gap-2 text-[10px] uppercase tracking-[2px] text-gray-500 hover:text-white transition-colors">
-              <ChevronLeft className="h-4 w-4" /> Back to Home
-            </button>
-            
-            <h1 className="text-4xl font-light uppercase tracking-[8px] mb-6 text-white">2BDeV Mail</h1>
-            <p className="text-gray-400 mb-8 text-sm leading-relaxed">
-              A secure and privacy-focused email management system designed for personal and business communication.
-            </p>
-
-            <div className="space-y-8">
-              <div>
-                <h2 className="text-2xl font-semibold mb-4 text-pink-400">What is 2BDeV Mail?</h2>
-                <p className="text-gray-300 leading-relaxed">
-                  2BDeV Mail is a web-based email service that integrates with Google Workspace to provide secure email sending and management capabilities. 
-                  It allows users to send emails through a verified and authenticated system, ensuring deliverability and security.
-                </p>
-              </div>
-
-              <div>
-                <h2 className="text-2xl font-semibold mb-4 text-pink-400">Key Features</h2>
-                <ul className="list-disc list-inside space-y-2 text-gray-300">
-                  <li>Secure email sending through Google OAuth 2.0 authentication</li>
-                  <li>Contact form integration for website communication</li>
-                  <li>IP tracking and location data for security purposes</li>
-                  <li>Cloudflare Turnstile CAPTCHA protection against spam</li>
-                  <li>Automatic email confirmation and delivery tracking</li>
-                </ul>
-              </div>
-
-              <div>
-                <h2 className="text-2xl font-semibold mb-4 text-pink-400">Privacy & Security</h2>
-                <p className="text-gray-300 leading-relaxed">
-                  We take your privacy seriously. All emails are sent through encrypted connections, and we only request the minimum permissions necessary to provide our service. 
-                  User data is never shared with third parties, and all communications are logged for security purposes only.
-                </p>
-                <a href="https://2bdevon.top/legal-2bdevmail" target="_blank" rel="noopener noreferrer" className="inline-block mt-4 text-indigo-400 hover:text-indigo-300 underline">
-                  Read our Privacy Policy →
-                </a>
-              </div>
-
-              <div>
-                <h2 className="text-2xl font-semibold mb-4 text-pink-400">How It Works</h2>
-                <ol className="list-decimal list-inside space-y-2 text-gray-300">
-                  <li>User submits the contact form on our website</li>
-                  <li>System validates the request using Cloudflare Turnstile</li>
-                  <li>Email is sent through Google Workspace API with OAuth 2.0</li>
-                  <li>User receives automatic confirmation of successful delivery</li>
-                  <li>Admin receives the message with metadata (IP, location, timestamp)</li>
-                </ol>
-              </div>
-
-              <div className="pt-6 border-t border-white/10">
-                <p className="text-gray-400 text-sm">
-                  © 2024 - {new Date().getFullYear()} 2BDeV Studio Inc. All rights reserved. | 
-                  <a href="https://2bdevon.top/legal" target="_blank" rel="noopener noreferrer" className="ml-2 text-white/50 hover:text-white underline">
-                    Privacy Policy
-                  </a> | 
-                  <a href="https://2bdevon.top/legal" target="_blank" rel="noopener noreferrer" className="ml-2 text-white/50 hover:text-white underline">
-                    Terms of Service
-                  </a>
-                </p>
-              </div>
-            </div>
-         </div>
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,#1a1a1a_0%,#0a0a0a_100%)] z-0"></div>
+        <div className="relative z-10 w-full max-w-3xl p-8">
+          <button onClick={() => navigate("/")} className="mb-8 flex items-center gap-2 text-[10px] uppercase tracking-[2px] text-gray-500 hover:text-white transition-colors"><ChevronLeft className="h-4 w-4" /> Back to Home</button>
+          <h1 className="text-4xl font-light uppercase tracking-[8px] mb-6 text-white">2BDeV Mail</h1>
+          <p className="text-gray-400 mb-8 text-sm leading-relaxed">A secure and privacy-focused email management system designed for personal and business communication.</p>
+          <div className="space-y-8">
+            <div><h2 className="text-2xl font-semibold mb-4 text-pink-400">What is 2BDeV Mail?</h2><p className="text-gray-300 leading-relaxed">2BDeV Mail is a web-based email service that integrates with Google Workspace to provide secure email sending and management capabilities. It allows users to send emails through a verified and authenticated system, ensuring deliverability and security.</p></div>
+            <div><h2 className="text-2xl font-semibold mb-4 text-pink-400">Key Features</h2><ul className="list-disc list-inside space-y-2 text-gray-300"><li>Secure email sending through Google OAuth 2.0 authentication</li><li>Contact form integration for website communication</li><li>IP tracking and location data for security purposes</li><li>Cloudflare Turnstile CAPTCHA protection against spam</li><li>Automatic email confirmation and delivery tracking</li></ul></div>
+            <div><h2 className="text-2xl font-semibold mb-4 text-pink-400">Privacy & Security</h2><p className="text-gray-300 leading-relaxed">We take your privacy seriously. All emails are sent through encrypted connections, and we only request the minimum permissions necessary to provide our service. User data is never shared with third parties, and all communications are logged for security purposes only.</p><a href="https://2bdevon.top/legal-2bdevmail" target="_blank" rel="noopener noreferrer" className="inline-block mt-4 text-indigo-400 hover:text-indigo-300 underline">Read our Privacy Policy →</a></div>
+            <div><h2 className="text-2xl font-semibold mb-4 text-pink-400">How It Works</h2><ol className="list-decimal list-inside space-y-2 text-gray-300"><li>User submits the contact form on our website</li><li>System validates the request using Cloudflare Turnstile</li><li>Email is sent through Google Workspace API with OAuth 2.0</li><li>User receives automatic confirmation of successful delivery</li><li>Admin receives the message with metadata (IP, location, timestamp)</li></ol></div>
+            <div className="pt-6 border-t border-white/10"><p className="text-gray-400 text-sm">© 2024 - {new Date().getFullYear()} 2BDeV Studio Inc. All rights reserved. | <a href="https://2bdevon.top/legal" target="_blank" rel="noopener noreferrer" className="ml-2 text-white/50 hover:text-white underline">Privacy Policy</a> | <a href="https://2bdevon.top/legal" target="_blank" rel="noopener noreferrer" className="ml-2 text-white/50 hover:text-white underline">Terms of Service</a></p></div>
+          </div>
+        </div>
       </div>
     </PageTransition>
   );
@@ -508,6 +377,13 @@ const GoogleLoginRedirect = () => {
   );
 };
 
+// --- LOGO3D FALLBACK ---
+const Logo3dFallback = () => (
+  <div className="flex h-[400px] w-full items-center justify-center">
+    <div className="h-12 w-12 animate-spin rounded-full border-4 border-pink-500 border-t-transparent"></div>
+  </div>
+);
+
 // --- MAIN APP CONTENT ---
 function MainAppContent({ onLogout }: { onLogout?: () => void }) {
   const [showScroll, setShowScroll] = useState(false);
@@ -519,25 +395,34 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
   const [message, setMessage] = useState("");
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const navigate = useNavigate();
-  
-  const menuItems = ["About", "Projects", "Skills"]; 
+
+  const menuItems = ["About", "Projects", "Skills"];
 
   useEffect(() => {
     const fetchData = async () => {
-        try { const projectData = await sanity.fetch(`*[_type == "project"] | order(_createdAt desc)`); const settingsData = await sanity.fetch(`*[_type == "siteSettings"][0]`); setProjects(projectData); setSettings(settingsData); } catch(e) { console.error(e) }
+      try {
+        const projectData = await sanity.fetch(`*[_type == "project"] | order(_createdAt desc)`);
+        const settingsData = await sanity.fetch(`*[_type == "siteSettings"][0]`);
+        setProjects(projectData);
+        setSettings(settingsData);
+      } catch (e) { console.error(e); }
     };
     fetchData();
   }, []);
-  
-  const handleMenuClick = (id: string) => { 
-    const targetId = id.toLowerCase(); 
-    if (targetId === 'contact') { navigate('/contact'); return; }
-    const el = document.getElementById(targetId); 
-    if (el) { const offset = 120; const elementPosition = el.getBoundingClientRect().top + window.pageYOffset; window.scrollTo({ top: elementPosition - offset, behavior: "smooth" }); } 
+
+  const handleMenuClick = (id: string) => {
+    const targetId = id.toLowerCase();
+    if (targetId === "contact") { navigate("/contact"); return; }
+    const el = document.getElementById(targetId);
+    if (el) { const offset = 120; const elementPosition = el.getBoundingClientRect().top + window.pageYOffset; window.scrollTo({ top: elementPosition - offset, behavior: "smooth" }); }
   };
-  
+
   const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
-  useEffect(() => { const handleScroll = () => { if(window.scrollY > 400) setShowScroll(true); else setShowScroll(false); }; window.addEventListener("scroll", handleScroll); return () => window.removeEventListener("scroll", handleScroll); }, [showScroll]);
+  useEffect(() => {
+    const handleScroll = () => { setShowScroll(window.scrollY > 400); };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -545,22 +430,21 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
     setIsSubmitting(true);
     let ipData = { ip: "Unknown", country_name: "Unknown", city: "Unknown" };
     try { const res = await fetch("https://ipapi.co/json/"); if (res.ok) ipData = await res.json(); } catch (err) {}
-    
+
     const scriptData = new URLSearchParams();
     scriptData.append("name", name);
     scriptData.append("email", email);
     scriptData.append("message", message);
     scriptData.append("userIp", ipData.ip);
     scriptData.append("userLocation", `${ipData.country_name}, ${ipData.city}`);
-    scriptData.append("turnstileToken", turnstileToken); 
+    scriptData.append("turnstileToken", turnstileToken);
 
-    try { 
+    try {
       await new Promise(resolve => setTimeout(resolve, 1500));
-      await fetch(CONFIG.GOOGLE_SCRIPT_URL, { method: "POST", mode: "no-cors", body: scriptData }); 
-      alert("Message sent successfully! 🚀 Note: If you do not see the confirmation email, please check your spam folder. If you did not receive a confirmation email in any way, it is likely that your email did not reach us. In this case, you can also contact us via this email: [contact-error@2bdevon.top](mailto:contact-error@2bdevon.top) "); 
-      setName(""); setEmail(""); setMessage(""); setTurnstileToken(null); 
-    } 
-    catch (err) { alert("Error sending message."); console.error(err); } finally { setIsSubmitting(false); }
+      await fetch(CONFIG.GOOGLE_SCRIPT_URL, { method: "POST", mode: "no-cors", body: scriptData });
+      alert("Message sent successfully! 🚀 Note: If you do not see the confirmation email, please check your spam folder. If you did not receive a confirmation email in any way, it is likely that your email did not reach us. In this case, you can also contact us via this email: contact-error@2bdevon.top");
+      setName(""); setEmail(""); setMessage(""); setTurnstileToken(null);
+    } catch (err) { alert("Error sending message."); console.error(err); } finally { setIsSubmitting(false); }
   };
 
   return (
@@ -573,56 +457,46 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
         </div>
 
         <div className="relative z-10">
-          
-          <DynamicNavbar 
-            menuItems={menuItems} 
-            onMenuClick={handleMenuClick} 
-          />
+          <DynamicNavbar menuItems={menuItems} onMenuClick={handleMenuClick} />
 
           <section className="relative isolate overflow-hidden pt-48 text-white">
             <Container>
               <div className="grid items-center gap-10 md:grid-cols-2">
                 <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}>
                   <h1 className="mt-6 text-5xl font-extrabold leading-tight tracking-tight sm:text-6xl">Hi, I'm <span className="bg-gradient-to-r from-pink-400 via-fuchsia-500 to-indigo-500 bg-clip-text text-transparent">2BDeV</span>.<br />Web Developer, Creative Problem Solver & Photographer :)</h1>
-                  <p className="mt-4 text-white/80 max-w-xl">Btw i created this website too, cuz this is mine (˶˃ ᵕ ˂˶) </p>
-                  <div className="mt-8 flex flex-wrap items-center gap-3"><PrimaryButton onClick={() => navigate('/contact')}>Contact Me</PrimaryButton><GhostButton onClick={() => handleMenuClick('projects')}><Code className="h-4 w-4" /> View my works</GhostButton></div>
+                  <p className="mt-4 text-white/80 max-w-xl">Btw i created this website too, cuz this is mine (˶˃ ᵕ ˂˶)</p>
+                  <div className="mt-8 flex flex-wrap items-center gap-3">
+                    <PrimaryButton onClick={() => navigate("/contact")}>Contact Me</PrimaryButton>
+                    <GhostButton onClick={() => handleMenuClick("projects")}><Code className="h-4 w-4" /> View my works</GhostButton>
+                  </div>
                 </motion.div>
-                
+
                 <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative flex justify-center">
-                  <Logo3d />
+                  <Suspense fallback={<Logo3dFallback />}>
+                    <Logo3d />
+                  </Suspense>
                 </motion.div>
               </div>
             </Container>
           </section>
-          
+
           <section id="about" className="relative py-24 text-white"><Container><h2 className="text-4xl font-bold mb-6">About</h2><p className="text-white/80 max-w-3xl">{settings?.aboutText || "Loading profile..."}</p></Container></section>
           <section id="projects" className="relative py-24 text-white"><Container><h2 className="text-4xl font-bold mb-6">Projects</h2><div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">{projects.length > 0 ? (projects.map((project, i) => (<a key={project._id || i} href={project.link} target="_blank" rel="noopener noreferrer" className="group rounded-xl bg-gradient-to-tr from-pink-500/10 to-purple-600/10 p-6 border border-white/10 transition-all duration-300 hover:scale-105 hover:border-pink-500/50"><h3 className="text-xl font-semibold">{project.title}</h3><p className="mt-2 text-sm text-white/70">{project.description}</p><div className="mt-4 flex items-center gap-2 text-pink-400 text-sm font-medium">View Project <ArrowRight className="h-4 w-4" /></div></a>))) : <p className="text-white/40">Loading projects...</p>}</div></Container></section>
-          <section id="skills" className="relative py-24 text-white"><Container><h2 className="text-4xl font-bold mb-10 text-center">My Tech Stack</h2>{settings?.skills && settings.skills.length > 0 ? (<div className="flex flex-wrap justify-center gap-8">{settings.skills.map((skill: string) => (<div key={skill} className="group flex flex-col items-center justify-center p-4 transition-all duration-300 hover:-translate-y-2"><div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 shadow-lg backdrop-blur-sm border border-white/10 transition-all group-hover:border-pink-500/50 group-hover:shadow-pink-500/20"><img src={`https://cdn.simpleicons.org/${skill}/F472B6`} alt={skill} className="h-8 w-8 transition-all group-hover:scale-110" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} /></div><span className="mt-3 text-sm font-medium text-white/60 group-hover:text-white transition-colors capitalize">{skill.replace('dotjs', '.js').replace('webservices', '').replace('adobe', '')}</span></div>))}</div>) : (<p className="text-center text-white/40">Loading skills...</p>)}</Container></section>
-          
-          <section className="relative py-24 text-white"><Container><div className="flex flex-col items-center text-center"><h2 className="text-4xl font-bold mb-6">Quick Message</h2><form onSubmit={handleFormSubmit} className="w-full max-w-xl space-y-4"><input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" /><input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" /><textarea placeholder="Message" rows={4} value={message} onChange={(e) => setMessage(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" ></textarea><div className="flex justify-center"><Turnstile sitekey={CONFIG.TURNSTILE_SITEKEY} onVerify={(token) => setTurnstileToken(token)} theme="dark" /></div><PrimaryButton type="submit" disabled={isSubmitting}>{isSubmitting ? "Sending..." : "Send"}</PrimaryButton></form></div></Container></section>
-          
-          {/*  FOOTER WITH LEGAL LINKS + ABOUT MAIL */}
+          <section id="skills" className="relative py-24 text-white"><Container><h2 className="text-4xl font-bold mb-10 text-center">My Tech Stack</h2>{settings?.skills && settings.skills.length > 0 ? (<div className="flex flex-wrap justify-center gap-8">{settings.skills.map((skill: string) => (<div key={skill} className="group flex flex-col items-center justify-center p-4 transition-all duration-300 hover:-translate-y-2"><div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 shadow-lg backdrop-blur-sm border border-white/10 transition-all group-hover:border-pink-500/50 group-hover:shadow-pink-500/20"><img src={`https://cdn.simpleicons.org/${skill}/F472B6`} alt={skill} className="h-8 w-8 transition-all group-hover:scale-110" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} /></div><span className="mt-3 text-sm font-medium text-white/60 group-hover:text-white transition-colors capitalize">{skill.replace("dotjs", ".js").replace("webservices", "").replace("adobe", "")}</span></div>))}</div>) : (<p className="text-center text-white/40">Loading skills...</p>)}</Container></section>
+
+          <section className="relative py-24 text-white"><Container><div className="flex flex-col items-center text-center"><h2 className="text-4xl font-bold mb-6">Quick Message</h2><form onSubmit={handleFormSubmit} className="w-full max-w-xl space-y-4"><input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" /><input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" /><textarea placeholder="Message" rows={4} value={message} onChange={(e) => setMessage(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400"></textarea><div className="flex justify-center"><Turnstile sitekey={CONFIG.TURNSTILE_SITEKEY} onVerify={(token) => setTurnstileToken(token)} theme="dark" /></div><PrimaryButton type="submit" disabled={isSubmitting}>{isSubmitting ? "Sending..." : "Send"}</PrimaryButton></form></div></Container></section>
+
           <footer className="relative py-6 text-center text-white/70 text-sm border-t border-white/5">
             <Container>
               <div className="flex flex-col items-center gap-4">
                 <span>© {new Date().getFullYear()} 2BDeV Studio Inc. All rights reserved.</span>
-                
-                {/*  About Mail + Privacy Policy + Terms of Service */}
                 <div className="flex gap-4 text-xs flex-wrap justify-center">
-                  <a href="/about-mail" className="text-white/50 hover:text-white transition-colors underline">
-                    About 2BDeV Mail
-                  </a>
+                  <a href="/about-mail" className="text-white/50 hover:text-white transition-colors underline">About 2BDeV Mail</a>
                   <span className="text-white/30">|</span>
-                  <a href="https://2bdevon.top/legal-2bdevmail" target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-white transition-colors underline">
-                    Privacy Policy
-                  </a>
+                  <a href="https://2bdevon.top/legal-2bdevmail" target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-white transition-colors underline">Privacy Policy</a>
                   <span className="text-white/30">|</span>
-                  <a href="https://2bdevon.top/legal-2bdevmail" target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-white transition-colors underline">
-                    Terms of Service
-                  </a>
+                  <a href="https://2bdevon.top/legal-2bdevmail" target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-white transition-colors underline">Terms of Service</a>
                 </div>
-                
-                {/* Admin Logout */}
                 {onLogout && (
                   <button onClick={onLogout} className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 transition-colors">
                     <LogOut className="h-3 w-3" /> Logout (Admin)
@@ -631,8 +505,8 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
               </div>
             </Container>
           </footer>
-          
-          <AnimatePresence>{showScroll && (<motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={scrollTop} className="fixed bottom-6 right-6 z-40 rounded-full p-4 bg-white/10 text-white backdrop-blur-xl border border-white/20 shadow-lg" ><ArrowUp className="h-6 w-6" /></motion.button>)}</AnimatePresence>
+
+          <AnimatePresence>{showScroll && (<motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={scrollTop} className="fixed bottom-6 right-6 z-40 rounded-full p-4 bg-white/10 text-white backdrop-blur-xl border border-white/20 shadow-lg"><ArrowUp className="h-6 w-6" /></motion.button>)}</AnimatePresence>
         </div>
         <Analytics />
         <SpeedInsights />
@@ -686,9 +560,7 @@ export default function App() {
   }, []);
 
   const handleLogout = async () => {
-    try {
-      await fetch("/api/auth/logout", { method: "POST" });
-    } catch (err) {}
+    try { await fetch("/api/auth/logout", { method: "POST" }); } catch (err) {}
     setIsAdmin(false);
     window.location.reload();
   };
