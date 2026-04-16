@@ -4,8 +4,17 @@ import React, { useState, useEffect, Suspense, lazy } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Code,
+  Zap,
+  Monitor,
+  Github,
+  Linkedin,
+  Mail,
+  Menu,
+  X,
   ArrowRight,
   ArrowUp,
+  Settings,
+  Lock,
   LogOut,
   ChevronLeft
 } from "lucide-react";
@@ -64,15 +73,15 @@ const GhostButton = ({ children, onClick }: any) => (
 // --- DYNAMIC NAVBAR ---
 const DynamicNavbar = ({
   menuItems,
-  onMenuClick
+  onMenuClick,
 }: {
-  menuItems: string[],
-  onMenuClick: (id: string) => void
+  menuItems: string[];
+  onMenuClick: (id: string) => void;
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => { setIsScrolled(window.scrollY > 50); };
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -84,7 +93,7 @@ const DynamicNavbar = ({
         initial={{ width: "95%", borderRadius: 24 }}
         animate={{
           width: isScrolled ? "auto" : "95%",
-          backgroundColor: isScrolled ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.15)"
+          backgroundColor: isScrolled ? "rgba(0,0,0,0.3)" : "rgba(0,0,0,0.15)",
         }}
         transition={{ type: "spring", stiffness: 120, damping: 20 }}
         className="pointer-events-auto flex items-center justify-between p-2 backdrop-blur-xl border border-white/10 shadow-2xl overflow-hidden min-h-[60px]"
@@ -137,7 +146,7 @@ const DynamicNavbar = ({
   );
 };
 
-// --- ANIMÁLT ÁTMENET WRAPPER ---
+// --- PAGE TRANSITION ---
 const PageTransition = ({ children }: { children: React.ReactNode }) => (
   <motion.div
     initial={{ opacity: 0, scale: 0.98 }}
@@ -153,31 +162,16 @@ const PageTransition = ({ children }: { children: React.ReactNode }) => (
 // --- RETRO COOKIE CONSENT ---
 const RetroCookieConsent = () => {
   const [show, setShow] = useState(false);
-
   useEffect(() => {
     const consent = localStorage.getItem("cookie_consent");
-    if (!consent) {
-      const timer = setTimeout(() => setShow(true), 1000);
-      return () => clearTimeout(timer);
-    }
+    if (!consent) { const timer = setTimeout(() => setShow(true), 1000); return () => clearTimeout(timer); }
   }, []);
-
-  const handleAction = (status: "accepted" | "declined") => {
-    localStorage.setItem("cookie_consent", status);
-    setShow(false);
-  };
-
+  const handleAction = (status: "accepted" | "declined") => { localStorage.setItem("cookie_consent", status); setShow(false); };
   const bgColor = "#008888";
-
   return (
     <AnimatePresence>
       {show && (
-        <motion.div
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1, transition: { type: "spring", stiffness: 100, damping: 15 } }}
-          exit={{ y: 100, opacity: 0, transition: { duration: 0.5 } }}
-          className="fixed bottom-4 right-4 z-[9990] w-full max-w-sm px-4 md:px-0 pointer-events-auto"
-        >
+        <motion.div initial={{ y: 100, opacity: 0 }} animate={{ y: 0, opacity: 1, transition: { type: "spring", stiffness: 100, damping: 15 } }} exit={{ y: 100, opacity: 0, transition: { duration: 0.5 } }} className="fixed bottom-4 right-4 z-[9990] w-full max-w-sm px-4 md:px-0 pointer-events-auto">
           <div className="border-2 border-gray-400 shadow-[8px_8px_0px_rgba(0,0,0,0.8)] text-white overflow-hidden font-mono text-sm" style={{ backgroundColor: bgColor }}>
             <div className="border border-white/40 m-1 flex flex-col">
               <div className="flex justify-between items-center px-2 py-1 border-b border-white/40 bg-black/10">
@@ -200,10 +194,9 @@ const RetroCookieConsent = () => {
   );
 };
 
-// --- RETRO SYSTEM MESSAGE COMPONENT ---
-const RetroSystemMessage = ({ data, updatedAt }: { data: any, updatedAt?: string }) => {
+// --- RETRO SYSTEM MESSAGE ---
+const RetroSystemMessage = ({ data, updatedAt }: { data: any; updatedAt?: string }) => {
   const [isVisible, setIsVisible] = useState(false);
-
   useEffect(() => {
     if (!data || !data.isActive || !data.text) { setIsVisible(false); return; }
     const now = new Date();
@@ -213,7 +206,6 @@ const RetroSystemMessage = ({ data, updatedAt }: { data: any, updatedAt?: string
     const isClosed = localStorage.getItem(storageKey);
     if (data.closable && isClosed) { setIsVisible(false); } else { setIsVisible(true); }
   }, [data]);
-
   const handleClose = () => {
     setIsVisible(false);
     if (data.closable && data.text) {
@@ -221,14 +213,13 @@ const RetroSystemMessage = ({ data, updatedAt }: { data: any, updatedAt?: string
       localStorage.setItem(storageKey, "true");
     }
   };
-
   const dateStr = data.startDate || updatedAt || new Date().toISOString();
   const displayDate = new Date(dateStr).toISOString().replace("T", " ").substring(0, 16);
-  const getRetroColor = (type: string) => { switch (type) { case "error": return "#AA0000"; case "warning": return "#AA5500"; case "success": return "#00AA00"; case "brand": return "#AA00AA"; case "info": default: return "#0000AA"; } };
+  const getRetroColor = (type: string) => {
+    switch (type) { case "error": return "#AA0000"; case "warning": return "#AA5500"; case "success": return "#00AA00"; case "brand": return "#AA00AA"; default: return "#0000AA"; }
+  };
   const bgColor = getRetroColor(data.type);
-
   if (!isVisible) return null;
-
   return (
     <AnimatePresence>
       {isVisible && (
@@ -238,11 +229,11 @@ const RetroSystemMessage = ({ data, updatedAt }: { data: any, updatedAt?: string
             <div className="border border-white/40 m-1 flex flex-col relative h-full">
               <div className="flex justify-between items-center px-3 py-2 border-b border-white/40 select-none" style={{ backgroundColor: bgColor }}>
                 <span className="text-xs text-yellow-300 font-bold uppercase tracking-wider animate-pulse">{displayDate}</span>
-                {data.closable && (<button onClick={handleClose} className="text-white hover:bg-white hover:text-black px-2 font-bold transition-colors uppercase border border-transparent hover:border-white">[ X ]</button>)}
+                {data.closable && <button onClick={handleClose} className="text-white hover:bg-white hover:text-black px-2 font-bold transition-colors uppercase border border-transparent hover:border-white">[ X ]</button>}
               </div>
               <div className="p-8 text-center min-h-[140px] flex flex-col items-center justify-center" style={{ backgroundColor: bgColor }}>
                 <p className="text-lg md:text-xl leading-relaxed whitespace-pre-wrap font-bold tracking-wide drop-shadow-md">{data.text}</p>
-                {data.link && (<div className="mt-6"><a href={data.link} target="_blank" rel="noreferrer" className="inline-block bg-gray-300 px-6 py-2 font-bold hover:bg-white transition-colors shadow-[4px_4px_0px_black] uppercase text-sm border-2 border-black" style={{ color: bgColor }}>&lt; Open Link &gt;</a></div>)}
+                {data.link && <div className="mt-6"><a href={data.link} target="_blank" rel="noreferrer" className="inline-block bg-gray-300 px-6 py-2 font-bold hover:bg-white transition-colors shadow-[4px_4px_0px_black] uppercase text-sm border-2 border-black" style={{ color: bgColor }}>&lt; Open Link &gt;</a></div>}
               </div>
               <div className="border-t border-white/40 py-2 text-center select-none" style={{ backgroundColor: bgColor }}><span className="text-xs text-gray-300 font-bold tracking-widest">&lt; 2BDeV Studio &gt;</span></div>
             </div>
@@ -257,13 +248,11 @@ const RetroSystemMessage = ({ data, updatedAt }: { data: any, updatedAt?: string
 const MaintenanceScreen = ({ settings }: { settings: any }) => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const navigate = useNavigate();
-
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => { setMousePos({ x: (window.innerWidth / 2 - e.pageX) / 50, y: (window.innerHeight / 2 - e.pageY) / 50 }); };
+    const handleMouseMove = (e: MouseEvent) => setMousePos({ x: (window.innerWidth / 2 - e.pageX) / 50, y: (window.innerHeight / 2 - e.pageY) / 50 });
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
-
   return (
     <PageTransition>
       <div className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-[#0a0a0a] text-white font-sans">
@@ -278,13 +267,13 @@ const MaintenanceScreen = ({ settings }: { settings: any }) => {
           <p className="text-[10px] tracking-[2px] text-white">&copy; {new Date().getFullYear()} 2BDeV Studio.</p>
           <a href="https://2bdevon.top/legal" target="_blank" rel="noopener noreferrer" className="text-[10px] tracking-[2px] text-white hover:opacity-100 transition-opacity underline">Privacy Policy and Terms of Service</a>
         </div>
-        <style>{`@keyframes breathe { 0% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.3; } } .animate-breathe { animation: breathe 4s ease-in-out infinite; will-change: transform, opacity; }`}</style>
+        <style>{`@keyframes breathe{0%,100%{transform:scale(1);opacity:0.3}50%{transform:scale(1.1);opacity:1}}.animate-breathe{animation:breathe 4s ease-in-out infinite;will-change:transform,opacity}`}</style>
       </div>
     </PageTransition>
   );
 };
 
-// --- DEDICATED CONTACT PAGE ---
+// --- CONTACT PAGE ---
 const ContactPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [name, setName] = useState("");
@@ -292,33 +281,24 @@ const ContactPage = () => {
   const [message, setMessage] = useState("");
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const navigate = useNavigate();
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!turnstileToken) { alert("Please complete the CAPTCHA."); return; }
     setIsSubmitting(true);
     let ipData = { ip: "Unknown", country_name: "Unknown", city: "Unknown" };
-    try { const res = await fetch("https://ipapi.co/json/"); if (res.ok) ipData = await res.json(); } catch (err) {}
-
+    try { const res = await fetch("https://ipapi.co/json/"); if (res.ok) ipData = await res.json(); } catch {}
     const scriptData = new URLSearchParams();
-    scriptData.append("name", name);
-    scriptData.append("email", email);
-    scriptData.append("message", message);
-    scriptData.append("userIp", ipData.ip || "Unknown");
-    scriptData.append("userLocation", `${ipData.country_name || "?"}, ${ipData.city || "?"}`);
+    scriptData.append("name", name); scriptData.append("email", email); scriptData.append("message", message);
+    scriptData.append("userIp", ipData.ip || "Unknown"); scriptData.append("userLocation", `${ipData.country_name || "?"}, ${ipData.city || "?"}`);
     scriptData.append("turnstileToken", turnstileToken);
-
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise(r => setTimeout(r, 1500));
       await fetch(CONFIG.GOOGLE_SCRIPT_URL, { method: "POST", mode: "no-cors", body: scriptData });
-      alert("Message sent successfully! 🚀 Note: If you do not see the confirmation email, please check your spam folder. If you did not receive a confirmation email in any way, it is likely that your email did not reach us. In this case, you can also contact us via this email: contact-error@2bdevon.top");
+      alert("Message sent successfully! 🚀 Note: If you do not see the confirmation email, please check your spam folder. In this case, contact us at: contact-error@2bdevon.top");
       navigate("/");
-    } catch (error) {
-      console.error("Submission error:", error);
-      alert("Something went wrong. Please try again.");
-    } finally { setIsSubmitting(false); }
+    } catch { alert("Something went wrong. Please try again."); }
+    finally { setIsSubmitting(false); }
   };
-
   return (
     <PageTransition>
       <div className="flex min-h-screen items-center justify-center bg-[#0a0a0a] text-white font-sans relative overflow-hidden">
@@ -352,11 +332,11 @@ const AboutMailPage = () => {
           <h1 className="text-4xl font-light uppercase tracking-[8px] mb-6 text-white">2BDeV Mail</h1>
           <p className="text-gray-400 mb-8 text-sm leading-relaxed">A secure and privacy-focused email management system designed for personal and business communication.</p>
           <div className="space-y-8">
-            <div><h2 className="text-2xl font-semibold mb-4 text-pink-400">What is 2BDeV Mail?</h2><p className="text-gray-300 leading-relaxed">2BDeV Mail is a web-based email service that integrates with Google Workspace to provide secure email sending and management capabilities. It allows users to send emails through a verified and authenticated system, ensuring deliverability and security.</p></div>
+            <div><h2 className="text-2xl font-semibold mb-4 text-pink-400">What is 2BDeV Mail?</h2><p className="text-gray-300 leading-relaxed">2BDeV Mail is a web-based email service that integrates with Google Workspace to provide secure email sending and management capabilities.</p></div>
             <div><h2 className="text-2xl font-semibold mb-4 text-pink-400">Key Features</h2><ul className="list-disc list-inside space-y-2 text-gray-300"><li>Secure email sending through Google OAuth 2.0 authentication</li><li>Contact form integration for website communication</li><li>IP tracking and location data for security purposes</li><li>Cloudflare Turnstile CAPTCHA protection against spam</li><li>Automatic email confirmation and delivery tracking</li></ul></div>
-            <div><h2 className="text-2xl font-semibold mb-4 text-pink-400">Privacy & Security</h2><p className="text-gray-300 leading-relaxed">We take your privacy seriously. All emails are sent through encrypted connections, and we only request the minimum permissions necessary to provide our service. User data is never shared with third parties, and all communications are logged for security purposes only.</p><a href="https://2bdevon.top/legal-2bdevmail" target="_blank" rel="noopener noreferrer" className="inline-block mt-4 text-indigo-400 hover:text-indigo-300 underline">Read our Privacy Policy →</a></div>
+            <div><h2 className="text-2xl font-semibold mb-4 text-pink-400">Privacy &amp; Security</h2><p className="text-gray-300 leading-relaxed">We take your privacy seriously. All emails are sent through encrypted connections, and we only request the minimum permissions necessary.</p><a href="https://2bdevon.top/legal-2bdevmail" target="_blank" rel="noopener noreferrer" className="inline-block mt-4 text-indigo-400 hover:text-indigo-300 underline">Read our Privacy Policy →</a></div>
             <div><h2 className="text-2xl font-semibold mb-4 text-pink-400">How It Works</h2><ol className="list-decimal list-inside space-y-2 text-gray-300"><li>User submits the contact form on our website</li><li>System validates the request using Cloudflare Turnstile</li><li>Email is sent through Google Workspace API with OAuth 2.0</li><li>User receives automatic confirmation of successful delivery</li><li>Admin receives the message with metadata (IP, location, timestamp)</li></ol></div>
-            <div className="pt-6 border-t border-white/10"><p className="text-gray-400 text-sm">© 2024 - {new Date().getFullYear()} 2BDeV Studio Inc. All rights reserved. | <a href="https://2bdevon.top/legal" target="_blank" rel="noopener noreferrer" className="ml-2 text-white/50 hover:text-white underline">Privacy Policy</a> | <a href="https://2bdevon.top/legal" target="_blank" rel="noopener noreferrer" className="ml-2 text-white/50 hover:text-white underline">Terms of Service</a></p></div>
+            <div className="pt-6 border-t border-white/10"><p className="text-gray-400 text-sm">© 2024 - {new Date().getFullYear()} 2BDeV Studio Inc. | <a href="https://2bdevon.top/legal" target="_blank" rel="noopener noreferrer" className="ml-2 text-white/50 hover:text-white underline">Privacy Policy</a> | <a href="https://2bdevon.top/legal" target="_blank" rel="noopener noreferrer" className="ml-2 text-white/50 hover:text-white underline">Terms of Service</a></p></div>
           </div>
         </div>
       </div>
@@ -379,7 +359,7 @@ const GoogleLoginRedirect = () => {
 
 // --- LOGO3D FALLBACK ---
 const Logo3dFallback = () => (
-  <div className="flex h-[400px] w-full items-center justify-center">
+  <div className="flex h-full w-full items-center justify-center">
     <div className="h-12 w-12 animate-spin rounded-full border-4 border-pink-500 border-t-transparent"></div>
   </div>
 );
@@ -395,7 +375,6 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
   const [message, setMessage] = useState("");
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const navigate = useNavigate();
-
   const menuItems = ["About", "Projects", "Skills"];
 
   useEffect(() => {
@@ -414,12 +393,11 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
     const targetId = id.toLowerCase();
     if (targetId === "contact") { navigate("/contact"); return; }
     const el = document.getElementById(targetId);
-    if (el) { const offset = 120; const elementPosition = el.getBoundingClientRect().top + window.pageYOffset; window.scrollTo({ top: elementPosition - offset, behavior: "smooth" }); }
+    if (el) { const offset = 120; const pos = el.getBoundingClientRect().top + window.pageYOffset; window.scrollTo({ top: pos - offset, behavior: "smooth" }); }
   };
 
-  const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
   useEffect(() => {
-    const handleScroll = () => { setShowScroll(window.scrollY > 400); };
+    const handleScroll = () => setShowScroll(window.scrollY > 400);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -429,27 +407,24 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
     if (!turnstileToken) { alert("Please complete the CAPTCHA."); return; }
     setIsSubmitting(true);
     let ipData = { ip: "Unknown", country_name: "Unknown", city: "Unknown" };
-    try { const res = await fetch("https://ipapi.co/json/"); if (res.ok) ipData = await res.json(); } catch (err) {}
-
+    try { const res = await fetch("https://ipapi.co/json/"); if (res.ok) ipData = await res.json(); } catch {}
     const scriptData = new URLSearchParams();
-    scriptData.append("name", name);
-    scriptData.append("email", email);
-    scriptData.append("message", message);
-    scriptData.append("userIp", ipData.ip);
-    scriptData.append("userLocation", `${ipData.country_name}, ${ipData.city}`);
+    scriptData.append("name", name); scriptData.append("email", email); scriptData.append("message", message);
+    scriptData.append("userIp", ipData.ip); scriptData.append("userLocation", `${ipData.country_name}, ${ipData.city}`);
     scriptData.append("turnstileToken", turnstileToken);
-
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise(r => setTimeout(r, 1500));
       await fetch(CONFIG.GOOGLE_SCRIPT_URL, { method: "POST", mode: "no-cors", body: scriptData });
-      alert("Message sent successfully! 🚀 Note: If you do not see the confirmation email, please check your spam folder. If you did not receive a confirmation email in any way, it is likely that your email did not reach us. In this case, you can also contact us via this email: contact-error@2bdevon.top");
+      alert("Message sent successfully! 🚀 Note: If you do not see the confirmation email, please check your spam folder. In this case, contact us at: contact-error@2bdevon.top");
       setName(""); setEmail(""); setMessage(""); setTurnstileToken(null);
-    } catch (err) { alert("Error sending message."); console.error(err); } finally { setIsSubmitting(false); }
+    } catch { alert("Error sending message."); }
+    finally { setIsSubmitting(false); }
   };
 
   return (
     <PageTransition>
       <div className="font-sans antialiased relative overflow-hidden min-h-screen">
+        {/* HÁTTÉR */}
         <div className="fixed inset-0 z-0 pointer-events-none">
           <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-black to-indigo-900 animate-gradient-slow"></div>
           <div className="absolute -top-40 -left-40 h-96 w-96 rounded-full bg-pink-500 opacity-30 blur-3xl animate-pulse"></div>
@@ -459,30 +434,66 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
         <div className="relative z-10">
           <DynamicNavbar menuItems={menuItems} onMenuClick={handleMenuClick} />
 
-          <section className="relative isolate overflow-hidden pt-48 text-white">
-            <Container>
-              <div className="grid items-center gap-10 md:grid-cols-2">
-                <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}>
-                  <h1 className="mt-6 text-5xl font-extrabold leading-tight tracking-tight sm:text-6xl">Hi, I'm <span className="bg-gradient-to-r from-pink-400 via-fuchsia-500 to-indigo-500 bg-clip-text text-transparent">2BDeV</span>.<br />Web Developer, Creative Problem Solver & Photographer :)</h1>
-                  <p className="mt-4 text-white/80 max-w-xl">Btw i created this website too, cuz this is mine (˶˃ ᵕ ˂˶)</p>
-                  <div className="mt-8 flex flex-wrap items-center gap-3">
-                    <PrimaryButton onClick={() => navigate("/contact")}>Contact Me</PrimaryButton>
-                    <GhostButton onClick={() => handleMenuClick("projects")}><Code className="h-4 w-4" /> View my works</GhostButton>
-                  </div>
-                </motion.div>
+          <section
+            className="relative text-white overflow-visible"
+            style={{ paddingTop: "140px", paddingBottom: "80px", minHeight: "600px" }}
+          >
+            {/* 3D LOGÓ – absolute pozíció, jobb oldal, NEM tolja a szöveget */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.2, delay: 0.2 }}
+              style={{
+                position: "absolute",
+                top: "20%",
+                right: "31%",
+                transform: "translateY(-50%)",
+                width: "500px",   // ← szabadon állítható, semmi sem mozdul el
+                height: "300px",  // ← szabadon állítható, semmi sem mozdul el
+                zIndex: 5,
+                pointerEvents: "auto",
+              }}
+            >
+              <Suspense fallback={<Logo3dFallback />}>
+                <Logo3d />
+              </Suspense>
+            </motion.div>
 
-                <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative flex justify-center">
-                  <Suspense fallback={<Logo3dFallback />}>
-                    <Logo3d />
-                  </Suspense>
-                </motion.div>
-              </div>
+            {/* SZÖVEG – bal oldal, normál flow, a 3D canvas FELETT (z-10) */}
+            <Container>
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+                className="relative"
+                style={{ zIndex: 10, maxWidth: "55%" }}
+              >
+                <h1 className="text-5xl font-extrabold leading-tight tracking-tight sm:text-6xl">
+                  Hi, I&apos;m{" "}
+                  <span className="bg-gradient-to-r from-pink-400 via-fuchsia-500 to-indigo-500 bg-clip-text text-transparent">
+                    2BDeV
+                  </span>
+                  .<br />
+                  Web Developer, Creative Problem Solver &amp; Photographer :)
+                </h1>
+                <p className="mt-4 text-white/80 max-w-xl">
+                  Btw i created this website too, cuz this is mine (˶˃ ᵕ ˂˶)
+                </p>
+                <div className="mt-8 flex flex-wrap items-center gap-3">
+                  <PrimaryButton onClick={() => navigate("/contact")}>Contact Me</PrimaryButton>
+                  <GhostButton onClick={() => handleMenuClick("projects")}>
+                    <Code className="h-4 w-4" /> View my works
+                  </GhostButton>
+                </div>
+              </motion.div>
             </Container>
           </section>
 
           <section id="about" className="relative py-24 text-white"><Container><h2 className="text-4xl font-bold mb-6">About</h2><p className="text-white/80 max-w-3xl">{settings?.aboutText || "Loading profile..."}</p></Container></section>
-          <section id="projects" className="relative py-24 text-white"><Container><h2 className="text-4xl font-bold mb-6">Projects</h2><div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">{projects.length > 0 ? (projects.map((project, i) => (<a key={project._id || i} href={project.link} target="_blank" rel="noopener noreferrer" className="group rounded-xl bg-gradient-to-tr from-pink-500/10 to-purple-600/10 p-6 border border-white/10 transition-all duration-300 hover:scale-105 hover:border-pink-500/50"><h3 className="text-xl font-semibold">{project.title}</h3><p className="mt-2 text-sm text-white/70">{project.description}</p><div className="mt-4 flex items-center gap-2 text-pink-400 text-sm font-medium">View Project <ArrowRight className="h-4 w-4" /></div></a>))) : <p className="text-white/40">Loading projects...</p>}</div></Container></section>
-          <section id="skills" className="relative py-24 text-white"><Container><h2 className="text-4xl font-bold mb-10 text-center">My Tech Stack</h2>{settings?.skills && settings.skills.length > 0 ? (<div className="flex flex-wrap justify-center gap-8">{settings.skills.map((skill: string) => (<div key={skill} className="group flex flex-col items-center justify-center p-4 transition-all duration-300 hover:-translate-y-2"><div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 shadow-lg backdrop-blur-sm border border-white/10 transition-all group-hover:border-pink-500/50 group-hover:shadow-pink-500/20"><img src={`https://cdn.simpleicons.org/${skill}/F472B6`} alt={skill} className="h-8 w-8 transition-all group-hover:scale-110" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} /></div><span className="mt-3 text-sm font-medium text-white/60 group-hover:text-white transition-colors capitalize">{skill.replace("dotjs", ".js").replace("webservices", "").replace("adobe", "")}</span></div>))}</div>) : (<p className="text-center text-white/40">Loading skills...</p>)}</Container></section>
+
+          <section id="projects" className="relative py-24 text-white"><Container><h2 className="text-4xl font-bold mb-6">Projects</h2><div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">{projects.length > 0 ? projects.map((project, i) => (<a key={project._id || i} href={project.link} target="_blank" rel="noopener noreferrer" className="group rounded-xl bg-gradient-to-tr from-pink-500/10 to-purple-600/10 p-6 border border-white/10 transition-all duration-300 hover:scale-105 hover:border-pink-500/50"><h3 className="text-xl font-semibold">{project.title}</h3><p className="mt-2 text-sm text-white/70">{project.description}</p><div className="mt-4 flex items-center gap-2 text-pink-400 text-sm font-medium">View Project <ArrowRight className="h-4 w-4" /></div></a>)) : <p className="text-white/40">Loading projects...</p>}</div></Container></section>
+
+          <section id="skills" className="relative py-24 text-white"><Container><h2 className="text-4xl font-bold mb-10 text-center">My Tech Stack</h2>{settings?.skills && settings.skills.length > 0 ? (<div className="flex flex-wrap justify-center gap-8">{settings.skills.map((skill: string) => (<div key={skill} className="group flex flex-col items-center justify-center p-4 transition-all duration-300 hover:-translate-y-2"><div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 shadow-lg backdrop-blur-sm border border-white/10 transition-all group-hover:border-pink-500/50 group-hover:shadow-pink-500/20"><img src={`https://cdn.simpleicons.org/${skill}/F472B6`} alt={skill} className="h-8 w-8 transition-all group-hover:scale-110" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} /></div><span className="mt-3 text-sm font-medium text-white/60 group-hover:text-white transition-colors capitalize">{skill.replace("dotjs", ".js").replace("webservices", "").replace("adobe", "")}</span></div>))}</div>) : <p className="text-center text-white/40">Loading skills...</p>}</Container></section>
 
           <section className="relative py-24 text-white"><Container><div className="flex flex-col items-center text-center"><h2 className="text-4xl font-bold mb-6">Quick Message</h2><form onSubmit={handleFormSubmit} className="w-full max-w-xl space-y-4"><input type="text" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" /><input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400" /><textarea placeholder="Message" rows={4} value={message} onChange={(e) => setMessage(e.target.value)} required className="w-full rounded-lg bg-white/10 px-4 py-2 focus:ring-2 focus:ring-pink-400"></textarea><div className="flex justify-center"><Turnstile sitekey={CONFIG.TURNSTILE_SITEKEY} onVerify={(token) => setTurnstileToken(token)} theme="dark" /></div><PrimaryButton type="submit" disabled={isSubmitting}>{isSubmitting ? "Sending..." : "Send"}</PrimaryButton></form></div></Container></section>
 
@@ -506,17 +517,28 @@ function MainAppContent({ onLogout }: { onLogout?: () => void }) {
             </Container>
           </footer>
 
-          <AnimatePresence>{showScroll && (<motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={scrollTop} className="fixed bottom-6 right-6 z-40 rounded-full p-4 bg-white/10 text-white backdrop-blur-xl border border-white/20 shadow-lg"><ArrowUp className="h-6 w-6" /></motion.button>)}</AnimatePresence>
+          <AnimatePresence>
+            {showScroll && (
+              <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="fixed bottom-6 right-6 z-40 rounded-full p-4 bg-white/10 text-white backdrop-blur-xl border border-white/20 shadow-lg">
+                <ArrowUp className="h-6 w-6" />
+              </motion.button>
+            )}
+          </AnimatePresence>
         </div>
+
         <Analytics />
         <SpeedInsights />
-        <style>{`html { scroll-behavior: smooth; } .animate-gradient-slow { background-size: 400% 400%; animation: gradientBG 15s ease infinite; } @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }`}</style>
+        <style>{`
+          html { scroll-behavior: smooth; }
+          .animate-gradient-slow { background-size: 400% 400%; animation: gradientBG 15s ease infinite; }
+          @keyframes gradientBG { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        `}</style>
       </div>
     </PageTransition>
   );
 }
 
-// --- GLOBAL ROUTING & ANIMATIONS ---
+// --- ANIMATED ROUTES ---
 function AnimatedRoutes({ settings, onLogout, showMaintenance }: any) {
   const location = useLocation();
   return (
@@ -525,13 +547,14 @@ function AnimatedRoutes({ settings, onLogout, showMaintenance }: any) {
         <Route path="/login" element={<GoogleLoginRedirect />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/about-mail" element={<AboutMailPage />} />
-        <Route path="/" element={showMaintenance ? (<MaintenanceScreen settings={settings} />) : (<MainAppContent onLogout={onLogout} />)} />
+        <Route path="/" element={showMaintenance ? <MaintenanceScreen settings={settings} /> : <MainAppContent onLogout={onLogout} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AnimatePresence>
   );
 }
 
+// --- ROOT APP ---
 export default function App() {
   const [settings, setSettings] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -545,33 +568,34 @@ export default function App() {
           const authData = await authRes.json();
           setIsAdmin(authData.isAdmin === true);
         }
-      } catch (err) {}
-
+      } catch {}
       try {
         const data = await sanity.fetch(`*[_type == "siteSettings"][0]`);
         setSettings(data);
-      } catch (err) {
-        console.error("Settings fetch error:", err);
-      } finally {
-        setLoading(false);
-      }
+      } catch (err) { console.error("Settings fetch error:", err); }
+      finally { setLoading(false); }
     };
     init();
   }, []);
 
   const handleLogout = async () => {
-    try { await fetch("/api/auth/logout", { method: "POST" }); } catch (err) {}
+    try { await fetch("/api/auth/logout", { method: "POST" }); } catch {}
     setIsAdmin(false);
     window.location.reload();
   };
 
-  if (loading) return <div className="flex min-h-screen items-center justify-center bg-black text-white"><div className="h-12 w-12 animate-spin rounded-full border-4 border-pink-500 border-t-transparent"></div></div>;
+  if (loading) return (
+    <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="h-12 w-12 animate-spin rounded-full border-4 border-pink-500 border-t-transparent"></div>
+    </div>
+  );
+
   const showMaintenance = settings?.maintenanceMode && !isAdmin;
 
   return (
     <Router>
       <RetroCookieConsent />
-      {settings?.announcement && (<RetroSystemMessage data={settings.announcement} updatedAt={settings?._updatedAt} />)}
+      {settings?.announcement && <RetroSystemMessage data={settings.announcement} updatedAt={settings?._updatedAt} />}
       <AnimatedRoutes settings={settings} onLogout={handleLogout} showMaintenance={showMaintenance} />
     </Router>
   );
