@@ -24,8 +24,6 @@ export default function Logo3d() {
       
       <Logo3DModel />
       
-      <Environment preset="night" /> 
-      
       <ContactShadows position={[0, -1.5, 0]} opacity={0.4} scale={10} blur={2} far={4.5} />
       
       <OrbitControls enableZoom={false} />
